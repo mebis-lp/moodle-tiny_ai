@@ -28,3 +28,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['ai:view'] = 'View the AI button';
 $string['pluginname'] = 'Tiny AI Button';
+$string['modaltitle'] = 'Select Purpose';

@@ -26,17 +26,22 @@ import {getButtonImage} from 'editor_tiny/utils';
 import {get_string as getString} from 'core/str';
 import {
     component,
+    buttonName,
+    buttonTitle,
     icon,
 } from './common';
+import {displayDialogue} from './utils';
 
 /**
  * Handle the action for your plugin.
  * @param {TinyMCE.editor} editor The tinyMCE editor instance.
  */
-const handleAction = (editor) => {
-    // TODO Handle the action.
-    window.console.log(editor);
-};
+// const handleAction = (editor) => {
+//     displayDialogue(editor);
+
+//     // TODO Handle the action.
+//     // window.console.log(editor);
+// };
 
 /**
  * Get the setup function for the buttons.
@@ -56,6 +61,29 @@ export const getSetup = async() => {
     return (editor) => {
         // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
         editor.ui.registry.addIcon(icon, buttonImage.html);
+
+        // Register the AI Toolbar Button.
+        editor.ui.registry.addToggleButton(buttonName, {
+            icon,
+            tooltip: buttonTitle,
+            onAction: () => displayDialogue(editor),
+            onSetup: (api) => {
+                // editor.on('click', () => {
+                //     api.setActive(resolveSubquestion() !== false);
+                // });
+            }
+        });
+
+        // Register the menu item.
+        editor.ui.registry.addMenuItem(buttonName, {
+            icon,
+            text: buttonTitle,
+            onAction: () => displayDialogue(editor),
+        });
+
+        // editor.on('init', () => onInit(editor));
+        // editor.on('BeforeGetContent', format => onBeforeGetContent(format));
+        editor.on('submit', () => onSubmit());
 
     };
 };

@@ -23,6 +23,8 @@
  */
 
 import {
+    buttonName,
+    buttonTitle
 } from './common';
 
 import {
@@ -32,6 +34,10 @@ import {
 
 const getToolbarConfiguration = (instanceConfig) => {
     let toolbar = instanceConfig.toolbar;
+
+    toolbar = addToolbarButtons(toolbar, 'formatting', [
+        buttonName,
+    ]);
 
     return toolbar;
 };
