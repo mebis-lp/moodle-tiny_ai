@@ -28,9 +28,7 @@
     Context variables required for this template:
 
     Example context (json):
-    {
-        "elementid": "exampleId"
-    }
+    {}
 }}
 
 {{< core/modal }}
@@ -42,7 +40,18 @@
     {{$body}}
         <form class="mform">
             <div class="mb-4">
-                TEST
+            <span class="btn btn-secondary tiny_ai_fullwidth" id="tiny_ai-simplify">
+                <img src="/lib/editor/tiny/plugins/ai/pix/simplify.png" class="pix-16">
+                {{#str}} simplify, tiny_ai {{/str}}
+            </span>
+            <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-translate">
+                <img src="/lib/editor/tiny/plugins/ai/pix/translation.png" class="pix-16">
+                {{#str}} translate, tiny_ai {{/str}}
+            </span>
+            <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-text-to-speech">
+                <img src="/lib/editor/tiny/plugins/ai/pix/text-to-speech.png" class="pix-16">
+                {{#str}} text-to-speech, tiny_ai {{/str}}
+            </span>
             </div>
         </form>
     {{/body}}

@@ -44,7 +44,9 @@ const getToolbarConfiguration = (instanceConfig) => {
 
 const getMenuConfiguration = (instanceConfig) => {
     let menu = instanceConfig.menu;
-
+    menu = addMenubarItem(menu, 'tools', [
+        buttonName,
+    ].join(' '));
     return menu;
 };
 

@@ -57,37 +57,31 @@ const getTemplateContext = (editor, data) => {
 };
 
 export const displayDialogue = async (editor, data = {}) => {
-    // const selection = editor.selection.getNode();
-    // const currentH5P = selection.closest('.h5p-placeholder');
-    // if (currentH5P) {
-    //     Object.assign(data, getCurrentH5PData(currentH5P));
-    // }
 
     const modal = await AiModal.create({
         templateContext: getTemplateContext(editor, data),
     });
 
-    // const modal = await Modal.create({
-    //     templateContext: getTemplateContext(editor, data),
-    // });
-
     const $root = modal.getRoot();
-    // const root = $root[0];
+    const root = $root[0];
     // $root.on(ModalEvents.save, (event, modal) => {
     //     handleDialogueSubmission(editor, modal, data);
     // });
 
-    // root.addEventListener('click', (e) => {
-    //     const filepickerButton = e.target.closest('[data-target="filepicker"]');
-    //     if (filepickerButton) {
-    //         displayFilepicker(editor, 'h5p').then((params) => {
-    //             if (params.url !== '') {
-    //                 const input = root.querySelector('form input[name="url"]');
-    //                 input.value = params.url;
-    //             }
-    //             return params;
-    //         })
-    //             .catch();
-    //     }
-    // });
+    root.addEventListener('click', (e) => {
+        const simplifyButton = e.target.closest('#tiny_ai-simplify');
+        if (simplifyButton) {
+            window.console.log("Button Simplify Clicked.");
+        }
+
+        const translateButton = e.target.closest('#tiny_ai-translate');
+        if (translateButton) {
+            window.console.log("Button Translate Clicked.");
+        }
+
+        const text2peechButton = e.target.closest('#tiny_ai-text-to-speech');
+        if (text2peechButton) {
+            window.console.log("Button T2S Clicked.");
+        }
+    });
 };
