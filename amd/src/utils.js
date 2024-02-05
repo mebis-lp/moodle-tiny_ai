@@ -17,7 +17,6 @@
  * Tiny AI utils library.
  *
  * @package     tiny_ai
- * @category    admin
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,11 +24,14 @@
 
 // import Modal from 'core/modal';
 import AiModal from './modal';
+import Selectors from './selectors';
+import {makeRequest} from 'local_ai_manager/make_request';
+import ModalEvents from 'core/modal_events';
 
-export const handleAction = (editor) => {
-    openingSelection = editor.selection.getBookmark();
-    displayDialogue(editor);
-};
+// export const handleAction = (editor) => {
+//     openingSelection = editor.selection.getBookmark();
+//     displayDialogue(editor);
+// };
 
 /**
  * Get the template context for the dialogue.
@@ -39,39 +41,44 @@ export const handleAction = (editor) => {
  * @returns {object} data
  */
 const getTemplateContext = (editor, data) => {
-    // const permissions = getPermissions(editor);
-
-    // const canShowFilePicker = typeof getFilePicker(editor, 'h5p') !== 'undefined';
-    // const canUpload = (permissions.upload && canShowFilePicker) ?? false;
-    // const canEmbed = permissions.embed ?? false;
-    // const canUploadAndEmbed = canUpload && canEmbed;
-
     return Object.assign({}, {
-        // elementid: editor.id,
-        // canUpload,
-        // canEmbed,
-        // canUploadAndEmbed,
-        // showOptions: false,
-        // fileURL: data?.url ?? '',
+        'defaultprompt-simplify': "Simplify the following text:",
+        'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
+        taResult: Selectors.elements.taResult,
+        spanResult: Selectors.elements.spanResult,
     }, data);
 };
 
+/**
+ * Shows and handles the dialog.
+ *
+ * @param {*} editor
+ * @param {*} data
+ */
 export const displayDialogue = async (editor, data = {}) => {
 
     const modal = await AiModal.create({
-        templateContext: getTemplateContext(editor, data),
+        templateContext: getTemplateContext(editor, data)
     });
 
     const $root = modal.getRoot();
     const root = $root[0];
-    // $root.on(ModalEvents.save, (event, modal) => {
-    //     handleDialogueSubmission(editor, modal, data);
-    // });
+
+    $root.on(ModalEvents.save, () => {
+        let selectedText = editor.selection.getContent();
+        let newText = document.getElementById(Selectors.elements.taResult).value;
+        if (selectedText) {
+            editor.selection.setContent(newText);
+        } else {
+            editor.insertContent(result);
+        }
+    });
 
     root.addEventListener('click', (e) => {
         const simplifyButton = e.target.closest('#tiny_ai-simplify');
+        hideAllSettingsSections();
         if (simplifyButton) {
-            window.console.log("Button Simplify Clicked.");
+            showSettingSection(Selectors.elements.settingsIdSimplify);
         }
 
         const translateButton = e.target.closest('#tiny_ai-translate');
@@ -83,5 +90,94 @@ export const displayDialogue = async (editor, data = {}) => {
         if (text2peechButton) {
             window.console.log("Button T2S Clicked.");
         }
+
+        return;
     });
+
+    document.getElementById(Selectors.buttons.btnStartSimplification).addEventListener('click', () => {
+        let selectedText = editor.selection.getContent();
+        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
+        getChatResult(cmdPrompt, selectedText);
+    });
+};
+
+/**
+ * Get the Chat result.
+ * @param {string} cmdPrompt
+ * @param {string} selectedText
+ */
+const getChatResult = (cmdPrompt, selectedText) => {
+    let prompt = cmdPrompt + " " + selectedText;
+
+    // Shows the results box. This should happen before the real result is shown,
+    // in order to inform the user, that we are working on it.
+    document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+
+    retrieveResult('chat', prompt).then(result => {
+        document.getElementById(Selectors.elements.taResult).value = result;
+    });
+};
+
+/**
+ * Hides all setting blocks
+ */
+const hideAllSettingsSections = () => {
+    [document.getElementsByClassName(Selectors.elements.classPurposeSettings)].forEach(x => x.className += ' hidden');
+};
+
+/**
+ * Show the settings block of the option selected.
+ *
+ * @param {string} selectorID
+ */
+const showSettingSection = (selectorID) => {
+    document.getElementById(selectorID).classList.remove("hidden");
+};
+
+/**
+ * Get the async answer from the LLM.
+ *
+ * @param {string} purpose
+ * @param {string} prompt
+ * @returns {string}
+ */
+const retrieveResult = async (purpose, prompt) => {
+    result = await makeRequest(purpose, prompt);
+    return result;
+}
+
+/**
+ * Get anchor element.
+ *
+ * @param {TinyMCE} editor
+ * @param {Element} selectedElm
+ * @returns {Element}
+ */
+const getAnchorElement = (editor, selectedElm) => {
+    selectedElm = selectedElm || editor.selection.getNode();
+    return editor.dom.getParent(selectedElm, 'a[href]');
+};
+
+/**
+ * Handle insertion of purpose, or update of an existing one.
+ *
+ * @param {Element} currentForm
+ * @param {TinyMCE} editor
+ */
+export const setLink = (currentForm, editor) => {
+    const input = currentForm.querySelector(Selectors.elements.urlEntry);
+    let value = input.value;
+
+    if (value !== '') {
+        const pendingPromise = new Pending('tiny_link/setLink');
+        // We add a prefix if it is not already prefixed.
+        value = value.trim();
+        const expr = new RegExp(/^[a-zA-Z]*\.*\/|^#|^[a-zA-Z]*:/);
+        if (!expr.test(value)) {
+            value = 'http://' + value;
+        }
+
+        // Add the link.
+        setLinkOnSelection(currentForm, editor, value).then(pendingPromise.resolve);
+    }
 };

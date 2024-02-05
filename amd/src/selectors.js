@@ -14,34 +14,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Equation Modal for Tiny.
+ * Tiny Link plugin helper function to build queryable data selectors.
  *
- * @module      tiny_equation/modal
+ * @module      tiny_ai/selectors
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Modal from 'core/modal';
-
-export default class AiModal extends Modal {
-    static TYPE = 'tiny_ai/modal';
-    static TEMPLATE = 'tiny_ai/modal';
-
-    registerEventListeners() {
-        // Call the parent registration.
-        super.registerEventListeners();
-
-        // Register to close on save/cancel.
-        this.registerCloseOnSave();
-        this.registerCloseOnCancel();
+export default {
+    actions: {
+        submit: '[data-action="save"]',
+    },
+    elements: {
+        'cmdPromptSimplify': 'tiny_ai-simplify-prompt',
+        'spanResult': 'tiny_ai-span-results',
+        'taResult': 'tiny_ai-results',
+        'classPurposeSettings': 'tiny_ai-settings',
+        'settingsIdSimplify': 'tiny_ai-simplify-settings',
+    },
+    buttons: {
+        btnStartSimplification: 'btnStartSimplification',
+    },
+    purposes: {
+        simplify: '#tiny_ai-simplify',
+        translate: '#tiny_ai-translate',
+        tts: '#tiny_ai-text-to-speech',
     }
-
-    configure(modalConfig) {
-        modalConfig.show = true;
-        modalConfig.large = true;
-        modalConfig.removeOnClose = true;
-
-        super.configure(modalConfig);
-    }
-}
+};

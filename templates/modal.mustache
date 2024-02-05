@@ -40,18 +40,29 @@
     {{$body}}
         <form class="mform">
             <div class="mb-4">
-            <span class="btn btn-secondary tiny_ai_fullwidth" id="tiny_ai-simplify">
-                <img src="/lib/editor/tiny/plugins/ai/pix/simplify.png" class="pix-16">
-                {{#str}} simplify, tiny_ai {{/str}}
-            </span>
-            <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-translate">
-                <img src="/lib/editor/tiny/plugins/ai/pix/translation.png" class="pix-16">
-                {{#str}} translate, tiny_ai {{/str}}
-            </span>
-            <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-text-to-speech">
-                <img src="/lib/editor/tiny/plugins/ai/pix/text-to-speech.png" class="pix-16">
-                {{#str}} text-to-speech, tiny_ai {{/str}}
-            </span>
+                <span class="btn btn-secondary tiny_ai_fullwidth" id="tiny_ai-simplify">
+                    <img src="/lib/editor/tiny/plugins/ai/pix/simplify.png" class="pix-16">
+                    {{#str}} simplify, tiny_ai {{/str}}
+                </span>
+                <span id="tiny_ai-simplify-settings" class="tiny_ai-settings hidden">
+                    {{#str}} additional_prompt, tiny_ai {{/str}}
+                    <textarea id="tiny_ai-simplify-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{{defaultprompt-simplify}}}</textarea>
+                    <span class="btn btn-primary" id="{{btnIdStartSimplification}}">
+                        {{#str}} startSimplification, tiny_ai {{/str}}
+                    </span>
+                </span>
+                <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-translate">
+                    <img src="/lib/editor/tiny/plugins/ai/pix/translation.png" class="pix-16">
+                    {{#str}} translate, tiny_ai {{/str}}
+                </span>
+                <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-text-to-speech">
+                    <img src="/lib/editor/tiny/plugins/ai/pix/text-to-speech.png" class="pix-16">
+                    {{#str}} text-to-speech, tiny_ai {{/str}}
+                </span>
+                <span id="{{{spanResult}}}" class="hidden">
+                    <h4>{{#str}} results_heading, tiny_ai {{/str}}
+                    <textarea id="{{{taResult}}}" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{#str}} results_please_wait, tiny_ai {{/str}}</textarea>
+                </span>
             </div>
         </form>
     {{/body}}

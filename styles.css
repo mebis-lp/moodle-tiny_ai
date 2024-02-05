@@ -10,3 +10,16 @@
     width: 16px;
     height: 16px;
 }
+
+.tiny_ai-modal-ta {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.tiny_ai_fullwidth {
+    width:100%;
+}
+
+.hidden {
+    display: none;
+}

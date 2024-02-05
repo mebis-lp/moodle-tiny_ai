@@ -32,3 +32,7 @@ $string['modaltitle'] = 'Select Purpose';
 $string['simplify'] = 'Simplify';
 $string['translate'] = 'Translate';
 $string['text-to-speech'] = 'Text to Speech';
+$string['additional_prompt'] = 'Additional Propmt';
+$string['startSimplification'] = 'Start Simplification';
+$string['results_heading'] = 'Result';
+$string['results_please_wait'] = 'Please wait! This may take a few seconds.';
