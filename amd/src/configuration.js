@@ -24,7 +24,6 @@
 
 import {
     buttonName,
-    buttonTitle
 } from './common';
 
 import {

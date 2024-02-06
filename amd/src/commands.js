@@ -23,7 +23,6 @@
  */
 
 import {getButtonImage} from 'editor_tiny/utils';
-import {get_string as getString} from 'core/str';
 import {
     component,
     buttonName,
@@ -67,11 +66,6 @@ export const getSetup = async() => {
             icon,
             tooltip: buttonTitle,
             onAction: () => displayDialogue(editor),
-            onSetup: (api) => {
-                // editor.on('click', () => {
-                //     api.setActive(resolveSubquestion() !== false);
-                // });
-            }
         });
 
         // Register the menu item.
@@ -83,7 +77,7 @@ export const getSetup = async() => {
 
         // editor.on('init', () => onInit(editor));
         // editor.on('BeforeGetContent', format => onBeforeGetContent(format));
-        editor.on('submit', () => onSubmit());
+        // editor.on('submit', () => onSubmit());
 
     };
 };

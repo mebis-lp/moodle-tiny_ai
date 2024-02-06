@@ -16,7 +16,6 @@
 /**
  * Tiny AI utils library.
  *
- * @package     tiny_ai
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,14 +35,15 @@ import ModalEvents from 'core/modal_events';
 /**
  * Get the template context for the dialogue.
  *
- * @param {Editor} editor
  * @param {object} data
  * @returns {object} data
  */
-const getTemplateContext = (editor, data) => {
+const getTemplateContext = (data) => {
     return Object.assign({}, {
         'defaultprompt-simplify': "Simplify the following text:",
         'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
+        'defaultprompt-translate': "Translate the following text to american english:",
+        'btnIdStartTranslation': Selectors.buttons.btnStartTranslation,
         taResult: Selectors.elements.taResult,
         spanResult: Selectors.elements.spanResult,
     }, data);
@@ -58,7 +58,7 @@ const getTemplateContext = (editor, data) => {
 export const displayDialogue = async (editor, data = {}) => {
 
     const modal = await AiModal.create({
-        templateContext: getTemplateContext(editor, data)
+        templateContext: getTemplateContext(data)
     });
 
     const $root = modal.getRoot();
@@ -70,20 +70,21 @@ export const displayDialogue = async (editor, data = {}) => {
         if (selectedText) {
             editor.selection.setContent(newText);
         } else {
-            editor.insertContent(result);
+            editor.insertContent(newText);
         }
     });
 
     root.addEventListener('click', (e) => {
-        const simplifyButton = e.target.closest('#tiny_ai-simplify');
         hideAllSettingsSections();
+
+        const simplifyButton = e.target.closest('#tiny_ai-simplify');
         if (simplifyButton) {
             showSettingSection(Selectors.elements.settingsIdSimplify);
         }
 
         const translateButton = e.target.closest('#tiny_ai-translate');
         if (translateButton) {
-            window.console.log("Button Translate Clicked.");
+            showSettingSection(Selectors.elements.settingsIdTranslate);
         }
 
         const text2peechButton = e.target.closest('#tiny_ai-text-to-speech');
@@ -97,6 +98,12 @@ export const displayDialogue = async (editor, data = {}) => {
     document.getElementById(Selectors.buttons.btnStartSimplification).addEventListener('click', () => {
         let selectedText = editor.selection.getContent();
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
+        getChatResult(cmdPrompt, selectedText);
+    });
+
+    document.getElementById(Selectors.buttons.btnStartTranslation).addEventListener('click', () => {
+        let selectedText = editor.selection.getContent();
+        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
         getChatResult(cmdPrompt, selectedText);
     });
 };
@@ -122,7 +129,7 @@ const getChatResult = (cmdPrompt, selectedText) => {
  * Hides all setting blocks
  */
 const hideAllSettingsSections = () => {
-    [document.getElementsByClassName(Selectors.elements.classPurposeSettings)].forEach(x => x.className += ' hidden');
+    [document.getElementsByClassName(Selectors.elements.classPurposeSettings)].forEach((x) => { x.className += ' hidden';});
 };
 
 /**
@@ -142,42 +149,6 @@ const showSettingSection = (selectorID) => {
  * @returns {string}
  */
 const retrieveResult = async (purpose, prompt) => {
-    result = await makeRequest(purpose, prompt);
+    let result = await makeRequest(purpose, prompt);
     return result;
-}
-
-/**
- * Get anchor element.
- *
- * @param {TinyMCE} editor
- * @param {Element} selectedElm
- * @returns {Element}
- */
-const getAnchorElement = (editor, selectedElm) => {
-    selectedElm = selectedElm || editor.selection.getNode();
-    return editor.dom.getParent(selectedElm, 'a[href]');
-};
-
-/**
- * Handle insertion of purpose, or update of an existing one.
- *
- * @param {Element} currentForm
- * @param {TinyMCE} editor
- */
-export const setLink = (currentForm, editor) => {
-    const input = currentForm.querySelector(Selectors.elements.urlEntry);
-    let value = input.value;
-
-    if (value !== '') {
-        const pendingPromise = new Pending('tiny_link/setLink');
-        // We add a prefix if it is not already prefixed.
-        value = value.trim();
-        const expr = new RegExp(/^[a-zA-Z]*\.*\/|^#|^[a-zA-Z]*:/);
-        if (!expr.test(value)) {
-            value = 'http://' + value;
-        }
-
-        // Add the link.
-        setLinkOnSelection(currentForm, editor, value).then(pendingPromise.resolve);
-    }
 };

@@ -28,13 +28,19 @@ export default {
     },
     elements: {
         'cmdPromptSimplify': 'tiny_ai-simplify-prompt',
+        'cmdPromptTranslate': 'tiny_ai-translate-prompt',
+
         'spanResult': 'tiny_ai-span-results',
         'taResult': 'tiny_ai-results',
+
         'classPurposeSettings': 'tiny_ai-settings',
+
         'settingsIdSimplify': 'tiny_ai-simplify-settings',
+        'settingsIdTranslate': 'tiny_ai-translate-settings',
     },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',
+        btnStartTranslation: 'btnStartTranslation',
     },
     purposes: {
         simplify: '#tiny_ai-simplify',

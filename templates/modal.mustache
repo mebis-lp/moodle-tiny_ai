@@ -55,6 +55,13 @@
                     <img src="/lib/editor/tiny/plugins/ai/pix/translation.png" class="pix-16">
                     {{#str}} translate, tiny_ai {{/str}}
                 </span>
+                <span id="tiny_ai-translate-settings" class="tiny_ai-settings hidden">
+                    {{#str}} additional_prompt, tiny_ai {{/str}}
+                    <textarea id="tiny_ai-translate-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{{defaultprompt-translate}}}</textarea>
+                    <span class="btn btn-primary" id="{{btnIdStartTranslation}}">
+                        {{#str}} startTranslation, tiny_ai {{/str}}
+                    </span>
+                </span>
                 <span class="btn btn-secondary tiny_ai_fullwidth mt-10" id="tiny_ai-text-to-speech">
                     <img src="/lib/editor/tiny/plugins/ai/pix/text-to-speech.png" class="pix-16">
                     {{#str}} text-to-speech, tiny_ai {{/str}}
