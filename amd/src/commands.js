@@ -16,7 +16,7 @@
 /**
  * Commands helper for the Moodle tiny_ai plugin.
  *
- * @module      plugintype_pluginname/commands
+ * @module      tiny_ai/commands
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

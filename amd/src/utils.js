@@ -16,6 +16,7 @@
 /**
  * Tiny AI utils library.
  *
+ * @module      tiny_ai/utils
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,6 +27,8 @@ import AiModal from './modal';
 import Selectors from './selectors';
 import {makeRequest} from 'local_ai_manager/make_request';
 import ModalEvents from 'core/modal_events';
+import Config from 'core/config';
+import {getDraftItemId} from 'editor_tiny/options';
 
 // export const handleAction = (editor) => {
 //     openingSelection = editor.selection.getBookmark();
@@ -42,9 +45,15 @@ const getTemplateContext = (data) => {
     return Object.assign({}, {
         'defaultprompt-simplify': "Simplify the following text:",
         'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
+
         'defaultprompt-translate': "Translate the following text to american english:",
         'btnIdStartTranslation': Selectors.buttons.btnStartTranslation,
+
+        'defaultprompt-tts': "",
+        'btnIdStartTTS': Selectors.buttons.btnStartTTS,
+
         taResult: Selectors.elements.taResult,
+
         spanResult: Selectors.elements.spanResult,
     }, data);
 };
@@ -79,17 +88,20 @@ export const displayDialogue = async (editor, data = {}) => {
 
         const simplifyButton = e.target.closest('#tiny_ai-simplify');
         if (simplifyButton) {
+            hideAllSettingsSections();
             showSettingSection(Selectors.elements.settingsIdSimplify);
         }
 
         const translateButton = e.target.closest('#tiny_ai-translate');
         if (translateButton) {
+            hideAllSettingsSections();
             showSettingSection(Selectors.elements.settingsIdTranslate);
         }
 
         const text2peechButton = e.target.closest('#tiny_ai-text-to-speech');
         if (text2peechButton) {
-            window.console.log("Button T2S Clicked.");
+            hideAllSettingsSections();
+            showSettingSection(Selectors.elements.settingsIdTTS);
         }
 
         return;
@@ -105,6 +117,15 @@ export const displayDialogue = async (editor, data = {}) => {
         let selectedText = editor.selection.getContent();
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
         getChatResult(cmdPrompt, selectedText);
+    });
+
+    document.getElementById(Selectors.buttons.btnStartTTS).addEventListener('click', () => {
+        let selectedText = editor.selection.getContent();
+        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTTS).value;
+        const options = {};
+        options.itemid = getDraftItemId(editor);
+        options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
+        getMP3(cmdPrompt, selectedText, options);
     });
 };
 
@@ -122,6 +143,35 @@ const getChatResult = (cmdPrompt, selectedText) => {
 
     retrieveResult('chat', prompt).then(result => {
         document.getElementById(Selectors.elements.taResult).value = result;
+    });
+};
+
+/**
+ * Get the MP3.
+ * @param {string} cmdPrompt
+ * @param {string} selectedText
+ * @param {object} options
+ */
+const getMP3 = (cmdPrompt, selectedText, options) => {
+    let prompt = cmdPrompt + " " + selectedText;
+
+    // Shows the results box. This should happen before the real result is shown,
+    // in order to inform the user, that we are working on it.
+    // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+    document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+
+    retrieveResult('tts', prompt, options).then(result => {
+        const fileUrl = result;
+        const uniqid = 'id' + Math.random().toString(16).slice(2);
+        let node = selectedText + '<audio class="tiny_ai_audio" controls id="' + uniqid + '" src="' + fileUrl + '" type="audio/mpeg" ></span>';
+
+        var audiotag = document.createElement('audio');
+        audiotag.controls = 'controls';
+        audiotag.src = fileUrl;
+        audiotag.type = 'audio/mpeg';
+        document.getElementById(Selectors.elements.spanResult).appendChild(audiotag);
+        document.getElementById(Selectors.elements.taResult).value = node;
+
     });
 };
 
@@ -146,9 +196,10 @@ const showSettingSection = (selectorID) => {
  *
  * @param {string} purpose
  * @param {string} prompt
+ * @param {array} options
  * @returns {string}
  */
-const retrieveResult = async (purpose, prompt) => {
-    let result = await makeRequest(purpose, prompt);
+const retrieveResult = async (purpose, prompt, options = []) => {
+    let result = await makeRequest(purpose, prompt, JSON.stringify(options));
     return result;
 };

@@ -26,20 +26,20 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additional_prompt'] = 'Additional Propmt';
-$string['ai:view'] = 'View the AI button';
-$string['modaltitle'] = 'Select Purpose';
-$string['pluginname'] = 'Tiny AI Button';
-$string['results_heading'] = 'Result';
-$string['results_please_wait'] = 'Please wait! This may take a few seconds.';
-$string['text-to-speech'] = 'Text to Speech';
+$string['additional_prompt'] = 'Zusätzliches Propmt';
+$string['ai:view'] = 'Die AI-Schaltfläche anzeigen';
+$string['modaltitle'] = 'Zweck auswählen';
+$string['pluginname'] = 'Winzige AI-Schaltfläche';
+$string['results_heading'] = 'Ergebnis';
+$string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden dauern.';
+$string['text-to-speech'] = 'Text in Sprache';
 
-$string['simplify'] = 'Simplify';
-$string['startSimplification'] = 'Start Simplification';
-$string['defaultprompt-simplify'] = 'Simplify the following text:';
+$string['simplify'] = 'Vereinfachen';
+$string['startSimplification'] = 'Vereinfachung starten';
+$string['defaultprompt-simplify'] = 'Vereinfache den nachfolgenden Text:';
 
-$string['startTranslation'] = 'Start Translation';
-$string['translate'] = 'Translate';
-$string['defaultprompt-translate'] = 'Translate the following text to american english:';
+$string['startTranslation'] = 'Übersetzung starten';
+$string['translate'] = 'Übersetzen';
+$string['defaultprompt-translate'] = 'Übersetze den folgenden Text in amerikanisches Englisch:';
 
-$string['startTTS']='Get audio';
+$string['startTTS'] = 'Audioausgabe anfragen';

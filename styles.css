@@ -14,6 +14,11 @@
 .tiny_ai-modal-ta {
     padding: 10px;
     border-radius: 8px;
+    font-size: 1rem;
+}
+
+#tiny_ai-results.tiny_ai-modal-ta {
+    height: 200px;
 }
 
 .tiny_ai_fullwidth {
@@ -22,4 +27,28 @@
 
 .hidden {
     display: none;
+}
+
+.tiny_ai_audio::-webkit-media-controls-play-button,
+.tiny_ai_audio::-webkit-media-controls-panel {
+    display: inline-block !important;
+}
+
+.tiny_ai_audio::-webkit-media-controls-volume-slider,
+.tiny_ai_audio::-webkit-media-controls-mute-button,
+.tiny_ai_audio::-webkit-media-controls-timeline,
+.tiny_ai_audio::-webkit-media-controls-current-time-display,
+.tiny_ai_audio::-webkit-media-controls-time-remaining-display,
+.tiny_ai_audio::-webkit-media-controls-fullscreen-button,
+.tiny_ai_audio::-webkit-media-controls-rewind-button,
+.tiny_ai_audio::-webkit-media-controls-return-to-realtime-button,
+.tiny_ai_audio::-webkit-media-controls-toggle-closed-captions-button {
+    display: none !important;
+}
+
+.tiny_ai_audio {
+    width: 90px;
+    height: 30px;
+    vertical-align: -0.5rem;
+    margin: 0 8px;
 }

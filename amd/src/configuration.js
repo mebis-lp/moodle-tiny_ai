@@ -16,7 +16,7 @@
 /**
  * Tiny tiny_ai for Moodle.
  *
- * @module      plugintype_pluginname/plugin
+ * @module      tiny_ai/configuration
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

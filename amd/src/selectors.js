@@ -29,6 +29,7 @@ export default {
     elements: {
         'cmdPromptSimplify': 'tiny_ai-simplify-prompt',
         'cmdPromptTranslate': 'tiny_ai-translate-prompt',
+        'cmdPromptTTS': 'tiny_ai-tts-prompt',
 
         'spanResult': 'tiny_ai-span-results',
         'taResult': 'tiny_ai-results',
@@ -37,10 +38,12 @@ export default {
 
         'settingsIdSimplify': 'tiny_ai-simplify-settings',
         'settingsIdTranslate': 'tiny_ai-translate-settings',
+        'settingsIdTTS': 'tiny_ai-tts-settings',
     },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',
         btnStartTranslation: 'btnStartTranslation',
+        btnStartTTS: 'btnStartTTS',
     },
     purposes: {
         simplify: '#tiny_ai-simplify',
