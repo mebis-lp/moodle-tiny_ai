@@ -27,7 +27,6 @@ import AiModal from './modal';
 import Selectors from './selectors';
 import {makeRequest} from 'local_ai_manager/make_request';
 import ModalEvents from 'core/modal_events';
-import Config from 'core/config';
 import {getDraftItemId} from 'editor_tiny/options';
 
 // export const handleAction = (editor) => {
@@ -51,6 +50,10 @@ const getTemplateContext = (data) => {
 
         'defaultprompt-tts': "",
         'btnIdStartTTS': Selectors.buttons.btnStartTTS,
+
+        'defaultprompt-imggen': "Generiere bitte ein Bild mit folgenden Eigenschaften: ...",
+        'btnIdStartImgGen': Selectors.buttons.btnStartImgGen,
+        'btnOpenSettingsImgGen': Selectors.buttons.btnOpenSettingsImgGen,
 
         taResult: Selectors.elements.taResult,
 
@@ -104,6 +107,11 @@ export const displayDialogue = async (editor, data = {}) => {
             showSettingSection(Selectors.elements.settingsIdTTS);
         }
 
+        const imggenButton = e.target.closest('#' + Selectors.buttons.btnOpenSettingsImgGen);
+        if (imggenButton) {
+            hideAllSettingsSections();
+            showSettingSection(Selectors.elements.settingsIdImgGen);
+        }
         return;
     });
 
@@ -127,6 +135,15 @@ export const displayDialogue = async (editor, data = {}) => {
         options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
         getMP3(cmdPrompt, selectedText, options);
     });
+
+    document.getElementById(Selectors.buttons.btnStartImgGen).addEventListener('click', () => {
+        let selectedText = editor.selection.getContent();
+        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptImgGen).value;
+        const options = {};
+        options.itemid = getDraftItemId(editor);
+        options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
+        getIMG(cmdPrompt, selectedText, options);
+    });
 };
 
 /**
@@ -141,8 +158,15 @@ const getChatResult = (cmdPrompt, selectedText) => {
     // in order to inform the user, that we are working on it.
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
 
-    retrieveResult('chat', prompt).then(result => {
-        document.getElementById(Selectors.elements.taResult).value = result;
+    retrieveResult('chat', prompt).then(requestresult => {
+
+        // Early exit if an error occured. Print out the error message to the output textarea.
+        if (requestresult.string == 'error') {
+            document.getElementById(Selectors.elements.taResult).value = requestresult.result;
+            return;
+        }
+
+        document.getElementById(Selectors.elements.taResult).value = requestresult.result;
     });
 };
 
@@ -160,17 +184,62 @@ const getMP3 = (cmdPrompt, selectedText, options) => {
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
 
-    retrieveResult('tts', prompt, options).then(result => {
-        const fileUrl = result;
-        const uniqid = 'id' + Math.random().toString(16).slice(2);
-        let node = selectedText + '<audio class="tiny_ai_audio" controls id="' + uniqid + '" src="' + fileUrl + '" type="audio/mpeg" ></span>';
+    retrieveResult('tts', prompt, options).then(requestresult => {
 
+        // Early exit if an error occured. Print out the error message to the output textarea.
+        if (requestresult.string == 'error') {
+            document.getElementById(Selectors.elements.taResult).value = requestresult.result;
+            return;
+        }
+
+        const fileUrl = requestresult.result;
+
+        // Add the audio tag to the textarea, that is inserted later to the main editor.
+        let node = selectedText + '<audio class="tiny_ai_audio" controls src="' + fileUrl + '" type="audio/mpeg" ></span>';
+        document.getElementById(Selectors.elements.taResult).value = node;
+
+        // Finally generate the preview audio tag.
         var audiotag = document.createElement('audio');
         audiotag.controls = 'controls';
         audiotag.src = fileUrl;
         audiotag.type = 'audio/mpeg';
         document.getElementById(Selectors.elements.spanResult).appendChild(audiotag);
+
+    });
+};
+
+/**
+ * Get the IMG.
+ * @param {string} cmdPrompt
+ * @param {string} selectedText
+ * @param {object} options
+ */
+const getIMG = (cmdPrompt, selectedText, options) => {
+    let prompt = cmdPrompt + " " + selectedText;
+
+    // Shows the results box. This should happen before the real result is shown,
+    // in order to inform the user, that we are working on it.
+    // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+    document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+
+    retrieveResult('imggen', prompt, options).then(requestresult => {
+
+        // Early exit if an error occured. Print out the error message to the output textarea.
+        if (requestresult.string == 'error') {
+            document.getElementById(Selectors.elements.taResult).value = requestresult.result;
+            return;
+        }
+
+        const fileUrl = requestresult.result;
+
+        // Add the img tag to the textarea, that is inserted later to the main editor.
+        let node = selectedText + '<img class="tiny_ai_img" src="' + fileUrl + '" ></span>';
         document.getElementById(Selectors.elements.taResult).value = node;
+
+        // Finally generate the preview img tag.
+        var img = document.createElement('img');
+        img.src = fileUrl;
+        document.getElementById(Selectors.elements.spanResult).appendChild(img);
 
     });
 };

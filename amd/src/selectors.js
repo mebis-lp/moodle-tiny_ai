@@ -30,6 +30,7 @@ export default {
         'cmdPromptSimplify': 'tiny_ai-simplify-prompt',
         'cmdPromptTranslate': 'tiny_ai-translate-prompt',
         'cmdPromptTTS': 'tiny_ai-tts-prompt',
+        'cmdPromptImgGen': 'tiny_ai-imggen-prompt',
 
         'spanResult': 'tiny_ai-span-results',
         'taResult': 'tiny_ai-results',
@@ -39,11 +40,15 @@ export default {
         'settingsIdSimplify': 'tiny_ai-simplify-settings',
         'settingsIdTranslate': 'tiny_ai-translate-settings',
         'settingsIdTTS': 'tiny_ai-tts-settings',
+        'settingsIdImgGen': 'tiny_ai-imggen-settings',
     },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',
         btnStartTranslation: 'btnStartTranslation',
         btnStartTTS: 'btnStartTTS',
+
+        btnOpenSettingsImgGen: 'btnStartImgGenSettings',
+        btnStartImgGen: 'btnStartImgGen',
     },
     purposes: {
         simplify: '#tiny_ai-simplify',

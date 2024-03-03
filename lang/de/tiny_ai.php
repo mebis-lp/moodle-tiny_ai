@@ -32,7 +32,6 @@ $string['modaltitle'] = 'Zweck auswählen';
 $string['pluginname'] = 'Winzige AI-Schaltfläche';
 $string['results_heading'] = 'Ergebnis';
 $string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden dauern.';
-$string['text-to-speech'] = 'Text in Sprache';
 
 $string['simplify'] = 'Vereinfachen';
 $string['startSimplification'] = 'Vereinfachung starten';
@@ -42,4 +41,8 @@ $string['startTranslation'] = 'Übersetzung starten';
 $string['translate'] = 'Übersetzen';
 $string['defaultprompt-translate'] = 'Übersetze den folgenden Text in amerikanisches Englisch:';
 
-$string['startTTS'] = 'Audioausgabe anfragen';
+$string['startTTS'] = 'Audioausgabe generieren';
+$string['text-to-speech'] = 'Text in Sprache';
+
+$string['startimggen'] = 'Bild generieren';
+$string['image_generation'] = 'Bildgenerierung';

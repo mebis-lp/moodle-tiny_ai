@@ -32,7 +32,6 @@ $string['modaltitle'] = 'Select Purpose';
 $string['pluginname'] = 'Tiny AI Button';
 $string['results_heading'] = 'Result';
 $string['results_please_wait'] = 'Please wait! This may take a few seconds.';
-$string['text-to-speech'] = 'Text to Speech';
 
 $string['simplify'] = 'Simplify';
 $string['startSimplification'] = 'Start Simplification';
@@ -42,4 +41,8 @@ $string['startTranslation'] = 'Start Translation';
 $string['translate'] = 'Translate';
 $string['defaultprompt-translate'] = 'Translate the following text to american english:';
 
-$string['startTTS']='Get audio';
+$string['startTTS']='Get Audio';
+$string['text-to-speech'] = 'Text to Speech';
+
+$string['startimggen'] = 'Get Image';
+$string['image_generation'] = 'Imagegeneration';
