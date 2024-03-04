@@ -35,16 +35,17 @@ $string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden daue
 $string['more_options'] = 'Mehr Optionen';
 $string['prompt'] = 'Prompt';
 
-$string['simplify'] = 'Vereinfachen';
+$string['simplify'] = 'Vereinfachen und zusammenfassen des markierten Textes';
 $string['startSimplification'] = 'Vereinfachung starten';
 $string['defaultprompt-simplify'] = 'Vereinfache den nachfolgenden Text:';
 
 $string['startTranslation'] = 'Übersetzung starten';
-$string['translate'] = 'Übersetzen';
+$string['translate'] = 'Übersetzen des markierten Textes';
 $string['defaultprompt-translate'] = 'Übersetze den folgenden Text in amerikanisches Englisch:';
+$string['additional_prompt_translation'] = 'Zusätzlicher Prompt um die die Übersetzung zu verbessern:';
 
 $string['startTTS'] = 'Audioausgabe generieren';
-$string['text-to-speech'] = 'Text in Sprache';
+$string['text-to-speech'] = 'Markierten Text in Sprache ausgeben';
 $string['outputlanguage'] = 'Ausgabesprache';
 $string['voice'] = 'Stimme';
 

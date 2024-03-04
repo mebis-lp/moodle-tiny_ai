@@ -45,7 +45,7 @@ const getTemplateContext = (data) => {
         'defaultprompt-simplify': "Simplify the following text:",
         'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
 
-        'defaultprompt-translate': "Translate the following text to american english:",
+        'defaultprompt-translate': "",
         'btnIdStartTranslation': Selectors.buttons.btnStartTranslation,
 
         'defaultprompt-tts': "",
@@ -88,13 +88,28 @@ export const displayDialogue = async (editor, data = {}) => {
     document.getElementById(Selectors.buttons.btnStartSimplification).addEventListener('click', () => {
         let selectedText = editor.selection.getContent();
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
-        getChatResult(cmdPrompt, selectedText);
+        const options = {};
+        getChatResult(cmdPrompt, selectedText, options);
     });
 
     document.getElementById(Selectors.buttons.btnStartTranslation).addEventListener('click', () => {
         let selectedText = editor.selection.getContent();
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
-        getChatResult(cmdPrompt, selectedText);
+        const options = {};
+        options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
+        options.translation = true;
+
+        let cmdPromptend;
+
+        if (options.translation) {
+            cmdPromptend = 'Translate the following text to ' + options.language;
+        }
+
+        if (cmdPrompt) {
+            cmdPromptend += " " + cmdPrompt;
+        }
+
+        getChatResult(cmdPromptend, selectedText, options);
     });
 
     document.getElementById(Selectors.buttons.btnStartTTS).addEventListener('click', () => {
@@ -124,17 +139,18 @@ export const displayDialogue = async (editor, data = {}) => {
  * Get the Chat result.
  * @param {string} cmdPrompt
  * @param {string} selectedText
+ * @param {object} options
  */
-const getChatResult = (cmdPrompt, selectedText) => {
-    let prompt = cmdPrompt + " " + selectedText;
+const getChatResult = (cmdPrompt, selectedText, options) => {
 
+    let prompt = cmdPrompt + ": " + selectedText;
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.add("hidden");
     document.getElementById(Selectors.elements.taResult).value = "Bitte warten, das kann ein paar Sekunden dauern!";
 
-    retrieveResult('chat', prompt).then(requestresult => {
+    retrieveResult('chat', prompt, options).then(requestresult => {
 
         // Early exit if an error occured. Print out the error message to the output textarea.
         if (requestresult.string == 'error') {

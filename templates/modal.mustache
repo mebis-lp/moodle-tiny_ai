@@ -92,12 +92,19 @@
                         <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#additional-prompt-translate"
                           aria-expanded="false" aria-controls="additional-prompt-translate">{{#str}} more_options , tiny_ai{{/str}}</button>
                       </p>
+                      <label for="tiny_ai-translation-outputlanguage"> {{#str}} outputlanguage, tiny_ai {{/str}}</label>
+                        <select class="form-control" id='tiny_ai-translation-outputlanguage'>
+                          <option value="en">Englisch</option>
+                          <option value="de">Deutsch</option>
+                          <option value="uk">Ukrainisch</option>
+                          <option value="tr">Türkisch</option>
+                        </select>
                       <div class="row">
                         <div class="col">
                           <div class="collapse multi-collapse" id="additional-prompt-translate">
                             <div class="card card-body">
                               <span>
-                                {{#str}} additional_prompt, tiny_ai {{/str}}
+                                {{#str}} additional_prompt_translation, tiny_ai {{/str}}
                                 <textarea id="tiny_ai-translate-prompt"
                                   class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{{defaultprompt-translate}}}</textarea>
                               </span>
@@ -130,7 +137,6 @@
                           <div class="col">
                             <div class="collapse multi-collapse" id="additional-prompt-tts">
                               <div class="card card-body">
-                                <span>
                                 <label for="tiny_ai-tts-outputlanguage"> {{#str}} outputlanguage, tiny_ai {{/str}}</label>
                                 <select class="form-control" id='tiny_ai-tts-outputlanguage'>
                                   <option value="">Ausgangssprache verwenden</option>
@@ -148,9 +154,8 @@
                                   <option value="nova">Nova</option>
                                   <option value="shimmer">Shimmer</option>
                                 </select>
-                                  <textarea id="tiny_ai-tts-prompt"
-                                    class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth hidden">{{{defaultprompt-tts}}}</textarea>
-                                </span>
+                                <textarea id="tiny_ai-tts-prompt"
+                                  class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth hidden">{{{defaultprompt-tts}}}</textarea>
                               </div>
                             </div>
                           </div>

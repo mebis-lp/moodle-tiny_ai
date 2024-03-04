@@ -29,24 +29,25 @@ defined('MOODLE_INTERNAL') || die();
 $string['additional_prompt'] = 'Additional Propmt';
 $string['ai:view'] = 'View the AI button';
 $string['modaltitle'] = 'Select Purpose';
+$string['more_options'] = 'More Options';
 $string['pluginname'] = 'Tiny AI Button';
+$string['preview_heading'] = 'Preview';
+$string['prompt'] = 'Prompt';
 $string['results_heading'] = 'Result';
 $string['results_please_wait'] = 'Please wait! This may take a few seconds.';
-$string['preview_heading'] = 'Preview';
-$string['more_options'] = 'More Options';
-$string['prompt'] = 'Prompt';
 
+$string['defaultprompt-simplify'] = 'Simplify the following text:';
 $string['simplify'] = 'Simplify';
 $string['startSimplification'] = 'Start Simplification';
-$string['defaultprompt-simplify'] = 'Simplify the following text:';
 
+$string['defaultprompt-translate'] = 'Translate the following text to american english:';
 $string['startTranslation'] = 'Start Translation';
 $string['translate'] = 'Translate';
-$string['defaultprompt-translate'] = 'Translate the following text to american english:';
+$string['additional_prompt_translation'] = 'Additional prompt to give some more instructions.';
 
+$string['outputlanguage'] = 'Outputlanguage';
 $string['startTTS']='Get Audio';
 $string['text-to-speech'] = 'Text to Speech';
-$string['outputlanguage'] = 'Outputlanguage';
 $string['voice'] = 'Voice';
 
 $string['height'] = 'Height';

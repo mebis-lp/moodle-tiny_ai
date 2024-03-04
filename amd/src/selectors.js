@@ -42,11 +42,13 @@ export default {
         'settingsIdSimplify': 'tiny_ai-simplify-settings',
         'settingsIdTranslate': 'tiny_ai-translate-settings',
         'settingsIdTTS': 'tiny_ai-tts-settings',
+        'translationOutputlanguage': 'tiny_ai-translation-outputlanguage',
         'ttsOutputlanguage': 'tiny_ai-tts-outputlanguage',
         'ttsOutputVoice': 'tiny_ai-tts-outputvoice',
         'settingsIdImgGen': 'tiny_ai-imggen-settings',
 
-        'imggensize': 'tiny_ai-imagesize',
+        'imggenwidth': 'tiny_ai-image-width',
+        'imggenheight': 'tiny_ai-image-height',
     },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',
