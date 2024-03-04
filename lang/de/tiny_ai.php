@@ -26,12 +26,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additional_prompt'] = 'Zusätzliches Propmt';
+$string['additional_prompt'] = 'Zusätzlicher Prompt';
 $string['ai:view'] = 'Die AI-Schaltfläche anzeigen';
-$string['modaltitle'] = 'Zweck auswählen';
+$string['modaltitle'] = 'Was möchten Sie tun?';
 $string['pluginname'] = 'Winzige AI-Schaltfläche';
 $string['results_heading'] = 'Ergebnis';
 $string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden dauern.';
+$string['more_options'] = 'Mehr Optionen';
+$string['prompt'] = 'Prompt';
 
 $string['simplify'] = 'Vereinfachen';
 $string['startSimplification'] = 'Vereinfachung starten';
@@ -43,6 +45,10 @@ $string['defaultprompt-translate'] = 'Übersetze den folgenden Text in amerikani
 
 $string['startTTS'] = 'Audioausgabe generieren';
 $string['text-to-speech'] = 'Text in Sprache';
+$string['outputlanguage'] = 'Ausgabesprache';
+$string['voice'] = 'Stimme';
 
 $string['startimggen'] = 'Bild generieren';
 $string['image_generation'] = 'Bildgenerierung';
+$string['height'] = 'Höhe';
+$string['width'] = 'Breite';

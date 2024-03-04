@@ -33,6 +33,8 @@ export default {
         'cmdPromptImgGen': 'tiny_ai-imggen-prompt',
 
         'spanResult': 'tiny_ai-span-results',
+        'previewWrapperId': 'tiny_ai-preview-wrapper',
+        'previewSectionId': 'tiny_ai-preview',
         'taResult': 'tiny_ai-results',
 
         'classPurposeSettings': 'tiny_ai-settings',
@@ -40,7 +42,11 @@ export default {
         'settingsIdSimplify': 'tiny_ai-simplify-settings',
         'settingsIdTranslate': 'tiny_ai-translate-settings',
         'settingsIdTTS': 'tiny_ai-tts-settings',
+        'ttsOutputlanguage': 'tiny_ai-tts-outputlanguage',
+        'ttsOutputVoice': 'tiny_ai-tts-outputvoice',
         'settingsIdImgGen': 'tiny_ai-imggen-settings',
+
+        'imggensize': 'tiny_ai-imagesize',
     },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',

@@ -74,7 +74,6 @@ export const displayDialogue = async (editor, data = {}) => {
     });
 
     const $root = modal.getRoot();
-    const root = $root[0];
 
     $root.on(ModalEvents.save, () => {
         let selectedText = editor.selection.getContent();
@@ -84,35 +83,6 @@ export const displayDialogue = async (editor, data = {}) => {
         } else {
             editor.insertContent(newText);
         }
-    });
-
-    root.addEventListener('click', (e) => {
-        hideAllSettingsSections();
-
-        const simplifyButton = e.target.closest('#tiny_ai-simplify');
-        if (simplifyButton) {
-            hideAllSettingsSections();
-            showSettingSection(Selectors.elements.settingsIdSimplify);
-        }
-
-        const translateButton = e.target.closest('#tiny_ai-translate');
-        if (translateButton) {
-            hideAllSettingsSections();
-            showSettingSection(Selectors.elements.settingsIdTranslate);
-        }
-
-        const text2peechButton = e.target.closest('#tiny_ai-text-to-speech');
-        if (text2peechButton) {
-            hideAllSettingsSections();
-            showSettingSection(Selectors.elements.settingsIdTTS);
-        }
-
-        const imggenButton = e.target.closest('#' + Selectors.buttons.btnOpenSettingsImgGen);
-        if (imggenButton) {
-            hideAllSettingsSections();
-            showSettingSection(Selectors.elements.settingsIdImgGen);
-        }
-        return;
     });
 
     document.getElementById(Selectors.buttons.btnStartSimplification).addEventListener('click', () => {
@@ -133,6 +103,8 @@ export const displayDialogue = async (editor, data = {}) => {
         const options = {};
         options.itemid = getDraftItemId(editor);
         options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
+        options.language = document.getElementById(Selectors.elements.ttsOutputlanguage).value;
+        options.voice = document.getElementById(Selectors.elements.ttsOutputVoice).value;
         getMP3(cmdPrompt, selectedText, options);
     });
 
@@ -142,6 +114,8 @@ export const displayDialogue = async (editor, data = {}) => {
         const options = {};
         options.itemid = getDraftItemId(editor);
         options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
+        options.imagesize = document.getElementById(Selectors.elements.imggenwidth).value;
+        options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
         getIMG(cmdPrompt, selectedText, options);
     });
 };
@@ -157,6 +131,8 @@ const getChatResult = (cmdPrompt, selectedText) => {
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+    document.getElementById(Selectors.elements.previewWrapperId).classList.add("hidden");
+    document.getElementById(Selectors.elements.taResult).value = "Bitte warten, das kann ein paar Sekunden dauern!";
 
     retrieveResult('chat', prompt).then(requestresult => {
 
@@ -182,13 +158,15 @@ const getMP3 = (cmdPrompt, selectedText, options) => {
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
-    document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+    document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
+    document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
+    document.getElementById(Selectors.elements.previewSectionId).innerHTML = "Bitte warten, das kann ein paar Sekunden dauern!";
 
     retrieveResult('tts', prompt, options).then(requestresult => {
 
         // Early exit if an error occured. Print out the error message to the output textarea.
         if (requestresult.string == 'error') {
-            document.getElementById(Selectors.elements.taResult).value = requestresult.result;
+            document.getElementById(Selectors.elements.previewSectionId).innerHTML = requestresult.result;
             return;
         }
 
@@ -203,7 +181,8 @@ const getMP3 = (cmdPrompt, selectedText, options) => {
         audiotag.controls = 'controls';
         audiotag.src = fileUrl;
         audiotag.type = 'audio/mpeg';
-        document.getElementById(Selectors.elements.spanResult).appendChild(audiotag);
+        document.getElementById(Selectors.elements.previewSectionId).innerHTML = "";
+        document.getElementById(Selectors.elements.previewSectionId).appendChild(audiotag);
 
     });
 };
@@ -220,13 +199,15 @@ const getIMG = (cmdPrompt, selectedText, options) => {
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
-    document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
+    document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
+    document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
+    document.getElementById(Selectors.elements.previewSectionId).innerHTML = "Bitte warten, das kann ein paar Sekunden dauern!";
 
     retrieveResult('imggen', prompt, options).then(requestresult => {
 
         // Early exit if an error occured. Print out the error message to the output textarea.
         if (requestresult.string == 'error') {
-            document.getElementById(Selectors.elements.taResult).value = requestresult.result;
+            document.getElementById(Selectors.elements.previewSectionId).innerHTML = requestresult.result;
             return;
         }
 
@@ -239,25 +220,9 @@ const getIMG = (cmdPrompt, selectedText, options) => {
         // Finally generate the preview img tag.
         var img = document.createElement('img');
         img.src = fileUrl;
-        document.getElementById(Selectors.elements.spanResult).appendChild(img);
-
+        document.getElementById(Selectors.elements.previewSectionId).innerHTML = "";
+        document.getElementById(Selectors.elements.previewSectionId).appendChild(img);
     });
-};
-
-/**
- * Hides all setting blocks
- */
-const hideAllSettingsSections = () => {
-    [document.getElementsByClassName(Selectors.elements.classPurposeSettings)].forEach((x) => { x.className += ' hidden';});
-};
-
-/**
- * Show the settings block of the option selected.
- *
- * @param {string} selectorID
- */
-const showSettingSection = (selectorID) => {
-    document.getElementById(selectorID).classList.remove("hidden");
 };
 
 /**
