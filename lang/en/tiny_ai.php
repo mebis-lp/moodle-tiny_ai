@@ -54,3 +54,6 @@ $string['height'] = 'Height';
 $string['image_generation'] = 'Imagegeneration';
 $string['startimggen'] = 'Get Image';
 $string['width'] = 'Width';
+
+$string['freemode'] = 'Free pompting';
+$string['startfree'] = 'Start output';

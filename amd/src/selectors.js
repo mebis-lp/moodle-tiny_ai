@@ -49,6 +49,8 @@ export default {
 
         'imggenwidth': 'tiny_ai-image-width',
         'imggenheight': 'tiny_ai-image-height',
+
+        'freerompt': 'tiny_ai-free-prompt',
     },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',
@@ -57,6 +59,8 @@ export default {
 
         btnOpenSettingsImgGen: 'btnStartImgGenSettings',
         btnStartImgGen: 'btnStartImgGen',
+
+        btnStartFree: 'tini_ai-strt-free',
     },
     purposes: {
         simplify: '#tiny_ai-simplify',

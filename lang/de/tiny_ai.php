@@ -53,3 +53,6 @@ $string['startimggen'] = 'Bild generieren';
 $string['image_generation'] = 'Bildgenerierung';
 $string['height'] = 'Höhe';
 $string['width'] = 'Breite';
+
+$string['freemode'] = 'Freie Prompteingabe';
+$string['startfree'] = 'Ausgabe starten';

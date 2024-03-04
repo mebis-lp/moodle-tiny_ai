@@ -55,6 +55,8 @@ const getTemplateContext = (data) => {
         'btnIdStartImgGen': Selectors.buttons.btnStartImgGen,
         'btnOpenSettingsImgGen': Selectors.buttons.btnOpenSettingsImgGen,
 
+        'btnIdStartFree': Selectors.buttons.btnStartFree,
+
         taResult: Selectors.elements.taResult,
 
         spanResult: Selectors.elements.spanResult,
@@ -133,6 +135,13 @@ export const displayDialogue = async (editor, data = {}) => {
         options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
         getIMG(cmdPrompt, selectedText, options);
     });
+
+    document.getElementById(Selectors.buttons.btnStartFree).addEventListener('click', () => {
+        let prompt = document.getElementById(Selectors.elements.freerompt).value;
+        const options = {};
+        getChatResult(prompt, "", options);
+    });
+
 };
 
 /**
