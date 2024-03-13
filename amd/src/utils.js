@@ -219,7 +219,7 @@ const getMP3 = (cmdPrompt, selectedText, options) => {
  * @param {object} options
  */
 const getIMG = (cmdPrompt, selectedText, options) => {
-    let prompt = cmdPrompt + " " + selectedText;
+    let prompt = cmdPrompt;
 
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
