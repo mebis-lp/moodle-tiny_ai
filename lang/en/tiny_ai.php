@@ -50,6 +50,7 @@ $string['startTTS']='Get Audio';
 $string['text-to-speech'] = 'Text to Speech';
 $string['voice'] = 'Voice';
 
+$string['defaultprompt-imggen'] = 'Create an image with these specs: ...';
 $string['height'] = 'Height';
 $string['image_generation'] = 'Imagegeneration';
 $string['startimggen'] = 'Get Image';

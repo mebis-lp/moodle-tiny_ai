@@ -61,7 +61,8 @@ Example context (json):
                 <div class="card card-body">
                   <span>
                     {{#str}} additional_prompt, tiny_ai {{/str}}
-                    <textarea id="tiny_ai-simplify-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{{defaultprompt-simplify}}}</textarea>
+                    <textarea id="tiny_ai-simplify-prompt"
+                      class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{#str}} defaultprompt-simplify, tiny_ai {{/str}}</textarea>
                   </span>
                 </div>
               </div>
@@ -104,7 +105,7 @@ Example context (json):
                 <div class="card card-body">
                   <span>
                     {{#str}} additional_prompt_translation, tiny_ai {{/str}}
-                    <textarea id="tiny_ai-translate-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{{defaultprompt-translate}}}</textarea>
+                    <textarea id="tiny_ai-translate-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth"></textarea>
                   </span>
                 </div>
               </div>
@@ -155,7 +156,8 @@ Example context (json):
                     <option value="nova">Nova</option>
                     <option value="shimmer">Shimmer</option>
                   </select>
-                  <textarea id="tiny_ai-tts-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth hidden">{{{defaultprompt-tts}}}</textarea>
+                  <textarea id="tiny_ai-tts-prompt"
+                  class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth hidden">{{#str}} defaultprompt-tts, tiny_ai {{/str}}</textarea>
                 </div>
               </div>
             </div>
@@ -180,7 +182,8 @@ Example context (json):
             <input class="form-check-input" type="checkbox" value="1" id="confirm_no_personal_data_imggen">
             <label class="form-check-label" for="confirm_no_personal_data_imggen">{{#str}} confirm_no_userdata, tiny_ai {{/str}}</label>
           </div>
-          <textarea id="tiny_ai-imggen-prompt" class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{{defaultprompt-imggen}}}</textarea>
+          <textarea id="tiny_ai-imggen-prompt"
+            class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth">{{#str}} defaultprompt-imggen, tiny_ai {{/str}}</textarea>
           <p>
             <button class="btn btn-primary" type="button" id="{{btnIdStartImgGen}}">{{#str}} startimggen, tiny_ai {{/str}}</button>
             <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#additional-prompt-imggen" aria-expanded="false"

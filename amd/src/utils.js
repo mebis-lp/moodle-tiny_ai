@@ -43,7 +43,6 @@ import {getString} from 'core/str';
  */
 const getTemplateContext = (data) => {
     return Object.assign({}, {
-        'defaultprompt-simplify': "Simplify the following text:",
         'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
 
         'defaultprompt-translate': "",
