@@ -41,7 +41,7 @@ $string['defaultprompt-simplify'] = 'Vereinfache den nachfolgenden Text:';
 
 $string['startTranslation'] = 'Übersetzung starten';
 $string['translate'] = 'Übersetzen des markierten Textes';
-$string['defaultprompt-translate'] = 'Übersetze den folgenden Text in amerikanisches Englisch:';
+$string['defaultprompt-translate'] = 'Übersetze den folgenden Text ins {$a}:';
 $string['additional_prompt_translation'] = 'Zusätzlicher Prompt um die die Übersetzung zu verbessern:';
 
 $string['startTTS'] = 'Audioausgabe generieren';
@@ -56,3 +56,6 @@ $string['width'] = 'Breite';
 
 $string['freemode'] = 'Freie Prompteingabe';
 $string['startfree'] = 'Ausgabe starten';
+
+$string['confirm_no_userdata'] = 'Ich bestätige, dass keine personenbeziehbaren Daten verarbeitet werden.';
+$string['not_confirmed'] = 'Bitte bestätigen Sie vor dem Fortfahren, dass keine personenbezogenen Daten im Prompt enthalten sind.';

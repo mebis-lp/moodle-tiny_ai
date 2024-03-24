@@ -40,7 +40,7 @@ $string['defaultprompt-simplify'] = 'Simplify the following text:';
 $string['simplify'] = 'Simplify';
 $string['startSimplification'] = 'Start Simplification';
 
-$string['defaultprompt-translate'] = 'Translate the following text to american english:';
+$string['defaultprompt-translate'] = 'Translate the following text to {$a}:';
 $string['startTranslation'] = 'Start Translation';
 $string['translate'] = 'Translate';
 $string['additional_prompt_translation'] = 'Additional prompt to give some more instructions.';
@@ -57,3 +57,6 @@ $string['width'] = 'Width';
 
 $string['freemode'] = 'Free pompting';
 $string['startfree'] = 'Start output';
+
+$string['confirm_no_userdata'] = 'Confirm that the prompt contains no personal data.';
+$string['not_confirmed'] = 'Please confirm that no personal data is contained in the prompt before continuing';

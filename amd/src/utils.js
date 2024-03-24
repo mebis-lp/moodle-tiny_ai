@@ -28,6 +28,7 @@ import Selectors from './selectors';
 import {makeRequest} from 'local_ai_manager/make_request';
 import ModalEvents from 'core/modal_events';
 import {getDraftItemId} from 'editor_tiny/options';
+import {getString} from 'core/str';
 
 // export const handleAction = (editor) => {
 //     openingSelection = editor.selection.getBookmark();
@@ -91,6 +92,7 @@ export const displayDialogue = async (editor, data = {}) => {
         let selectedText = editor.selection.getContent();
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
         const options = {};
+        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.simplification).checked;
         getChatResult(cmdPrompt, selectedText, options);
     });
 
@@ -100,6 +102,7 @@ export const displayDialogue = async (editor, data = {}) => {
         const options = {};
         options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
         options.translation = true;
+        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.translation).checked;
 
         let cmdPromptend;
 
@@ -122,6 +125,7 @@ export const displayDialogue = async (editor, data = {}) => {
         options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
         options.language = document.getElementById(Selectors.elements.ttsOutputlanguage).value;
         options.voice = document.getElementById(Selectors.elements.ttsOutputVoice).value;
+        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.tts).checked;
         getMP3(cmdPrompt, selectedText, options);
     });
 
@@ -133,12 +137,14 @@ export const displayDialogue = async (editor, data = {}) => {
         options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
         options.imagesize = document.getElementById(Selectors.elements.imggenwidth).value;
         options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
+        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.imggen).checked;
         getIMG(cmdPrompt, selectedText, options);
     });
 
     document.getElementById(Selectors.buttons.btnStartFree).addEventListener('click', () => {
         let prompt = document.getElementById(Selectors.elements.freerompt).value;
         const options = {};
+        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.free).checked;
         getChatResult(prompt, "", options);
     });
 
@@ -150,14 +156,22 @@ export const displayDialogue = async (editor, data = {}) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getChatResult = (cmdPrompt, selectedText, options) => {
+const getChatResult = async (cmdPrompt, selectedText, options) => {
 
     let prompt = cmdPrompt + ": " + selectedText;
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.add("hidden");
-    document.getElementById(Selectors.elements.taResult).value = "Bitte warten, das kann ein paar Sekunden dauern!";
+
+    if (!options.confirmationpersonaldata){
+        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai').then((string) => { return string; }).catch();
+        document.getElementById(Selectors.elements.taResult).innerHTML = StrPleaseWait;
+        return;
+    }
+
+    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai').then((string) => { return string; }).catch();
+    document.getElementById(Selectors.elements.taResult).value = StrPleaseWait;
 
     retrieveResult('chat', prompt, options).then(requestresult => {
 
@@ -177,7 +191,7 @@ const getChatResult = (cmdPrompt, selectedText, options) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getMP3 = (cmdPrompt, selectedText, options) => {
+const getMP3 = async (cmdPrompt, selectedText, options) => {
     let prompt = cmdPrompt + " " + selectedText;
 
     // Shows the results box. This should happen before the real result is shown,
@@ -185,7 +199,15 @@ const getMP3 = (cmdPrompt, selectedText, options) => {
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
-    document.getElementById(Selectors.elements.previewSectionId).innerHTML = "Bitte warten, das kann ein paar Sekunden dauern!";
+
+    if (!options.confirmationpersonaldata) {
+        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai').then((string) => { return string; }).catch();
+        document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
+        return;
+    }
+
+    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai').then((string) => { return string; }).catch();
+    document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
     retrieveResult('tts', prompt, options).then(requestresult => {
 
@@ -218,7 +240,7 @@ const getMP3 = (cmdPrompt, selectedText, options) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getIMG = (cmdPrompt, selectedText, options) => {
+const getIMG = async (cmdPrompt, selectedText, options) => {
     let prompt = cmdPrompt;
 
     // Shows the results box. This should happen before the real result is shown,
@@ -226,7 +248,15 @@ const getIMG = (cmdPrompt, selectedText, options) => {
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
-    document.getElementById(Selectors.elements.previewSectionId).innerHTML = "Bitte warten, das kann ein paar Sekunden dauern!";
+
+    if (!options.confirmationpersonaldata) {
+        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai').then((string) => { return string; }).catch();
+        document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
+        return;
+    }
+
+    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai').then((string) => { return string; }).catch();
+    document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
     retrieveResult('imggen', prompt, options).then(requestresult => {
 

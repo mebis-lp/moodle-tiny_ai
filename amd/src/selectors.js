@@ -52,6 +52,13 @@ export default {
 
         'freerompt': 'tiny_ai-free-prompt',
     },
+    confirmation: {
+        'simplification': 'confirm_no_personal_data_simplification',
+        'translation': 'confirm_no_personal_data_translate',
+        'tts': 'confirm_no_personal_data_tts',
+        'imggen': 'confirm_no_personal_data_imggen',
+        'free': 'confirm_no_personal_data_free',
+    },
     buttons: {
         btnStartSimplification: 'btnStartSimplification',
         btnStartTranslation: 'btnStartTranslation',
