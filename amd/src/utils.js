@@ -88,7 +88,7 @@ export const displayDialogue = async (editor, data = {}) => {
     });
 
     document.getElementById(Selectors.buttons.btnStartSimplification).addEventListener('click', () => {
-        let selectedText = editor.selection.getContent();
+        const selectedText = stripHtmlTags(editor.selection.getContent());
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
         const options = {};
         options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.simplification).checked;
@@ -96,7 +96,7 @@ export const displayDialogue = async (editor, data = {}) => {
     });
 
     document.getElementById(Selectors.buttons.btnStartTranslation).addEventListener('click', () => {
-        let selectedText = editor.selection.getContent();
+        const selectedText = stripHtmlTags(editor.selection.getContent());
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
         const options = {};
         options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
@@ -117,7 +117,7 @@ export const displayDialogue = async (editor, data = {}) => {
     });
 
     document.getElementById(Selectors.buttons.btnStartTTS).addEventListener('click', () => {
-        let selectedText = editor.selection.getContent();
+        const selectedText = stripHtmlTags(editor.selection.getContent());
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTTS).value;
         const options = {};
         options.itemid = getDraftItemId(editor);
@@ -129,7 +129,7 @@ export const displayDialogue = async (editor, data = {}) => {
     });
 
     document.getElementById(Selectors.buttons.btnStartImgGen).addEventListener('click', () => {
-        let selectedText = editor.selection.getContent();
+        const selectedText = stripHtmlTags(editor.selection.getContent());
         let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptImgGen).value;
         const options = {};
         options.itemid = getDraftItemId(editor);
@@ -290,4 +290,11 @@ const getIMG = async (cmdPrompt, selectedText, options) => {
 const retrieveResult = async (purpose, prompt, options = []) => {
     let result = await makeRequest(purpose, prompt, JSON.stringify(options));
     return result;
+};
+
+const stripHtmlTags = (html) => {
+    // Place selected content into a temporary span and extract the plain text from it to strip HTML tags.
+    const span = document.createElement('span');
+    span.innerHTML = html;
+    return span.textContent;
 };

@@ -30,6 +30,3 @@ $plugin->release = '0.1.0';
 $plugin->version = 2024030400;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->dependencies = [
-    'local_ai_manager' => ANY_VERSION,
-];

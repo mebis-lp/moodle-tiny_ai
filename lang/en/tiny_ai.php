@@ -45,6 +45,8 @@ $string['startTranslation'] = 'Start Translation';
 $string['translate'] = 'Translate';
 $string['additional_prompt_translation'] = 'Additional prompt to give some more instructions.';
 
+$string['defaultprompt-tts'] = '';
+
 $string['outputlanguage'] = 'Outputlanguage';
 $string['startTTS']='Get Audio';
 $string['text-to-speech'] = 'Text to Speech';
