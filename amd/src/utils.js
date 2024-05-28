@@ -29,11 +29,7 @@ import {makeRequest} from 'local_ai_manager/make_request';
 import ModalEvents from 'core/modal_events';
 import {getDraftItemId} from 'editor_tiny/options';
 import {getString} from 'core/str';
-
-// export const handleAction = (editor) => {
-//     openingSelection = editor.selection.getBookmark();
-//     displayDialogue(editor);
-// };
+import {alert, exception as displayException} from 'core/notification';
 
 /**
  * Get the template context for the dialogue.
@@ -78,8 +74,8 @@ export const displayDialogue = async (editor, data = {}) => {
     const $root = modal.getRoot();
 
     $root.on(ModalEvents.save, () => {
-        let selectedText = editor.selection.getContent();
-        let newText = document.getElementById(Selectors.elements.taResult).value;
+        const selectedText = editor.selection.getContent();
+        const newText = document.getElementById(Selectors.elements.taResult).value;
         if (selectedText) {
             editor.selection.setContent(newText);
         } else {
@@ -155,33 +151,31 @@ export const displayDialogue = async (editor, data = {}) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getChatResult = async (cmdPrompt, selectedText, options) => {
+const getChatResult = async(cmdPrompt, selectedText, options) => {
 
-    let prompt = cmdPrompt + ": " + selectedText;
+    const prompt = cmdPrompt + ": " + selectedText;
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.add("hidden");
 
-    if (!options.confirmationpersonaldata){
-        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai').then((string) => { return string; }).catch();
+    if (!options.confirmationpersonaldata) {
+        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai');
         document.getElementById(Selectors.elements.taResult).innerHTML = StrPleaseWait;
         return;
     }
 
-    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai').then((string) => { return string; }).catch();
+    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.taResult).value = StrPleaseWait;
 
-    retrieveResult('chat', prompt, options).then(requestresult => {
+    const requestresult = await retrieveResult('chat', prompt, options);
 
-        // Early exit if an error occured. Print out the error message to the output textarea.
-        if (requestresult.string == 'error') {
-            document.getElementById(Selectors.elements.taResult).value = requestresult.result;
-            return;
-        }
+    if (requestresult === null) {
+        document.getElementById(Selectors.elements.taResult).value = '';
+        return;
+    }
 
-        document.getElementById(Selectors.elements.taResult).value = requestresult.result;
-    });
+    document.getElementById(Selectors.elements.taResult).value = requestresult.result;
 };
 
 /**
@@ -190,8 +184,8 @@ const getChatResult = async (cmdPrompt, selectedText, options) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getMP3 = async (cmdPrompt, selectedText, options) => {
-    let prompt = cmdPrompt + " " + selectedText;
+const getMP3 = async(cmdPrompt, selectedText, options) => {
+    const prompt = cmdPrompt + " " + selectedText;
 
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
@@ -200,37 +194,32 @@ const getMP3 = async (cmdPrompt, selectedText, options) => {
     document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
 
     if (!options.confirmationpersonaldata) {
-        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai').then((string) => { return string; }).catch();
+        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai');
         document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
         return;
     }
 
-    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai').then((string) => { return string; }).catch();
+    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
-    retrieveResult('tts', prompt, options).then(requestresult => {
+    const requestresult = await retrieveResult('tts', prompt, options);
+    if (requestresult === null) {
+        return;
+    }
+    const fileUrl = requestresult.result;
 
-        // Early exit if an error occured. Print out the error message to the output textarea.
-        if (requestresult.string == 'error') {
-            document.getElementById(Selectors.elements.previewSectionId).innerHTML = requestresult.result;
-            return;
-        }
+    // Add the audio tag to the textarea, that is inserted later to the main editor.
+    const node = selectedText + '<audio class="tiny_ai_audio" controls src="' + fileUrl + '" type="audio/mpeg"/>';
+    document.getElementById(Selectors.elements.taResult).value = node;
 
-        const fileUrl = requestresult.result;
+    // Finally generate the preview audio tag.
+    const audiotag = document.createElement('audio');
+    audiotag.controls = 'controls';
+    audiotag.src = fileUrl;
+    audiotag.type = 'audio/mpeg';
+    document.getElementById(Selectors.elements.previewSectionId).innerHTML = "";
+    document.getElementById(Selectors.elements.previewSectionId).appendChild(audiotag);
 
-        // Add the audio tag to the textarea, that is inserted later to the main editor.
-        let node = selectedText + '<audio class="tiny_ai_audio" controls src="' + fileUrl + '" type="audio/mpeg" ></span>';
-        document.getElementById(Selectors.elements.taResult).value = node;
-
-        // Finally generate the preview audio tag.
-        var audiotag = document.createElement('audio');
-        audiotag.controls = 'controls';
-        audiotag.src = fileUrl;
-        audiotag.type = 'audio/mpeg';
-        document.getElementById(Selectors.elements.previewSectionId).innerHTML = "";
-        document.getElementById(Selectors.elements.previewSectionId).appendChild(audiotag);
-
-    });
 };
 
 /**
@@ -239,44 +228,40 @@ const getMP3 = async (cmdPrompt, selectedText, options) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getIMG = async (cmdPrompt, selectedText, options) => {
-    let prompt = cmdPrompt;
+const getIMG = async(cmdPrompt, selectedText, options) => {
+    const prompt = cmdPrompt;
 
     // Shows the results box. This should happen before the real result is shown,
     // in order to inform the user, that we are working on it.
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
-    document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
-    document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
+    document.getElementById(Selectors.elements.spanResult).classList.add('hidden');
+    document.getElementById(Selectors.elements.previewWrapperId).classList.remove('hidden');
 
     if (!options.confirmationpersonaldata) {
-        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai').then((string) => { return string; }).catch();
-        document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
+        const StrNotConfirmed = await getString('not_confirmed', 'tiny_ai');
+        document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrNotConfirmed;
         return;
     }
 
-    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai').then((string) => { return string; }).catch();
+    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
-    retrieveResult('imggen', prompt, options).then(requestresult => {
+    const requestresult = await retrieveResult('imggen', prompt, options);
+    if (retrieveResult === null) {
+        return;
+    }
 
-        // Early exit if an error occured. Print out the error message to the output textarea.
-        if (requestresult.string == 'error') {
-            document.getElementById(Selectors.elements.previewSectionId).innerHTML = requestresult.result;
-            return;
-        }
+    const fileUrl = requestresult.result;
 
-        const fileUrl = requestresult.result;
+    // Add the img tag to the textarea, that is inserted later to the main editor.
+    const node = selectedText + '<img class="tiny_ai_img" src="' + fileUrl + '" />';
+    document.getElementById(Selectors.elements.taResult).value = node;
 
-        // Add the img tag to the textarea, that is inserted later to the main editor.
-        let node = selectedText + '<img class="tiny_ai_img" src="' + fileUrl + '" ></span>';
-        document.getElementById(Selectors.elements.taResult).value = node;
-
-        // Finally generate the preview img tag.
-        var img = document.createElement('img');
-        img.src = fileUrl;
-        document.getElementById(Selectors.elements.previewSectionId).innerHTML = "";
-        document.getElementById(Selectors.elements.previewSectionId).appendChild(img);
-    });
+    // Finally generate the preview img tag.
+    const img = document.createElement('img');
+    img.src = fileUrl;
+    document.getElementById(Selectors.elements.previewSectionId).innerHTML = '';
+    document.getElementById(Selectors.elements.previewSectionId).appendChild(img);
 };
 
 /**
@@ -287,8 +272,19 @@ const getIMG = async (cmdPrompt, selectedText, options) => {
  * @param {array} options
  * @returns {string}
  */
-const retrieveResult = async (purpose, prompt, options = []) => {
-    let result = await makeRequest(purpose, prompt, JSON.stringify(options));
+const retrieveResult = async(purpose, prompt, options = []) => {
+    let result;
+    try {
+        result = await makeRequest(purpose, prompt, JSON.stringify(options));
+    } catch (error) {
+        displayException(error);
+    }
+    if (result.code !== 200) {
+        const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
+        await alert(errorString, result.result);
+        return null;
+    }
+
     return result;
 };
 

@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additional_prompt'] = 'Additional Propmt';
 $string['ai:view'] = 'View the AI button';
+$string['errorwithcode'] = 'An error occured with error code {$a}';
 $string['modaltitle'] = 'Select Purpose';
 $string['more_options'] = 'More Options';
 $string['pluginname'] = 'Tiny AI Button';
