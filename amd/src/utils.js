@@ -26,10 +26,24 @@
 import AiModal from './modal';
 import Selectors from './selectors';
 import {makeRequest} from 'local_ai_manager/make_request';
+import {getPurposeConfig} from 'local_ai_manager/config';
 import ModalEvents from 'core/modal_events';
 import {getDraftItemId} from 'editor_tiny/options';
 import {getString} from 'core/str';
 import {alert, exception as displayException} from 'core/notification';
+
+/**
+ * Define the purposes for the actions available in tiny_ai.
+ *
+ * @type {{imggen: string, freeprompt: string, tts: string, simplify: string, translate: string}}
+ */
+const purposes = {
+    simplify: 'singleprompt',
+    translate: 'singleprompt',
+    imggen: 'imggen',
+    tts: 'tts',
+    freeprompt: 'singleprompt',
+};
 
 /**
  * Get the template context for the dialogue.
@@ -37,8 +51,18 @@ import {alert, exception as displayException} from 'core/notification';
  * @param {object} data
  * @returns {object} data
  */
-const getTemplateContext = (data) => {
-    return Object.assign({}, {
+const getTemplateContext = async(data) => {
+    const purposeConfig = await getPurposeConfig();
+    Object.keys(purposes).forEach(action => {
+        const templatekey = 'show' + action;
+        data[templatekey] = Object.hasOwn(purposeConfig, purposes[action]);
+    });
+    // We remove all purposes which we are not using in tiny_ai.
+    const filteredPurposeConfigArray = Object.keys(purposeConfig).filter(purpose => Object.values(purposes).includes(purpose));
+    // If there are no purposes left the tenant has not configured any purpose we need. We show a message in this case.
+    data.noactionsavailable = filteredPurposeConfigArray.length === 0;
+
+    return Object.assign({
         'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
 
         'defaultprompt-translate': "",
@@ -66,9 +90,8 @@ const getTemplateContext = (data) => {
  * @param {*} data
  */
 export const displayDialogue = async (editor, data = {}) => {
-
     const modal = await AiModal.create({
-        templateContext: getTemplateContext(data)
+        templateContext: await getTemplateContext(data)
     });
 
     const $root = modal.getRoot();
@@ -83,65 +106,80 @@ export const displayDialogue = async (editor, data = {}) => {
         }
     });
 
-    document.getElementById(Selectors.buttons.btnStartSimplification).addEventListener('click', () => {
-        const selectedText = stripHtmlTags(editor.selection.getContent());
-        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
-        const options = {};
-        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.simplification).checked;
-        getChatResult(cmdPrompt, selectedText, options);
-    });
+    const simplifyButton = document.getElementById(Selectors.buttons.btnStartSimplification);
+    if (simplifyButton) {
+        simplifyButton.addEventListener('click', () => {
+            const selectedText = stripHtmlTags(editor.selection.getContent());
+            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
+            const options = {};
+            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.simplification).checked;
+            getSinglePromptResult(cmdPrompt, selectedText, options);
+        });
+    }
 
-    document.getElementById(Selectors.buttons.btnStartTranslation).addEventListener('click', () => {
-        const selectedText = stripHtmlTags(editor.selection.getContent());
-        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
-        const options = {};
-        options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
-        options.translation = true;
-        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.translation).checked;
+    const translateButton = document.getElementById(Selectors.buttons.btnStartTranslation);
+    if (translateButton) {
+        translateButton.addEventListener('click', () => {
+            const selectedText = stripHtmlTags(editor.selection.getContent());
+            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
+            const options = {};
+            options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
+            options.translation = true;
+            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.translation).checked;
 
-        let cmdPromptend;
+            let cmdPromptend;
 
-        if (options.translation) {
-            cmdPromptend = 'Translate the following text to ' + options.language;
-        }
+            if (options.translation) {
+                cmdPromptend = 'Translate the following text to ' + options.language;
+            }
 
-        if (cmdPrompt) {
-            cmdPromptend += " " + cmdPrompt;
-        }
+            if (cmdPrompt) {
+                cmdPromptend += " " + cmdPrompt;
+            }
 
-        getChatResult(cmdPromptend, selectedText, options);
-    });
+            getSinglePromptResult(cmdPromptend, selectedText, options);
+        });
+    }
 
-    document.getElementById(Selectors.buttons.btnStartTTS).addEventListener('click', () => {
-        const selectedText = stripHtmlTags(editor.selection.getContent());
-        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTTS).value;
-        const options = {};
-        options.itemid = getDraftItemId(editor);
-        options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
-        options.language = document.getElementById(Selectors.elements.ttsOutputlanguage).value;
-        options.voice = document.getElementById(Selectors.elements.ttsOutputVoice).value;
-        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.tts).checked;
-        getMP3(cmdPrompt, selectedText, options);
-    });
+    const ttsButton = document.getElementById(Selectors.buttons.btnStartTTS);
+    if (ttsButton) {
+        ttsButton.addEventListener('click', () => {
+            const selectedText = stripHtmlTags(editor.selection.getContent());
+            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTTS).value;
+            const options = {};
+            options.itemid = getDraftItemId(editor);
+            options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
+            options.language = document.getElementById(Selectors.elements.ttsOutputlanguage).value;
+            options.voice = document.getElementById(Selectors.elements.ttsOutputVoice).value;
+            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.tts).checked;
+            getMP3(cmdPrompt, selectedText, options);
+        });
+    }
 
-    document.getElementById(Selectors.buttons.btnStartImgGen).addEventListener('click', () => {
-        const selectedText = stripHtmlTags(editor.selection.getContent());
-        let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptImgGen).value;
-        const options = {};
-        options.itemid = getDraftItemId(editor);
-        options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
-        options.imagesize = document.getElementById(Selectors.elements.imggenwidth).value;
-        options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
-        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.imggen).checked;
-        getIMG(cmdPrompt, selectedText, options);
-    });
+    const imggenButton = document.getElementById(Selectors.buttons.btnStartImgGen);
+    if (imggenButton) {
+        imggenButton.addEventListener('click', () => {
+            const selectedText = stripHtmlTags(editor.selection.getContent());
+            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptImgGen).value;
+            const options = {};
+            options.itemid = getDraftItemId(editor);
+            options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
+            options.imagesize = document.getElementById(Selectors.elements.imggenwidth).value;
+            options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
+            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.imggen).checked;
+            getIMG(cmdPrompt, selectedText, options);
+        });
+    }
 
-    document.getElementById(Selectors.buttons.btnStartFree).addEventListener('click', () => {
-        let prompt = document.getElementById(Selectors.elements.freerompt).value;
-        const options = {};
-        options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.free).checked;
-        getChatResult(prompt, "", options);
-    });
+    const freePromptButton = document.getElementById(Selectors.buttons.btnStartFree);
+    if (freePromptButton) {
+        freePromptButton.addEventListener('click', () => {
+            let prompt = document.getElementById(Selectors.elements.freerompt).value;
+            const options = {};
+            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.free).checked;
+            getSinglePromptResult(prompt, "", options);
+        });
+    }
 
 };
 
@@ -151,7 +189,7 @@ export const displayDialogue = async (editor, data = {}) => {
  * @param {string} selectedText
  * @param {object} options
  */
-const getChatResult = async(cmdPrompt, selectedText, options) => {
+const getSinglePromptResult = async(cmdPrompt, selectedText, options) => {
 
     const prompt = cmdPrompt + ": " + selectedText;
     // Shows the results box. This should happen before the real result is shown,
@@ -168,7 +206,7 @@ const getChatResult = async(cmdPrompt, selectedText, options) => {
     const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.taResult).value = StrPleaseWait;
 
-    const requestresult = await retrieveResult('chat', prompt, options);
+    const requestresult = await retrieveResult('singleprompt', prompt, options);
 
     if (requestresult === null) {
         document.getElementById(Selectors.elements.taResult).value = '';
@@ -202,7 +240,7 @@ const getMP3 = async(cmdPrompt, selectedText, options) => {
     const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
-    const requestresult = await retrieveResult('tts', prompt, options);
+    const requestresult = await retrieveResult(purposes.tts, prompt, options);
     if (requestresult === null) {
         return;
     }
@@ -246,7 +284,7 @@ const getIMG = async(cmdPrompt, selectedText, options) => {
     const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
-    const requestresult = await retrieveResult('imggen', prompt, options);
+    const requestresult = await retrieveResult(purposes.imggen, prompt, options);
     if (retrieveResult === null) {
         return;
     }

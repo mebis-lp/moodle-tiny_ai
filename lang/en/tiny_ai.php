@@ -31,6 +31,7 @@ $string['ai:view'] = 'View the AI button';
 $string['errorwithcode'] = 'An error occured with error code {$a}';
 $string['modaltitle'] = 'Select Purpose';
 $string['more_options'] = 'More Options';
+$string['nopurposesconfigured'] = 'No KI tools have been configured. Talk to your ByCS admin.';
 $string['pluginname'] = 'Tiny AI Button';
 $string['preview_heading'] = 'Preview';
 $string['prompt'] = 'Prompt';

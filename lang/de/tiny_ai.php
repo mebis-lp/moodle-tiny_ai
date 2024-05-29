@@ -30,6 +30,7 @@ $string['additional_prompt'] = 'Zusätzlicher Prompt';
 $string['ai:view'] = 'Die AI-Schaltfläche anzeigen';
 $string['errorwithcode'] = 'Ein Fehler ist aufgetreten, Fehlercode: {$a}';
 $string['modaltitle'] = 'Was möchten Sie tun?';
+$string['nopurposesconfigured'] = 'Es wurden keine KI-Tools konfiguriert. Wenden Sie sich an Ihren ByCS-Admin.';
 $string['pluginname'] = 'Winzige AI-Schaltfläche';
 $string['results_heading'] = 'Ergebnis';
 $string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden dauern.';
