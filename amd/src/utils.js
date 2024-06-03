@@ -55,10 +55,10 @@ const getTemplateContext = async(data) => {
     const purposeConfig = await getPurposeConfig();
     Object.keys(purposes).forEach(action => {
         const templatekey = 'show' + action;
-        data[templatekey] = Object.hasOwn(purposeConfig, purposes[action]);
+        data[templatekey] = purposeConfig[purposes[action]] !== null;
     });
     // We remove all purposes which we are not using in tiny_ai.
-    const filteredPurposeConfigArray = Object.keys(purposeConfig).filter(purpose => Object.values(purposes).includes(purpose));
+    const filteredPurposeConfigArray = Object.keys(purposes).filter(action => purposeConfig[purposes[action]] !== null);
     // If there are no purposes left the tenant has not configured any purpose we need. We show a message in this case.
     data.noactionsavailable = filteredPurposeConfigArray.length === 0;
 
