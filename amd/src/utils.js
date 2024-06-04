@@ -31,6 +31,7 @@ import ModalEvents from 'core/modal_events';
 import {getDraftItemId} from 'editor_tiny/options';
 import {getString} from 'core/str';
 import {alert, exception as displayException} from 'core/notification';
+import {renderInfoBox} from 'local_ai_manager/render_infobox';
 
 /**
  * Define the purposes for the actions available in tiny_ai.
@@ -93,6 +94,7 @@ export const displayDialogue = async (editor, data = {}) => {
     const modal = await AiModal.create({
         templateContext: await getTemplateContext(data)
     });
+    await renderInfoBox('[data-content="local_ai_manager_infobox"]');
 
     const $root = modal.getRoot();
 
