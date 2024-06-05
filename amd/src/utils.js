@@ -32,6 +32,7 @@ import {getDraftItemId} from 'editor_tiny/options';
 import {getString} from 'core/str';
 import {alert, exception as displayException} from 'core/notification';
 import {renderInfoBox} from 'local_ai_manager/render_infobox';
+import {getContextId} from 'editor_tiny/options';
 
 /**
  * Define the purposes for the actions available in tiny_ai.
@@ -114,7 +115,9 @@ export const displayDialogue = async (editor, data = {}) => {
             const selectedText = stripHtmlTags(editor.selection.getContent());
             let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
             const options = {};
-            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.simplification).checked;
+            // TODO Bad place to insert this, should be done in retrieve result, but passing the context id around is also nasty.
+            //  We probably should make a class out of this module.
+            options.contextid = getContextId(editor);
             getSinglePromptResult(cmdPrompt, selectedText, options);
         });
     }
@@ -125,9 +128,9 @@ export const displayDialogue = async (editor, data = {}) => {
             const selectedText = stripHtmlTags(editor.selection.getContent());
             let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
             const options = {};
+            options.contextid = getContextId(editor);
             options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
             options.translation = true;
-            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.translation).checked;
 
             let cmdPromptend;
 
@@ -153,7 +156,7 @@ export const displayDialogue = async (editor, data = {}) => {
             options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
             options.language = document.getElementById(Selectors.elements.ttsOutputlanguage).value;
             options.voice = document.getElementById(Selectors.elements.ttsOutputVoice).value;
-            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.tts).checked;
+            options.contextid = getContextId(editor);
             getMP3(cmdPrompt, selectedText, options);
         });
     }
@@ -168,7 +171,7 @@ export const displayDialogue = async (editor, data = {}) => {
             options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
             options.imagesize = document.getElementById(Selectors.elements.imggenwidth).value;
             options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
-            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.imggen).checked;
+            options.contextid = getContextId(editor);
             getIMG(cmdPrompt, selectedText, options);
         });
     }
@@ -178,7 +181,7 @@ export const displayDialogue = async (editor, data = {}) => {
         freePromptButton.addEventListener('click', () => {
             let prompt = document.getElementById(Selectors.elements.freerompt).value;
             const options = {};
-            options.confirmationpersonaldata = document.getElementById(Selectors.confirmation.free).checked;
+            options.contextid = getContextId(editor);
             getSinglePromptResult(prompt, "", options);
         });
     }
@@ -198,12 +201,6 @@ const getSinglePromptResult = async(cmdPrompt, selectedText, options) => {
     // in order to inform the user, that we are working on it.
     document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.add("hidden");
-
-    if (!options.confirmationpersonaldata) {
-        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai');
-        document.getElementById(Selectors.elements.taResult).innerHTML = StrPleaseWait;
-        return;
-    }
 
     const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.taResult).value = StrPleaseWait;
@@ -232,12 +229,6 @@ const getMP3 = async(cmdPrompt, selectedText, options) => {
     // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
     document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
     document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
-
-    if (!options.confirmationpersonaldata) {
-        const StrPleaseWait = await getString('not_confirmed', 'tiny_ai');
-        document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
-        return;
-    }
 
     const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
@@ -277,12 +268,6 @@ const getIMG = async(cmdPrompt, selectedText, options) => {
     document.getElementById(Selectors.elements.spanResult).classList.add('hidden');
     document.getElementById(Selectors.elements.previewWrapperId).classList.remove('hidden');
 
-    if (!options.confirmationpersonaldata) {
-        const StrNotConfirmed = await getString('not_confirmed', 'tiny_ai');
-        document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrNotConfirmed;
-        return;
-    }
-
     const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
 
@@ -309,10 +294,12 @@ const getIMG = async(cmdPrompt, selectedText, options) => {
  *
  * @param {string} purpose
  * @param {string} prompt
- * @param {array} options
+ * @param {object} options
  * @returns {string}
  */
-const retrieveResult = async(purpose, prompt, options = []) => {
+const retrieveResult = async(purpose, prompt, options = {}) => {
+    options.component = 'tiny_ai';
+    console.log(options)
     let result;
     try {
         result = await makeRequest(purpose, prompt, JSON.stringify(options));
