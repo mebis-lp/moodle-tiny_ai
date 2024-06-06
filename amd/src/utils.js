@@ -33,6 +33,7 @@ import {getString} from 'core/str';
 import {alert, exception as displayException} from 'core/notification';
 import {renderInfoBox} from 'local_ai_manager/render_infobox';
 import {getContextId} from 'editor_tiny/options';
+import {getUserId} from 'tiny_ai/options';
 
 /**
  * Define the purposes for the actions available in tiny_ai.
@@ -95,7 +96,6 @@ export const displayDialogue = async (editor, data = {}) => {
     const modal = await AiModal.create({
         templateContext: await getTemplateContext(data)
     });
-    await renderInfoBox('[data-content="local_ai_manager_infobox"]');
 
     const $root = modal.getRoot();
 
@@ -185,7 +185,7 @@ export const displayDialogue = async (editor, data = {}) => {
             getSinglePromptResult(prompt, "", options);
         });
     }
-
+    await renderInfoBox('tiny_ai', getUserId(editor), '.tiny_ai_modal_body [data-content="local_ai_manager_infobox"]');
 };
 
 /**

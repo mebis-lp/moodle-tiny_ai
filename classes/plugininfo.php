@@ -62,8 +62,9 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): array {
+        global $USER;
         return [
-            'contextId' => $context->id,
+            'userId' => intval($USER->id),
         ];
     }
 }

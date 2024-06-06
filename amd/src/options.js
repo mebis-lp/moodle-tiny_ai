@@ -26,7 +26,7 @@ import {getPluginOptionName} from 'editor_tiny/options';
 import {pluginName} from './common';
 
 // Helper variables for the option names.
-const contextId = getPluginOptionName(pluginName, 'contextId');
+const userId = getPluginOptionName(pluginName, 'userId');
 
 /**
  * Options registration function.
@@ -38,8 +38,8 @@ export const register = (editor) => {
 
     // For each option, register it with the editor.
     // Valid type are defined in https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.editoroptions/
-    registerOption(contextId, {
-        processor: 'string',
+    registerOption(userId, {
+        processor: 'number',
     });
 };
 
@@ -49,4 +49,4 @@ export const register = (editor) => {
  * @param {tinyMCE} editor The editor instance to fetch the value for
  * @returns {object} The value of the my_custom_option1 option
  */
-export const getContextId = (editor) => editor.options.get(contextId);
+export const getUserId = (editor) => editor.options.get(userId);
