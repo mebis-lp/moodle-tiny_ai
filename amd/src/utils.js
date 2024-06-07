@@ -299,7 +299,6 @@ const getIMG = async(cmdPrompt, selectedText, options) => {
  */
 const retrieveResult = async(purpose, prompt, options = {}) => {
     options.component = 'tiny_ai';
-    console.log(options)
     let result;
     try {
         result = await makeRequest(purpose, prompt, JSON.stringify(options));
