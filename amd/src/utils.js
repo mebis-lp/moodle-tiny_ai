@@ -34,6 +34,7 @@ import {alert, exception as displayException} from 'core/notification';
 import {renderInfoBox} from 'local_ai_manager/render_infobox';
 import {getContextId} from 'editor_tiny/options';
 import {getUserId} from 'tiny_ai/options';
+import {renderUserQuota} from 'local_ai_manager/userquota';
 
 /**
  * Define the purposes for the actions available in tiny_ai.
@@ -55,16 +56,6 @@ const purposes = {
  * @returns {object} data
  */
 const getTemplateContext = async(data) => {
-    const purposeConfig = await getPurposeConfig();
-    Object.keys(purposes).forEach(action => {
-        const templatekey = 'show' + action;
-        data[templatekey] = purposeConfig[purposes[action]] !== null;
-    });
-    // We remove all purposes which we are not using in tiny_ai.
-    const filteredPurposeConfigArray = Object.keys(purposes).filter(action => purposeConfig[purposes[action]] !== null);
-    // If there are no purposes left the tenant has not configured any purpose we need. We show a message in this case.
-    data.noactionsavailable = filteredPurposeConfigArray.length === 0;
-
     return Object.assign({
         'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
 
@@ -93,6 +84,17 @@ const getTemplateContext = async(data) => {
  * @param {*} data
  */
 export const displayDialogue = async (editor, data = {}) => {
+
+    const purposeConfig = await getPurposeConfig();
+    Object.keys(purposes).forEach(action => {
+        const templatekey = 'show' + action;
+        data[templatekey] = purposeConfig[purposes[action]] !== null;
+    });
+    // We remove all purposes which we are not using in tiny_ai.
+    const filteredPurposeConfigArray = Object.keys(purposes).filter(action => purposeConfig[purposes[action]] !== null);
+    // If there are no purposes left the tenant has not configured any purpose we need. We show a message in this case.
+    data.noactionsavailable = filteredPurposeConfigArray.length === 0;
+
     const modal = await AiModal.create({
         templateContext: await getTemplateContext(data)
     });
@@ -186,6 +188,10 @@ export const displayDialogue = async (editor, data = {}) => {
         });
     }
     await renderInfoBox('tiny_ai', getUserId(editor), '.tiny_ai_modal_body [data-content="local_ai_manager_infobox"]');
+    // TODO Only inject purposes we are really using depending
+    // Set is being used here to unique'ify the array.
+    const purposesToShowQuota = [...new Set(filteredPurposeConfigArray.map(purpose => purposes[purpose]))];
+    await renderUserQuota('[data-component="tiny_ai"][data-content="local_ai_manager_userquota"]', purposesToShowQuota);
 };
 
 /**
