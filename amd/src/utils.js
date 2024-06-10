@@ -86,6 +86,10 @@ const getTemplateContext = async(data) => {
 export const displayDialogue = async (editor, data = {}) => {
 
     const purposeConfig = await getPurposeConfig();
+    if (!purposeConfig.tenantenabled) {
+        await alert('Not enabled', 'Your ByCS admin has not enabled the AI tools yet');
+        return;
+    }
     Object.keys(purposes).forEach(action => {
         const templatekey = 'show' + action;
         data[templatekey] = purposeConfig[purposes[action]] !== null;
