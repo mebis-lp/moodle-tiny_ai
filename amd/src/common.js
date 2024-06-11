@@ -28,6 +28,11 @@ export default {
     component,
     pluginName: `${component}/plugin`,
     icon: component,
-    buttonName: "start_ai",
-    buttonTitle: "Start AI"
+    toolbarButtonName: "start_ai",
+    toolbarButtonTitle: "Start AI",
+    selectionbarButtonName: "start_ai_selection",
+    selectionbarButtonTitle: "Use AI for selected text",
+    selectionbarSource: 'selectionbar',
+    menubarSource: 'menubar',
+    toolbarSource: 'toolbar'
 };

@@ -25,10 +25,12 @@
 import {getButtonImage} from 'editor_tiny/utils';
 import {
     component,
-    buttonName,
-    buttonTitle,
+    toolbarButtonName,
+    toolbarButtonTitle,
+    selectionbarButtonName,
+    selectionbarButtonTitle,
     icon,
-} from './common';
+} from 'tiny_ai/common';
 import {displayDialogue} from './utils';
 
 /**
@@ -62,17 +64,23 @@ export const getSetup = async() => {
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
         // Register the AI Toolbar Button.
-        editor.ui.registry.addToggleButton(buttonName, {
+        editor.ui.registry.addButton(toolbarButtonName, {
             icon,
-            tooltip: buttonTitle,
-            onAction: () => displayDialogue(editor),
+            tooltip: toolbarButtonTitle,
+            onAction: () => displayDialogue(editor, 'toolbar'),
         });
 
         // Register the menu item.
-        editor.ui.registry.addMenuItem(buttonName, {
+        editor.ui.registry.addMenuItem(toolbarButtonName, {
             icon,
-            text: buttonTitle,
-            onAction: () => displayDialogue(editor),
+            text: toolbarButtonTitle,
+            onAction: () => displayDialogue(editor, 'menubar'),
+        });
+
+        editor.ui.registry.addButton(selectionbarButtonName, {
+            icon,
+            tooltip: selectionbarButtonTitle,
+            onAction: () => displayDialogue(editor, 'selectionbar'),
         });
 
         // editor.on('init', () => onInit(editor));

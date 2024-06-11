@@ -35,6 +35,8 @@ import {renderInfoBox} from 'local_ai_manager/render_infobox';
 import {getContextId} from 'editor_tiny/options';
 import {getUserId} from 'tiny_ai/options';
 import {renderUserQuota} from 'local_ai_manager/userquota';
+import {call as fetchMany} from 'core/ajax';
+import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
 
 /**
  * Define the purposes for the actions available in tiny_ai.
@@ -81,10 +83,16 @@ const getTemplateContext = async(data) => {
  * Shows and handles the dialog.
  *
  * @param {*} editor
- * @param {*} data
+ * @param {string} source the different sources from where the modal is being created, defined in common module
  */
-export const displayDialogue = async (editor, data = {}) => {
+export const displayDialogue = async (editor, source) => {
+    if (source === selectionbarSource) {
+        // TODO show the modal content when clicked by selectionbar
+    } else if (source === toolbarSource || source === menubarSource) {
+        // TODO show other modal content
+    }
 
+    const data = {};
     const purposeConfig = await getPurposeConfig();
     if (!purposeConfig.tenantenabled) {
         await alert('Not enabled', 'Your ByCS admin has not enabled the AI tools yet');
@@ -98,6 +106,20 @@ export const displayDialogue = async (editor, data = {}) => {
     const filteredPurposeConfigArray = Object.keys(purposes).filter(action => purposeConfig[purposes[action]] !== null);
     // If there are no purposes left the tenant has not configured any purpose we need. We show a message in this case.
     data.noactionsavailable = filteredPurposeConfigArray.length === 0;
+    const usedPurposes = new Set(filteredPurposeConfigArray.map(localPurpose => purposes[localPurpose]));
+    for (const purpose of usedPurposes) {
+        const config = await getPurposeOptions(purpose);
+        if (purpose === 'tts') {
+            data.voices = config.voices;
+            data.languages = config.languages;
+        }
+    }
+    if (data.voices.length > 0) {
+        data.showvoices = true;
+    }
+    if (data.languages.length > 0) {
+        data.showlanguages = true;
+    }
 
     const modal = await AiModal.create({
         templateContext: await getTemplateContext(data)
@@ -160,8 +182,8 @@ export const displayDialogue = async (editor, data = {}) => {
             const options = {};
             options.itemid = getDraftItemId(editor);
             options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
-            options.language = document.getElementById(Selectors.elements.ttsOutputlanguage).value;
-            options.voice = document.getElementById(Selectors.elements.ttsOutputVoice).value;
+            options.languages = [document.getElementById(Selectors.elements.ttsOutputlanguage).value];
+            options.voices = [document.getElementById(Selectors.elements.ttsOutputVoice).value];
             options.contextid = getContextId(editor);
             getMP3(cmdPrompt, selectedText, options);
         });
@@ -323,6 +345,24 @@ const retrieveResult = async(purpose, prompt, options = {}) => {
 
     return result;
 };
+
+const getPurposeOptions = async(purpose) => {
+    let result;
+    try {
+        result = await retrievePurposeOptions(purpose);
+    } catch (error) {
+        displayException(error);
+    }
+    return JSON.parse(result.options);
+};
+
+const retrievePurposeOptions = (purpose) => fetchMany([{
+    methodname: 'local_ai_manager_get_purpose_options',
+    args: {
+        'purpose': purpose
+    },
+}])[0];
+
 
 const stripHtmlTags = (html) => {
     // Place selected content into a temporary span and extract the plain text from it to strip HTML tags.

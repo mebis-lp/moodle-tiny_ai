@@ -151,24 +151,23 @@ Example context (json):
                                     <div class="row">
                                         <div class="col">
                                             <div class="collapse multi-collapse" id="additional-prompt-tts">
-                                                <div class="card card-body">
+                                                <div class="card card-body" id="tiny_ai-tts-options">
                                                     <label for="tiny_ai-tts-outputlanguage"> {{#str}} outputlanguage, tiny_ai {{/str}}</label>
+                                                    {{#showlanguages}}
                                                     <select class="form-control" id='tiny_ai-tts-outputlanguage'>
-                                                        <option value="">Ausgangssprache verwenden</option>
-                                                        <option value="en">Englisch</option>
-                                                        <option value="de">Deutsch</option>
-                                                        <option value="uk">Ukrainisch</option>
-                                                        <option value="tr">Türkisch</option>
+                                                        {{#languages}}
+                                                        <option value="{{key}}">{{displayname}}</option>
+                                                        {{/languages}}
                                                     </select>
+                                                    {{/showlanguages}}
+                                                    {{#showvoices}}
                                                     <label for="tiny_ai-tts-outputvoice"> {{#str}} voice, tiny_ai {{/str}}</label>
                                                     <select class="form-control" id='tiny_ai-tts-outputvoice'>
-                                                        <option value="alloy">Alloy</option>
-                                                        <option value="echo">Echo</option>
-                                                        <option value="fable">Fable</option>
-                                                        <option value="onyx">Onyx</option>
-                                                        <option value="nova">Nova</option>
-                                                        <option value="shimmer">Shimmer</option>
+                                                        {{#voices}}
+                                                        <option value="{{key}}">{{displayname}}</option>
+                                                        {{/voices}}
                                                     </select>
+                                                    {{/showvoices}}
                                                     <textarea id="tiny_ai-tts-prompt"
                                                               class="tiny_ai-modal-ta mt-10 tiny_ai_fullwidth hidden">{{#str}} defaultprompt-tts, tiny_ai {{/str}}</textarea>
                                                 </div>

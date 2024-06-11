@@ -23,19 +23,21 @@
  */
 
 import {
-    buttonName,
-} from './common';
+    toolbarButtonName,
+    selectionbarButtonName
+} from 'tiny_ai/common';
 
 import {
     addMenubarItem,
     addToolbarButtons,
+    addQuickbarsToolbarItem
 } from 'editor_tiny/utils';
 
 const getToolbarConfiguration = (instanceConfig) => {
     let toolbar = instanceConfig.toolbar;
 
     toolbar = addToolbarButtons(toolbar, 'formatting', [
-        buttonName,
+        toolbarButtonName,
     ]);
 
     return toolbar;
@@ -44,14 +46,21 @@ const getToolbarConfiguration = (instanceConfig) => {
 const getMenuConfiguration = (instanceConfig) => {
     let menu = instanceConfig.menu;
     menu = addMenubarItem(menu, 'tools', [
-        buttonName,
+        toolbarButtonName,
     ].join(' '));
     return menu;
+};
+
+const getSelectionToolbarConfiguration = (instanceConfig) => {
+    let toolbar = instanceConfig.quickbars_selection_toolbar;
+    toolbar = addQuickbarsToolbarItem(toolbar, '|', selectionbarButtonName);
+    return toolbar;
 };
 
 export const configure = (instanceConfig) => {
     return {
         toolbar: getToolbarConfiguration(instanceConfig),
         menu: getMenuConfiguration(instanceConfig),
+        quickbars_selection_toolbar: getSelectionToolbarConfiguration(instanceConfig)
     };
 };
