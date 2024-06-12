@@ -116,9 +116,9 @@ export const displayDialogue = async (editor, source) => {
             data.sizes = config.sizes;
         }
     }
-    data.showvoices = data.voices.length > 0;
-    data.showlanguages = data.languages.length > 0;
-    data.showsizes = data.sizes.length > 0;
+    data.showvoices = data.hasOwnProperty('voices') && data.voices.length > 0;
+    data.showlanguages = data.hasOwnProperty('languages') && data.languages.length > 0;
+    data.showsizes = data.hasOwnProperty('sizes') && data.sizes.length > 0;
 
     const modal = await AiModal.create({
         templateContext: await getTemplateContext(data)
