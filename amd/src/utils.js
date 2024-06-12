@@ -358,6 +358,7 @@ const getPurposeOptions = async(purpose) => {
         result = await retrievePurposeOptions(purpose);
     } catch (error) {
         displayException(error);
+        return null;
     }
     return JSON.parse(result.options);
 };
