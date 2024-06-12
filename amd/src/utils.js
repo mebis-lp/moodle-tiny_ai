@@ -316,6 +316,7 @@ const getIMG = async(cmdPrompt, selectedText, options) => {
     // Finally generate the preview img tag.
     const img = document.createElement('img');
     img.src = fileUrl;
+    img.classList.add('mw-100');
     document.getElementById(Selectors.elements.previewSectionId).innerHTML = '';
     document.getElementById(Selectors.elements.previewSectionId).appendChild(img);
 };
