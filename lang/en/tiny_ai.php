@@ -62,7 +62,7 @@ $string['defaultprompt-imggen'] = 'Create an image with these specs: ...';
 $string['height'] = 'Height';
 $string['image_generation'] = 'Imagegeneration';
 $string['startimggen'] = 'Get Image';
-$string['width'] = 'Width';
+$string['imgsize'] = 'Dimensions';
 
 $string['freemode'] = 'Free pompting';
 $string['startfree'] = 'Start output';

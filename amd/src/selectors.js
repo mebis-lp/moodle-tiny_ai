@@ -46,9 +46,7 @@ export default {
         'ttsOutputlanguage': 'tiny_ai-tts-outputlanguage',
         'ttsOutputVoice': 'tiny_ai-tts-outputvoice',
         'settingsIdImgGen': 'tiny_ai-imggen-settings',
-
-        'imggenwidth': 'tiny_ai-image-width',
-        'imggenheight': 'tiny_ai-image-height',
+        'imggensize': 'tiny_ai-imggen-size',
 
         'freerompt': 'tiny_ai-free-prompt',
     },

@@ -209,22 +209,16 @@ Example context (json):
                                         <div class="col">
                                             <div class="collapse multi-collapse" id="additional-prompt-imggen">
                                                 <div class="card card-body">
-                                                    {{! <label for="tiny_ai-imagesize"> voice, tiny_ai </label>
-                                                    <select class="form-control" id='tiny_ai-imagesize'>
-                                                      <option value="256x256">256px x 256px</option>
-                                                      <option value="512x512">512px x 512px</option>
-                                                      <option value="1024x1024">1024px x 1024px</option>
-                                                      <option value="1024x1792">1024px x 1792px</option>
-                                                      <option value="1792x1024">1792px x 1024px</option>
-                                                    </select> }}
+                                                    {{#showsizes}}
                                                     <div class="form-outline">
-                                                        <label class="form-label" for="tiny_ai-image-width">{{#str}} width , tiny_ai {{/str}} (px)</label>
-                                                        <input type="number" id="tiny_ai-image-width" value="256" class="form-control"/>
+                                                    <label for="tiny_ai-imagesize"> {{#str}}imgsize, tiny_ai {{/str}}</label>
+                                                    <select class="form-control" id='tiny_ai-imggen-size'>
+                                                        {{#sizes}}
+                                                        <option value="{{key}}">{{displayname}}</option>
+                                                        {{/sizes}}
+                                                    </select>
                                                     </div>
-                                                    <div class="form-outline">
-                                                        <label class="form-label" for="tiny_ai-image-height">{{#str}} height , tiny_ai {{/str}} (px)</label>
-                                                        <input type="number" id="tiny_ai-image-height" value="256" class="form-control"/>
-                                                    </div>
+                                                    {{/showsizes}}
                                                 </div>
                                             </div>
                                         </div>

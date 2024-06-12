@@ -58,8 +58,7 @@ $string['voice'] = 'Stimme';
 $string['startimggen'] = 'Bild generieren';
 $string['image_generation'] = 'Bildgenerierung';
 $string['defaultprompt-imggen'] = 'Generiere bitte ein Bild mit folgenden Eigenschaften: ...';
-$string['height'] = 'Höhe';
-$string['width'] = 'Breite';
+$string['imgsize'] = 'Dimensionen';
 
 $string['freemode'] = 'Freie Prompteingabe';
 $string['startfree'] = 'Ausgabe starten';

@@ -112,14 +112,13 @@ export const displayDialogue = async (editor, source) => {
         if (purpose === 'tts') {
             data.voices = config.voices;
             data.languages = config.languages;
+        } else if (purpose === 'imggen') {
+            data.sizes = config.sizes;
         }
     }
-    if (data.voices.length > 0) {
-        data.showvoices = true;
-    }
-    if (data.languages.length > 0) {
-        data.showlanguages = true;
-    }
+    data.showvoices = data.voices.length > 0;
+    data.showlanguages = data.languages.length > 0;
+    data.showsizes = data.sizes.length > 0;
 
     const modal = await AiModal.create({
         templateContext: await getTemplateContext(data)
@@ -197,8 +196,8 @@ export const displayDialogue = async (editor, source) => {
             const options = {};
             options.itemid = getDraftItemId(editor);
             options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
-            options.imagesize = document.getElementById(Selectors.elements.imggenwidth).value;
-            options.imagesize += "x" + document.getElementById(Selectors.elements.imggenheight).value;
+            // TODO change to be not hardcoded anymore
+            options.sizes = [document.getElementById(Selectors.elements.imggensize).value];
             options.contextid = getContextId(editor);
             getIMG(cmdPrompt, selectedText, options);
         });
@@ -311,7 +310,7 @@ const getIMG = async(cmdPrompt, selectedText, options) => {
     const fileUrl = requestresult.result;
 
     // Add the img tag to the textarea, that is inserted later to the main editor.
-    const node = selectedText + '<img class="tiny_ai_img" src="' + fileUrl + '" />';
+    const node = selectedText + '<img class="tiny_ai_img mw-100" src="' + fileUrl + '" />';
     document.getElementById(Selectors.elements.taResult).value = node;
 
     // Finally generate the preview img tag.
