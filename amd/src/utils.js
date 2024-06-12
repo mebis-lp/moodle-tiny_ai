@@ -37,6 +37,7 @@ import {getUserId} from 'tiny_ai/options';
 import {renderUserQuota} from 'local_ai_manager/userquota';
 import {call as fetchMany} from 'core/ajax';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
+import Log from 'core/log';
 
 /**
  * Define the purposes for the actions available in tiny_ai.
@@ -336,10 +337,15 @@ const retrieveResult = async(purpose, prompt, options = {}) => {
         result = await makeRequest(purpose, prompt, JSON.stringify(options));
     } catch (error) {
         displayException(error);
+        return null;
     }
     if (result.code !== 200) {
         const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
-        await alert(errorString, result.result);
+        const error = JSON.parse(result.result);
+        await alert(errorString, error.message);
+        if (error.hasOwnProperty('debuginfo')) {
+            Log.error(error.debuginfo);
+        }
         return null;
     }
 
