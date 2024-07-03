@@ -39,13 +39,4 @@ $capabilities = [
         ],
         'clonepermissionsfrom' => 'moodle/course:view',
     ],
-
-    'tiny/ai:addembed' => [
-        'captype'      => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/course:create',
-    ]
 ];

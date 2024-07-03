@@ -42,7 +42,7 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
     ): bool {
         $tenant = \core\di::get(tenant::class);
         // Users must have permission to embed content.
-        return has_capability('tiny/ai:addembed', $context) && $tenant->is_tenant_allowed();
+        return has_capability('tiny/ai:view', $context) && $tenant->is_tenant_allowed();
     }
 
 
