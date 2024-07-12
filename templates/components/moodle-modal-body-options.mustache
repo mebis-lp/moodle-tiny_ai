@@ -1,0 +1,23 @@
+<div id="tiny_ai_{{controller}}_{{uniqid}}">
+    <div class="row">
+        {{#modal_dropdowns}}
+            <div class="col-12 col-md-6 mb-3">
+                {{> tiny_ai/components/ai-dropdown}}
+            </div>
+        {{/modal_dropdowns}}
+    </div>
+    <div class="row">
+        <div class="col-12 mb-3">
+            {{> tiny_ai/components/ai-button}}
+            {{#expanded}}
+                {{> tiny_ai/components/ai-textarea}}
+            {{/expanded}}
+        </div>
+    </div>
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/{{controller}}'], function(Controller) {
+        const controller = new Controller('#tiny_ai_{{controller}}_{{uniqid}}');
+        Promise.resolve(controller.init());
+    });
+{{/js}}

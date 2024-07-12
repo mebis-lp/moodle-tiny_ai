@@ -25,9 +25,14 @@
 
 export const init = (textareaSelector) => {
     const textarea = document.querySelector(textareaSelector);
-    const minHeight = 40;
-    // Set height to minimum to recalculate scrollHeight.
-    textarea.style.height = minHeight + 'px';
-    const newHeight = Math.min(textarea.scrollHeight, 342);
-    textarea.style.height = newHeight + 'px';
+    if (textarea) {
+        textarea.addEventListener('input', () => {
+            console.log("bla")
+            const minHeight = 40;
+            // Set height to minimum to recalculate scrollHeight.
+            textarea.style.height = minHeight + 'px';
+            const newHeight = Math.min(textarea.scrollHeight, 342);
+            textarea.style.height = newHeight + 'px';
+        });
+    }
 }

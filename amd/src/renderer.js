@@ -46,7 +46,11 @@ import {renderModalContent} from "./utils";
 
 
 const stringKeys = [
+    'back',
+    'generate',
+    'hideprompt',
     'mainselection_heading',
+    'showprompt',
     'toolname_audiogen',
     'toolname_describe',
     'toolname_describe_extension',
@@ -69,7 +73,11 @@ export const init = async () => {
         return {key, component: 'tiny_ai'}
     });
     [
+        strings.back,
+        strings.generate,
+        strings.hideprompt,
         strings.mainselection_heading,
+        strings.showprompt,
         strings.toolname_audiogen,
         strings.toolname_describe,
         strings.toolname_describe_extension,
@@ -81,6 +89,107 @@ export const init = async () => {
         strings.toolname_tts,
         strings.toolname_tts_extension,
     ] = await getStrings(stringRequest);
+};
+
+const getBackAndGenerateButtonContext = () => {
+    return {
+        footer_buttons: [
+            {
+                hasText: true,
+                button_text: strings.back,
+                icon_left: true,
+                icon_right: false,
+                primary: false,
+                secondary: false,
+                tertiary: true,
+                iconname: 'arrow-left',
+                iconstyle: 'solid',
+                action: 'back'
+            },
+            {
+                hasText: true,
+                button_text: strings.generate,
+                icon_left: true,
+                icon_right: false,
+                primary: true,
+                secondary: false,
+                tertiary: false,
+                iconname: 'sparkle',
+                customicon: true,
+                action: 'generate'
+            }
+        ]
+    };
+}
+
+const getReplaceButtonsContext = () => {
+    return {
+        footer_iconbuttons:
+            [
+                {
+                    "iconName": "trash"
+                },
+                {
+                    "iconName": "arrows-rotate"
+                }
+            ],
+        footer_buttons:
+            [
+                {
+                    hasText: true,
+                    button_text: "UNTEN EINFUEGEN",
+                    icon_left: true,
+                    icon_right: false,
+                    secondary: true,
+                    iconname: 'text-insert-last',
+                    customicon: true
+                },
+                {
+                    hasText: true,
+                    button_text: "AUSWAHL ERSETZEN",
+                    icon_left: true,
+                    icon_right: false,
+                    primary: true,
+                    iconname: 'check',
+                    iconstyle: 'solid'
+                }
+            ],
+    };
+};
+
+const getInputContext = () => {
+    return {
+        input: [
+            {
+                iconname: 'sparkle',
+                customicon: true,
+                button: [
+                    {
+                        customicon: false,
+                        iconname: 'arrow-right',
+                        iconstyle: 'solid',
+                        icon_left: false,
+                        icon_right: true
+                    }
+                ]
+            }
+        ],
+    }
+}
+
+const getShowPromptButtonContext = (extendPrompt = false) => {
+    return {
+        hasText: true,
+        button_text: extendPrompt ? strings.hideprompt : strings.showprompt,
+        icon_left: true,
+        icon_right: false,
+        tertiary: true,
+        iconname: extendPrompt ? 'eye-slash' : 'eye',
+        iconstyle: 'solid',
+        action: 'showprompt',
+        expanded: extendPrompt,
+        textareatype: 'prompt'
+    }
 };
 
 export const getTemplateContextStart = async (mode) => {
@@ -189,28 +298,14 @@ export const getTemplateContextStart = async (mode) => {
         showIcon: true,
         modal_headline: strings.mainselection_heading,
         modal_buttons: toolButtons,
-        input: [
-            {
-                iconname: 'sparkle',
-                customicon: true,
-                button: [
-                    {
-                        customicon: false,
-                        iconname: 'arrow-right',
-                        iconstyle: 'solid',
-                        icon_left: false,
-                        icon_right: true
-                    }
-                ]
-            }
-        ],
     };
+    Object.assign(templateContext, getInputContext());
     return templateContext;
 }
 
 
-export const getTemplateContextSummarize = async () => {
-    return {
+export const getTemplateContextSummarize = async (extendPrompt) => {
+    const context = {
         modal_headline: "Zusammenfassen des markierten Textes",
         showIcon: true,
         modal_dropdowns: [
@@ -240,7 +335,7 @@ export const getTemplateContextSummarize = async () => {
                 dropdown_description: "Art der Sprache",
                 dropdown_default: "Fachsprache",
                 dropdown_options: [
-                   {
+                    {
                         "optionLabel": "Test 1",
                         "optionValue": "1"
                     },
@@ -260,63 +355,32 @@ export const getTemplateContextSummarize = async () => {
             }
         ],
 
-        hasText: true,
-        button_text: "Prompt anzeigen",
-        icon_left: true,
-        icon_right: false,
-        tertiary: true,
-        iconname: "eye",
-        iconstyle: "solid",
 
-        footer_buttons: [
-            {
-                hasText: true,
-                button_text: "Zurück",
-                icon_left: true,
-                icon_right: false,
-                tertiary: true,
-                iconname: "arrow-left",
-                iconstyle: "solid"
-            },
-            {
-                hasText: true,
-                button_text: "Jetzt generieren",
-                icon_left: true,
-                icon_right: false,
-                primary: true,
-                iconname: "sparkle",
-                customicon: true
-            }
-        ]
-    }
+    };
+    Object.assign(context, getShowPromptButtonContext(extendPrompt));
+    Object.assign(context, getBackAndGenerateButtonContext());
+    context.controller = 'summarize_options';
+    return context;
 }
 
 export const getTemplateContextTranslate = async () => {
-    return {
-
-    };
+    return {};
 }
 
 export const getTemplateContextDescribe = async () => {
-    return {
-
-    };
+    return {};
 }
 
 export const getTemplateContextTts = async () => {
-    return {
-
-    };
+    return {};
 }
 
 export const getTemplateContextAudiogen = async () => {
-    return {
-
-    };
+    return {};
 }
 
 export const getTemplateContextImggen = async () => {
-    return {
+    const context = {
         modal_headline: "BILDGENERIERUNG",
         showIcon: true,
         modal_dropdowns: [
@@ -344,63 +408,56 @@ export const getTemplateContextImggen = async () => {
             },
         ],
         placeholder: "BESCHREIBUNG DES BILDS EINGEBEN",
-
-        footer_buttons: [
-            {
-                hasText: true,
-                button_text: "Zurück",
-                icon_left: true,
-                icon_right: false,
-                tertiary: true,
-                iconname: "arrow-left",
-                iconstyle: "solid"
-            },
-            {
-                hasText: true,
-                button_text: "Jetzt generieren",
-                icon_left: true,
-                icon_right: false,
-                primary: true,
-                iconname: "sparkle",
-                customicon: true
-            }
-        ]
     };
+    Object.assign(context, getBackAndGenerateButtonContext())
+    return context;
 }
 
-export const renderStart = async(mode) => {
+export const renderStart = async (mode) => {
     const templateContext = await getTemplateContextStart(mode);
-    console.log(templateContext)
     await renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
 }
 
-export const renderSummarize = async() => {
-    const templateContext = await getTemplateContextSummarize();
-    await renderModalContent('moodle-modal-body-summarize', 'moodle-modal-footer-generate', templateContext);
+export const renderSummarize = async (extendPrompt) => {
+    const templateContext = await getTemplateContextSummarize(extendPrompt);
+    await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
 }
 
-export const renderTranslate = async() => {
+export const renderTranslate = async () => {
     const templateContext = await getTemplateContextTranslate();
-    await renderModalContent('moodle-modal-body-summarize', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
 }
 
-export const renderDescribe = async() => {
+export const renderDescribe = async () => {
     const templateContext = await getTemplateContextDescribe();
-    await renderModalContent('moodle-modal-body-summarize', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
 }
 
-export const renderTts = async() => {
+export const renderTts = async () => {
     const templateContext = await getTemplateContextTts();
     await renderModalContent('moodle-modal-body-audio', 'moodle-modal-footer-generate', templateContext);
 }
 
-export const renderAudiogen = async() => {
+export const renderAudiogen = async () => {
     const templateContext = await getTemplateContextAudiogen();
     await renderModalContent('moodle-modal-body-audio', 'moodle-modal-footer-generate', templateContext);
 }
 
-export const renderImggen = async() => {
+export const renderImggen = async () => {
     const templateContext = await getTemplateContextImggen();
     await renderModalContent('moodle-modal-body-imggen', 'moodle-modal-footer-generate', templateContext);
 }
 
+export const renderLoading = async () => {
+    const templateContext = {};
+    templateContext.modal_headline = "KI GENERIERT";
+    await renderModalContent('moodle-modal-body-loading', 'moodle-modal-footer-empty', templateContext);
+}
+
+export const renderSuggestion = async (aiAnswer) => {
+    const templateContext = {};
+    templateContext.modal_headline = "KI-VORSCHLAG";
+    templateContext.result_text = aiAnswer;
+    Object.assign(templateContext, getReplaceButtonsContext());
+    await renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
+}

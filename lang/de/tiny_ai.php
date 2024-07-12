@@ -27,8 +27,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additional_prompt'] = 'Zusätzlicher Prompt';
+$string['aiwarning'] = 'Vertraue nicht blind KI-generierten Inhalten...';
 $string['ai:view'] = 'Die AI-Schaltfläche anzeigen';
+$string['back'] = 'Zurück';
 $string['errorwithcode'] = 'Ein Fehler ist aufgetreten, Fehlercode: {$a}';
+$string['generate'] = 'Jetzt generieren';
+$string['generating'] = 'Die KI-Antwort wird generiert...';
+$string['hideprompt'] = 'Prompt ausblenden';
 $string['mainselection_heading'] = 'Wobei soll dir die KI helfen?';
 $string['more_options'] = 'Mehr Optionen';
 $string['nopurposesconfigured'] = 'Es wurden keine KI-Tools konfiguriert. Wenden Sie sich an Ihren ByCS-Admin.';
@@ -40,6 +45,7 @@ $string['purposettsnotdefined'] = 'Ihr ByCS-Admin hat kein KI-Tool für den Zwec
 $string['purposeimggennotdefined'] = 'Ihr ByCS-Admin hat kein KI-Tool für den Zweck "imggen" konfiguriert.';
 $string['results_heading'] = 'Ergebnis';
 $string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden dauern.';
+$string['showprompt'] = 'Prompt anzeigen';
 $string['toolname_audiogen'] = 'Audiogenerierung';
 $string['toolname_describe'] = 'Ausführliche Beschreibung';
 $string['toolname_describe_extension'] = 'des markierten Textes';

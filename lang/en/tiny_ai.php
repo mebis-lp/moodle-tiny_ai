@@ -27,8 +27,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additional_prompt'] = 'Additional Propmt';
+$string['aiwarning'] = 'Do not trust AI generated content blindly...';
 $string['ai:view'] = 'View the AI button';
+$string['back'] = 'Back';
 $string['errorwithcode'] = 'An error occured with error code {$a}';
+$string['generate'] = 'Generate now';
+$string['generating'] = 'The AI answer is being generated...';
+$string['hideprompt'] = 'Hide prompt';
 $string['mainselection_heading'] = 'What should the AI help you with?';
 $string['more_options'] = 'More Options';
 $string['nopurposesconfigured'] = 'No KI tools have been configured. Talk to your ByCS admin.';
@@ -40,6 +45,7 @@ $string['purposettsnotdefined'] = 'Your ByCS admin has not configured an AI tool
 $string['purposeimggennotdefined'] = 'Your ByCS admin has not configured an AI tool for the purpose "imggen"';
 $string['results_heading'] = 'Result';
 $string['results_please_wait'] = 'Please wait! This may take a few seconds.';
+$string['showprompt'] = 'Show prompt';
 $string['toolname_audiogen'] = 'Audio generation';
 $string['toolname_describe'] = 'Detailed description';
 $string['toolname_describe_extension'] = 'of the selected text';

@@ -35,7 +35,7 @@ import {renderInfoBox} from 'local_ai_manager/render_infobox';
 import {getContextId} from 'editor_tiny/options';
 import {getUserId} from 'tiny_ai/options';
 import {renderUserQuota} from 'local_ai_manager/userquota';
-import {call as fetchMany} from 'core/ajax';
+import {constants} from 'tiny_ai/constants';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
 import * as Renderer from 'tiny_ai/renderer';
 import Templates from 'core/templates';
@@ -56,9 +56,9 @@ export const init = async (editor) => {
 export const displayDialogue = async (source) => {
     let mode;
     if (source === selectionbarSource) {
-        mode = 'selection';
+        mode = constants.modalModes.selection;
     } else if (source === toolbarSource || source === menubarSource) {
-        mode = 'general';
+        mode = constants.modalModes.general;
     }
 
     await Renderer.init();
@@ -88,7 +88,10 @@ export const renderModalContent = async (bodyComponentTemplate, footerComponentT
         Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
         Templates.renderForPromise('tiny_ai/components/' + footerComponentTemplate, templateContext)
     ]);
-    modal.setTitle(result[0].html);
+    if (templateContext.hasOwnProperty('modal_headline')) {
+        // If there is no headline specified, we keep the old one.
+        modal.setTitle(result[0].html);
+    }
     modal.setBody(result[1].html);
     modal.setFooter(result[2].html);
     result.forEach((item) => {

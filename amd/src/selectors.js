@@ -22,6 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-export const SELECTORS = {
-    mainContainer: '#tiny_ai_modal_body',
+export default {
+    modalDialog: '.tiny_ai-modal--dialog',
+    modalFooter: '.tiny_ai-modal--dialog [data-region="footer"]',
 };

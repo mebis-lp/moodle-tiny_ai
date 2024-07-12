@@ -24,6 +24,10 @@
 
 
 export const constants = {
+    modalModes: {
+        selection: 'selection',
+        general: 'general'
+    },
     toolPurposeMapping: {
         summarize: 'singleprompt',
         translate: 'translate',

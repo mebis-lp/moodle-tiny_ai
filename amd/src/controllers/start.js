@@ -24,21 +24,12 @@
 
 import {prefetchStrings} from 'core/prefetch';
 import Log from 'core/log';
-import {renderModalContent} from "tiny_ai/utils";
 import * as Renderer from 'tiny_ai/renderer';
-
-export const createController = (baseSelector) => {
-    const controller = new StartController(baseSelector);
-    controller.init();
-}
 
 export default class {
 
     constructor(baseSelector) {
-        Log.error(baseSelector)
         this.baseElement = document.querySelector(baseSelector);
-        console.log(this.baseElement)
-        Log.error(this.baseElement.querySelector('[data-action="loadsummarize"]'))
     }
 
     async init() {

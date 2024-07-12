@@ -1,0 +1,21 @@
+.tiny_ai-info-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: $neutral-grey-300;
+  font-family: "Atkinson Hyperlegible";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.dark {
+  .tiny_ai-info-warning {
+    color: $neutral-grey-200;
+  }
+}
