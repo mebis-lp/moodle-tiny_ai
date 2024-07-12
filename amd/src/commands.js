@@ -30,8 +30,11 @@ import {
     selectionbarButtonName,
     selectionbarButtonTitle,
     icon,
+    selectionbarSource,
+    toolbarSource,
+    menubarSource
 } from 'tiny_ai/common';
-import {displayDialogue} from './utils';
+import * as Utils from 'tiny_ai/utils';
 
 /**
  * Handle the action for your plugin.
@@ -63,24 +66,32 @@ export const getSetup = async() => {
         // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
+        Utils.init(editor);
+
         // Register the AI Toolbar Button.
         editor.ui.registry.addButton(toolbarButtonName, {
             icon,
             tooltip: toolbarButtonTitle,
-            onAction: () => displayDialogue(editor, 'toolbar'),
+            onAction: () => {
+                Utils.displayDialogue(toolbarSource)
+            }
         });
 
         // Register the menu item.
         editor.ui.registry.addMenuItem(toolbarButtonName, {
             icon,
             text: toolbarButtonTitle,
-            onAction: () => displayDialogue(editor, 'menubar'),
+            onAction: () => {
+                Utils.displayDialogue(menubarSource)
+            }
         });
 
         editor.ui.registry.addButton(selectionbarButtonName, {
             icon,
             tooltip: selectionbarButtonTitle,
-            onAction: () => displayDialogue(editor, 'selectionbar'),
+            onAction: () => {
+                Utils.displayDialogue(selectionbarSource)
+            }
         });
 
         // editor.on('init', () => onInit(editor));

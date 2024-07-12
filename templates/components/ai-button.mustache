@@ -1,0 +1,15 @@
+<button class="tiny_ai-button {{#btn-iconname}}has-icon {{/btn-iconname}}{{#disabled}}disabled {{/disabled}}{{!
+}}{{#primary}}primary {{/primary}}{{#secondary}}secondary {{/secondary}}{{#tertiary}}tertiary {{/tertiary}}">
+
+    {{#icon_left}}
+        {{> tiny_ai/components/ai-icon}}
+    {{/icon_left}}
+
+    {{#hasText}}
+        <span class="tiny_ai-button-text">{{button_text}}</span>
+    {{/hasText}}
+
+    {{#icon_right}}
+        {{> tiny_ai/components/ai-icon}}
+    {{/icon_right}}
+</button>

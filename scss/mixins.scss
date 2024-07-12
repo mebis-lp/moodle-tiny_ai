@@ -1,0 +1,11 @@
+@mixin respond-to($breakpoint) {
+    $value: map-get($breakpoints, $breakpoint);
+
+    @if $value {
+    @media (max-width: $value) {
+        @content;
+    }
+    } @else {
+    @warn "No value found for breakpoint: #{$breakpoint}";
+    }
+}

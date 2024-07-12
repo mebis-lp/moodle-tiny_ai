@@ -1,0 +1,12 @@
+<span class="tiny_ai-dropdown-label">{{dropdown_description}}</span>
+<div class="dropdown tiny_ai-dropdown">
+  <button class="btn btn-secondary dropdown-toggle tiny_ai-btn tiny_ai-dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {{dropdown_default}}
+    <i class="tiny_ai-icon fa fa-chevron-down"></i>
+  </button>
+  <div class="dropdown-menu tiny_ai-dropdown-menu" aria-labelledby="dropdownMenuButton">
+  {{#dropdown_options}}
+    <a class="dropdown-item tiny_ai-dropdown-item" data-value="{{optionValue}}">{{optionLabel}}</a>
+  {{/dropdown_options}}
+  </div>
+</div>

@@ -25,8 +25,8 @@
 import Modal from 'core/modal';
 
 export default class AiModal extends Modal {
-    static TYPE = 'tiny_ai/modal';
-    static TEMPLATE = 'tiny_ai/modal';
+    static TYPE = 'ai-modal';
+    static TEMPLATE = 'tiny_ai/components/moodle-modal';
 
     registerEventListeners() {
         // Call the parent registration.

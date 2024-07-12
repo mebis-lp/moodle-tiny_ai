@@ -29,39 +29,24 @@ defined('MOODLE_INTERNAL') || die();
 $string['additional_prompt'] = 'Zusätzlicher Prompt';
 $string['ai:view'] = 'Die AI-Schaltfläche anzeigen';
 $string['errorwithcode'] = 'Ein Fehler ist aufgetreten, Fehlercode: {$a}';
-$string['modaltitle'] = 'Was möchten Sie tun?';
+$string['mainselection_heading'] = 'Wobei soll dir die KI helfen?';
+$string['more_options'] = 'Mehr Optionen';
 $string['nopurposesconfigured'] = 'Es wurden keine KI-Tools konfiguriert. Wenden Sie sich an Ihren ByCS-Admin.';
 $string['pluginname'] = 'Winzige AI-Schaltfläche';
+$string['prompt'] = 'Prompt';
 $string['purposesinglepromptnotdefined'] = 'Ihr ByCS-Admin hat kein KI-Tool für den Zweck "singleprompt" konfiguriert.';
 $string['purposetranslatenotdefined'] = 'Ihr ByCS-Admin hat kein KI-Tool für den Zweck "translate" konfiguriert.';
 $string['purposettsnotdefined'] = 'Ihr ByCS-Admin hat kein KI-Tool für den Zweck "tts" konfiguriert.';
 $string['purposeimggennotdefined'] = 'Ihr ByCS-Admin hat kein KI-Tool für den Zweck "imggen" konfiguriert.';
 $string['results_heading'] = 'Ergebnis';
 $string['results_please_wait'] = 'Bitte warten! Dies kann ein paar Sekunden dauern.';
-$string['more_options'] = 'Mehr Optionen';
-$string['prompt'] = 'Prompt';
-
-$string['simplify'] = 'Vereinfachen und zusammenfassen des markierten Textes';
-$string['startSimplification'] = 'Vereinfachung starten';
-$string['defaultprompt-simplify'] = 'Vereinfache den nachfolgenden Text:';
-
-$string['startTranslation'] = 'Übersetzung starten';
-$string['translate'] = 'Übersetzen des markierten Textes';
-$string['defaultprompt-translate'] = 'Übersetze den folgenden Text ins {$a}:';
-$string['additional_prompt_translation'] = 'Zusätzlicher Prompt um die die Übersetzung zu verbessern:';
-
-$string['startTTS'] = 'Audioausgabe generieren';
-$string['text-to-speech'] = 'Markierten Text in Sprache ausgeben';
-$string['outputlanguage'] = 'Ausgabesprache';
-$string['voice'] = 'Stimme';
-
-$string['startimggen'] = 'Bild generieren';
-$string['image_generation'] = 'Bildgenerierung';
-$string['defaultprompt-imggen'] = 'Generiere bitte ein Bild mit folgenden Eigenschaften: ...';
-$string['imgsize'] = 'Dimensionen';
-
-$string['freemode'] = 'Freie Prompteingabe';
-$string['startfree'] = 'Ausgabe starten';
-
-$string['confirm_no_userdata'] = 'Ich bestätige, dass keine personenbeziehbaren Daten verarbeitet werden.';
-$string['not_confirmed'] = 'Bitte bestätigen Sie vor dem Fortfahren, dass keine personenbezogenen Daten im Prompt enthalten sind.';
+$string['toolname_audiogen'] = 'Audiogenerierung';
+$string['toolname_describe'] = 'Ausführliche Beschreibung';
+$string['toolname_describe_extension'] = 'des markierten Textes';
+$string['toolname_imggen'] = 'Bildgenerierung';
+$string['toolname_summarize'] = 'Zusammenfassen';
+$string['toolname_summarize_extension'] = 'des markierten Textes';
+$string['toolname_translate'] = 'Übersetzen';
+$string['toolname_translate_extension'] = 'des markierten Textes';
+$string['toolname_tts'] = 'Audio erstellen';
+$string['toolname_tts_extension'] = 'aus dem markierten Text';

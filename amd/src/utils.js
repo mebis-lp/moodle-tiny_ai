@@ -37,343 +37,79 @@ import {getUserId} from 'tiny_ai/options';
 import {renderUserQuota} from 'local_ai_manager/userquota';
 import {call as fetchMany} from 'core/ajax';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
-import Log from 'core/log';
+import * as Renderer from 'tiny_ai/renderer';
+import Templates from 'core/templates';
 
-/**
- * Define the purposes for the actions available in tiny_ai.
- *
- * @type {{imggen: string, freeprompt: string, tts: string, simplify: string, translate: string}}
- */
-const purposes = {
-    simplify: 'singleprompt',
-    translate: 'singleprompt',
-    imggen: 'imggen',
-    tts: 'tts',
-    freeprompt: 'singleprompt',
-};
 
-/**
- * Get the template context for the dialogue.
- *
- * @param {object} data
- * @returns {object} data
- */
-const getTemplateContext = async(data) => {
-    return Object.assign({
-        'btnIdStartSimplification': Selectors.buttons.btnStartSimplification,
+let userId = null;
+let modal = null;
 
-        'defaultprompt-translate': "",
-        'btnIdStartTranslation': Selectors.buttons.btnStartTranslation,
-
-        'defaultprompt-tts': "",
-        'btnIdStartTTS': Selectors.buttons.btnStartTTS,
-
-        'defaultprompt-imggen': "Generiere bitte ein Bild mit folgenden Eigenschaften: ...",
-        'btnIdStartImgGen': Selectors.buttons.btnStartImgGen,
-        'btnOpenSettingsImgGen': Selectors.buttons.btnOpenSettingsImgGen,
-
-        'btnIdStartFree': Selectors.buttons.btnStartFree,
-
-        taResult: Selectors.elements.taResult,
-
-        spanResult: Selectors.elements.spanResult,
-    }, data);
-};
+export const init = async (editor) => {
+    userId = getUserId(editor)
+}
 
 /**
  * Shows and handles the dialog.
  *
- * @param {*} editor
  * @param {string} source the different sources from where the modal is being created, defined in common module
  */
-export const displayDialogue = async (editor, source) => {
+export const displayDialogue = async (source) => {
+    let mode;
     if (source === selectionbarSource) {
-        // TODO show the modal content when clicked by selectionbar
+        mode = 'selection';
     } else if (source === toolbarSource || source === menubarSource) {
-        // TODO show other modal content
+        mode = 'general';
     }
 
-    const data = {};
-    const purposeConfig = await getPurposeConfig();
-    if (!purposeConfig.tenantenabled) {
-        await alert('Not enabled', 'Your ByCS admin has not enabled the AI tools yet');
-        return;
-    }
-    Object.keys(purposes).forEach(action => {
-        const templatekey = 'show' + action;
-        data[templatekey] = purposeConfig[purposes[action]] !== null;
-    });
-    // We remove all purposes which we are not using in tiny_ai.
-    const filteredPurposeConfigArray = Object.keys(purposes).filter(action => purposeConfig[purposes[action]] !== null);
-    // If there are no purposes left the tenant has not configured any purpose we need. We show a message in this case.
-    data.noactionsavailable = filteredPurposeConfigArray.length === 0;
-    const usedPurposes = new Set(filteredPurposeConfigArray.map(localPurpose => purposes[localPurpose]));
-    for (const purpose of usedPurposes) {
-        const config = await getPurposeOptions(purpose);
-        if (purpose === 'tts') {
-            data.voices = config.voices;
-            data.languages = config.languages;
-        } else if (purpose === 'imggen') {
-            data.sizes = config.sizes;
-        }
-    }
-    data.showvoices = data.hasOwnProperty('voices') && data.voices.length > 0;
-    data.showlanguages = data.hasOwnProperty('languages') && data.languages.length > 0;
-    data.showsizes = data.hasOwnProperty('sizes') && data.sizes.length > 0;
+    await Renderer.init();
 
-    const modal = await AiModal.create({
-        templateContext: await getTemplateContext(data)
-    });
-
-    const $root = modal.getRoot();
-
-    $root.on(ModalEvents.save, () => {
-        const selectedText = editor.selection.getContent();
-        const newText = document.getElementById(Selectors.elements.taResult).value;
-        if (selectedText) {
-            editor.selection.setContent(newText);
-        } else {
-            editor.insertContent(newText);
+    // We initially render the modal without content, because we need to rerender it anyway.
+    modal = await AiModal.create({
+        templateContext: {
+            classes: 'tiny_ai-modal--dialog',
+            headerclasses: 'tiny_ai-modal--header'
         }
     });
-
-    const simplifyButton = document.getElementById(Selectors.buttons.btnStartSimplification);
-    if (simplifyButton) {
-        simplifyButton.addEventListener('click', () => {
-            const selectedText = stripHtmlTags(editor.selection.getContent());
-            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptSimplify).value;
-            const options = {};
-            // TODO Bad place to insert this, should be done in retrieve result, but passing the context id around is also nasty.
-            //  We probably should make a class out of this module.
-            options.contextid = getContextId(editor);
-            getSinglePromptResult(cmdPrompt, selectedText, options);
-        });
-    }
-
-    const translateButton = document.getElementById(Selectors.buttons.btnStartTranslation);
-    if (translateButton) {
-        translateButton.addEventListener('click', () => {
-            const selectedText = stripHtmlTags(editor.selection.getContent());
-            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTranslate).value;
-            const options = {};
-            options.contextid = getContextId(editor);
-            options.language = document.getElementById(Selectors.elements.translationOutputlanguage).value;
-            options.translation = true;
-
-            let cmdPromptend;
-
-            if (options.translation) {
-                cmdPromptend = 'Translate the following text to ' + options.language;
-            }
-
-            if (cmdPrompt) {
-                cmdPromptend += " " + cmdPrompt;
-            }
-
-            getSinglePromptResult(cmdPromptend, selectedText, options);
-        });
-    }
-
-    const ttsButton = document.getElementById(Selectors.buttons.btnStartTTS);
-    if (ttsButton) {
-        ttsButton.addEventListener('click', () => {
-            const selectedText = stripHtmlTags(editor.selection.getContent());
-            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptTTS).value;
-            const options = {};
-            options.itemid = getDraftItemId(editor);
-            options.filename = "tts_" + Math.random().toString(16).slice(2) + ".mp3";
-            options.languages = [document.getElementById(Selectors.elements.ttsOutputlanguage).value];
-            options.voices = [document.getElementById(Selectors.elements.ttsOutputVoice).value];
-            options.contextid = getContextId(editor);
-            getMP3(cmdPrompt, selectedText, options);
-        });
-    }
-
-    const imggenButton = document.getElementById(Selectors.buttons.btnStartImgGen);
-    if (imggenButton) {
-        imggenButton.addEventListener('click', () => {
-            const selectedText = stripHtmlTags(editor.selection.getContent());
-            let cmdPrompt = document.getElementById(Selectors.elements.cmdPromptImgGen).value;
-            const options = {};
-            options.itemid = getDraftItemId(editor);
-            options.filename = "imggen_" + Math.random().toString(16).slice(2) + ".png";
-            // TODO change to be not hardcoded anymore
-            options.sizes = [document.getElementById(Selectors.elements.imggensize).value];
-            options.contextid = getContextId(editor);
-            getIMG(cmdPrompt, selectedText, options);
-        });
-    }
-
-    const freePromptButton = document.getElementById(Selectors.buttons.btnStartFree);
-    if (freePromptButton) {
-        freePromptButton.addEventListener('click', () => {
-            let prompt = document.getElementById(Selectors.elements.freerompt).value;
-            const options = {};
-            options.contextid = getContextId(editor);
-            getSinglePromptResult(prompt, "", options);
-        });
-    }
-    await renderInfoBox('tiny_ai', getUserId(editor), '.tiny_ai_modal_body [data-content="local_ai_manager_infobox"]');
-    // TODO Only inject purposes we are really using depending
-    // Set is being used here to unique'ify the array.
-    const purposesToShowQuota = [...new Set(filteredPurposeConfigArray.map(purpose => purposes[purpose]))];
-    await renderUserQuota('[data-component="tiny_ai"][data-content="local_ai_manager_userquota"]', purposesToShowQuota);
+    // Unfortunately, the modal will not execute any JS code in the template, so we need to rerender the modal as a whole again.
+    await Renderer.renderStart(mode);
 };
 
 /**
- * Get the Chat result.
- * @param {string} cmdPrompt
- * @param {string} selectedText
- * @param {object} options
- */
-const getSinglePromptResult = async(cmdPrompt, selectedText, options) => {
-
-    const prompt = cmdPrompt + ": " + selectedText;
-    // Shows the results box. This should happen before the real result is shown,
-    // in order to inform the user, that we are working on it.
-    document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
-    document.getElementById(Selectors.elements.previewWrapperId).classList.add("hidden");
-
-    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
-    document.getElementById(Selectors.elements.taResult).value = StrPleaseWait;
-
-    const requestresult = await retrieveResult('singleprompt', prompt, options);
-
-    if (requestresult === null) {
-        document.getElementById(Selectors.elements.taResult).value = '';
-        return;
-    }
-
-    document.getElementById(Selectors.elements.taResult).value = requestresult.result;
-};
-
-/**
- * Get the MP3.
- * @param {string} cmdPrompt
- * @param {string} selectedText
- * @param {object} options
- */
-const getMP3 = async(cmdPrompt, selectedText, options) => {
-    const prompt = cmdPrompt + " " + selectedText;
-
-    // Shows the results box. This should happen before the real result is shown,
-    // in order to inform the user, that we are working on it.
-    // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
-    document.getElementById(Selectors.elements.spanResult).classList.add("hidden");
-    document.getElementById(Selectors.elements.previewWrapperId).classList.remove("hidden");
-
-    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
-    document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
-
-    const requestresult = await retrieveResult(purposes.tts, prompt, options);
-    if (requestresult === null) {
-        return;
-    }
-    const fileUrl = requestresult.result;
-
-    // Add the audio tag to the textarea, that is inserted later to the main editor.
-    const node = selectedText + '<audio class="tiny_ai_audio" controls src="' + fileUrl + '" type="audio/mpeg"/>';
-    document.getElementById(Selectors.elements.taResult).value = node;
-
-    // Finally generate the preview audio tag.
-    const audiotag = document.createElement('audio');
-    audiotag.controls = 'controls';
-    audiotag.src = fileUrl;
-    audiotag.type = 'audio/mpeg';
-    document.getElementById(Selectors.elements.previewSectionId).innerHTML = "";
-    document.getElementById(Selectors.elements.previewSectionId).appendChild(audiotag);
-
-};
-
-/**
- * Get the IMG.
- * @param {string} cmdPrompt
- * @param {string} selectedText
- * @param {object} options
- */
-const getIMG = async(cmdPrompt, selectedText, options) => {
-    const prompt = cmdPrompt;
-
-    // Shows the results box. This should happen before the real result is shown,
-    // in order to inform the user, that we are working on it.
-    // document.getElementById(Selectors.elements.spanResult).classList.remove("hidden");
-    document.getElementById(Selectors.elements.spanResult).classList.add('hidden');
-    document.getElementById(Selectors.elements.previewWrapperId).classList.remove('hidden');
-
-    const StrPleaseWait = await getString('results_please_wait', 'tiny_ai');
-    document.getElementById(Selectors.elements.previewSectionId).innerHTML = StrPleaseWait;
-
-    const requestresult = await retrieveResult(purposes.imggen, prompt, options);
-    if (retrieveResult === null) {
-        return;
-    }
-
-    const fileUrl = requestresult.result;
-
-    // Add the img tag to the textarea, that is inserted later to the main editor.
-    const node = selectedText + '<img class="tiny_ai_img mw-100" src="' + fileUrl + '" />';
-    document.getElementById(Selectors.elements.taResult).value = node;
-
-    // Finally generate the preview img tag.
-    const img = document.createElement('img');
-    img.src = fileUrl;
-    img.classList.add('mw-100');
-    document.getElementById(Selectors.elements.previewSectionId).innerHTML = '';
-    document.getElementById(Selectors.elements.previewSectionId).appendChild(img);
-};
-
-/**
- * Get the async answer from the LLM.
+ * Re-renders the content auf the modal once it has been created.
  *
- * @param {string} purpose
- * @param {string} prompt
- * @param {object} options
- * @returns {string}
+ * @param bodyComponentTemplate the name of the body template to use (without the prefix 'tiny_ai/components/')
+ * @param footerComponentTemplate the name of the footer template to use (without the prefix 'tiny_ai/components/')
+ * @param templateContext the template context being used for all partial templates
+ * @returns {Promise<void>} the async promise
  */
-const retrieveResult = async(purpose, prompt, options = {}) => {
-    options.component = 'tiny_ai';
-    let result;
-    try {
-        result = await makeRequest(purpose, prompt, JSON.stringify(options));
-    } catch (error) {
-        displayException(error);
-        return null;
-    }
-    if (result.code !== 200) {
-        const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
-        const error = JSON.parse(result.result);
-        await alert(errorString, error.message);
-        if (error.hasOwnProperty('debuginfo')) {
-            Log.error(error.debuginfo);
-        }
-        return null;
-    }
-
-    return result;
+export const renderModalContent = async (bodyComponentTemplate, footerComponentTemplate, templateContext) => {
+    const result = await Promise.all([
+        Templates.renderForPromise('tiny_ai/components/moodle-modal-header-title', templateContext),
+        Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
+        Templates.renderForPromise('tiny_ai/components/' + footerComponentTemplate, templateContext)
+    ]);
+    modal.setTitle(result[0].html);
+    modal.setBody(result[1].html);
+    modal.setFooter(result[2].html);
+    result.forEach((item) => {
+        Templates.runTemplateJS(item.js);
+    })
+    await insertInfoBox();
+    await insertUserQuotaBox();
 };
 
-const getPurposeOptions = async(purpose) => {
-    let result;
-    try {
-        result = await retrievePurposeOptions(purpose);
-    } catch (error) {
-        displayException(error);
-        return null;
+export const insertInfoBox = async () => {
+    // TODO extract used purposes
+    const infoBoxSelector = '[data-rendertarget="infobox"]';
+    if (document.querySelector(infoBoxSelector)) {
+        await renderInfoBox('tiny_ai', userId, infoBoxSelector, ['singleprompt', 'tts', 'imggen']);
     }
-    return JSON.parse(result.options);
 };
 
-const retrievePurposeOptions = (purpose) => fetchMany([{
-    methodname: 'local_ai_manager_get_purpose_options',
-    args: {
-        'purpose': purpose
-    },
-}])[0];
-
-
-const stripHtmlTags = (html) => {
-    // Place selected content into a temporary span and extract the plain text from it to strip HTML tags.
-    const span = document.createElement('span');
-    span.innerHTML = html;
-    return span.textContent;
+export const insertUserQuotaBox = async () => {
+    const usageBoxSelector = '[data-rendertarget="usageinfo"]';
+    if (document.querySelector(usageBoxSelector)) {
+        await renderUserQuota(usageBoxSelector, ['singleprompt', 'tts', 'imggen']);
+    }
 };
+

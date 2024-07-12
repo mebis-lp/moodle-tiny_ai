@@ -1,0 +1,19 @@
+<div id="tiny_ai_start_{{uniqid}}">
+    {{> tiny_ai/components/ai-info-text}}
+    {{#input}}
+        {{> tiny_ai/components/ai-input}}
+    {{/input}}
+    <div class="tiny_ai-modal--button-wrapper row">
+        {{#modal_buttons}}
+            <div class="col-12 col-md-6 mb-3">
+                {{> tiny_ai/components/ai-card-button}}
+            </div>
+        {{/modal_buttons}}
+    </div>
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/start'], function(Start) {
+        const controller = new Start('#tiny_ai_start_{{uniqid}}');
+        controller.init();
+    });
+{{/js}}

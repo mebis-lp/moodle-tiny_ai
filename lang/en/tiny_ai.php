@@ -29,43 +29,24 @@ defined('MOODLE_INTERNAL') || die();
 $string['additional_prompt'] = 'Additional Propmt';
 $string['ai:view'] = 'View the AI button';
 $string['errorwithcode'] = 'An error occured with error code {$a}';
-$string['modaltitle'] = 'Select Purpose';
+$string['mainselection_heading'] = 'What should the AI help you with?';
 $string['more_options'] = 'More Options';
 $string['nopurposesconfigured'] = 'No KI tools have been configured. Talk to your ByCS admin.';
 $string['pluginname'] = 'Tiny AI Button';
-$string['preview_heading'] = 'Preview';
+$string['prompt'] = 'Prompt';
 $string['purposesinglepromptnotdefined'] = 'Your ByCS admin has not configured an AI tool for the purpose "singleprompt"';
 $string['purposetranslatenotdefined'] = 'Your ByCS admin has not configured an AI tool for the purpose "translate"';
 $string['purposettsnotdefined'] = 'Your ByCS admin has not configured an AI tool for the purpose "tts"';
 $string['purposeimggennotdefined'] = 'Your ByCS admin has not configured an AI tool for the purpose "imggen"';
-$string['prompt'] = 'Prompt';
 $string['results_heading'] = 'Result';
 $string['results_please_wait'] = 'Please wait! This may take a few seconds.';
-
-$string['defaultprompt-simplify'] = 'Simplify the following text:';
-$string['simplify'] = 'Simplify';
-$string['startSimplification'] = 'Start Simplification';
-
-$string['defaultprompt-translate'] = 'Translate the following text to {$a}:';
-$string['startTranslation'] = 'Start Translation';
-$string['translate'] = 'Translate';
-$string['additional_prompt_translation'] = 'Additional prompt to give some more instructions.';
-
-$string['defaultprompt-tts'] = '';
-
-$string['outputlanguage'] = 'Outputlanguage';
-$string['startTTS']='Get Audio';
-$string['text-to-speech'] = 'Text to Speech';
-$string['voice'] = 'Voice';
-
-$string['defaultprompt-imggen'] = 'Create an image with these specs: ...';
-$string['height'] = 'Height';
-$string['image_generation'] = 'Imagegeneration';
-$string['startimggen'] = 'Get Image';
-$string['imgsize'] = 'Dimensions';
-
-$string['freemode'] = 'Free pompting';
-$string['startfree'] = 'Start output';
-
-$string['confirm_no_userdata'] = 'Confirm that the prompt contains no personal data.';
-$string['not_confirmed'] = 'Please confirm that no personal data is contained in the prompt before continuing';
+$string['toolname_audiogen'] = 'Audio generation';
+$string['toolname_describe'] = 'Detailed description';
+$string['toolname_describe_extension'] = 'of the selected text';
+$string['toolname_imggen'] = 'Image generation';
+$string['toolname_summarize'] = 'Summarize';
+$string['toolname_summarize_extension'] = 'the selected text';
+$string['toolname_translate'] = 'Translate';
+$string['toolname_translate_extension'] = 'the selected text';
+$string['toolname_tts'] = 'Create audio';
+$string['toolname_tts_extension'] = 'from the selected text';
