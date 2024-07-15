@@ -37,7 +37,6 @@ export default class {
         const modalFooter = document.querySelector(SELECTORS.modalFooter);
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
-        const showPromptButton = this.baseElement.querySelector('[data-action="showprompt"]');
 
         if (backButton) {
             backButton.addEventListener('click', async() => {
@@ -55,13 +54,6 @@ export default class {
 
 
             });
-        }
-
-        if (showPromptButton) {
-            showPromptButton.addEventListener('click', async() => {
-                const expanded = showPromptButton.dataset.hasOwnProperty('expanded') && showPromptButton.dataset.expanded.length > 0;
-                await Renderer.renderSummarize(!expanded);
-            })
         }
     }
 }

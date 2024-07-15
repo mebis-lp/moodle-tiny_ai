@@ -177,18 +177,18 @@ const getInputContext = () => {
     }
 }
 
-const getShowPromptButtonContext = (extendPrompt = false) => {
+const getShowPromptButtonContext = () => {
     return {
         hasText: true,
-        button_text: extendPrompt ? strings.hideprompt : strings.showprompt,
+        button_text: strings.showprompt,
         icon_left: true,
         icon_right: false,
         tertiary: true,
-        iconname: extendPrompt ? 'eye-slash' : 'eye',
+        iconname: 'eye',
         iconstyle: 'solid',
         action: 'showprompt',
-        expanded: extendPrompt,
-        textareatype: 'prompt'
+        textareatype: 'prompt',
+        collapsed: true
     }
 };
 
@@ -418,8 +418,8 @@ export const renderStart = async (mode) => {
     await renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
 }
 
-export const renderSummarize = async (extendPrompt) => {
-    const templateContext = await getTemplateContextSummarize(extendPrompt);
+export const renderSummarize = async () => {
+    const templateContext = await getTemplateContextSummarize();
     await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
 }
 

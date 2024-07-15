@@ -9,15 +9,15 @@
     <div class="row">
         <div class="col-12 mb-3">
             {{> tiny_ai/components/ai-button}}
-            {{#expanded}}
-                {{> tiny_ai/components/ai-textarea}}
-            {{/expanded}}
+            {{> tiny_ai/components/ai-textarea}}
         </div>
     </div>
 </div>
 {{#js}}
-    require(['tiny_ai/controllers/{{controller}}'], function(Controller) {
+    require(['tiny_ai/controllers/{{controller}}', 'tiny_ai/controllers/promptedit'], function(Controller, PromptEditController) {
         const controller = new Controller('#tiny_ai_{{controller}}_{{uniqid}}');
         Promise.resolve(controller.init());
+        const promptEditController = new PromptEditController('#tiny_ai_{{controller}}_{{uniqid}}');
+        Promise.resolve(promptEditController.init());
     });
 {{/js}}
