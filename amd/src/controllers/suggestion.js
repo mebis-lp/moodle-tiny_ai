@@ -16,7 +16,7 @@
 /**
  * Controller for the main selection.
  *
- * @module      tiny_ai/controllers/summarize_options
+ * @module      tiny_ai/controllers/suggestion
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,25 +26,23 @@ import {prefetchStrings} from 'core/prefetch';
 import {constants} from 'tiny_ai/constants';
 import * as Renderer from 'tiny_ai/renderer';
 import SELECTORS from 'tiny_ai/selectors';
+import BaseController from 'tiny_ai/controllers/base';
 
-export default class {
-
-    constructor(baseSelector) {
-        this.baseElement = document.querySelector(baseSelector);
-    }
+export default class extends BaseController {
 
     async init() {
-        const modalFooter = document.querySelector(SELECTORS.modalFooter);
-        const backButton = modalFooter.querySelector('[data-action="back"]');
-        const generateButton = modalFooter.querySelector('[data-action="generate"]');
+        const resultText = this.baseElement.querySelector('[data-text="result"]');
 
-        if (backButton) {
-            backButton.addEventListener('click', async() => {
-                await Renderer.renderStart(constants.modalModes.selection);
+        const trashButton = this.footer.querySelector('[data-action="delete"]');
+        const regenerateButton = this.footer.querySelector('[data-action="regenerate"]');
+
+        if (trashButton) {
+            trashButton.addEventListener('click', async() => {
+                await this.callRendererFunction();
             });
         }
 
-        if (generateButton) {
+        /*if (generateButton) {
             generateButton.addEventListener('click', async() => {
                 await Renderer.renderLoading();
                 // TODO remove again, just a delay until we have a real AI interaction
@@ -54,6 +52,6 @@ export default class {
 
 
             });
-        }
+        }*/
     }
 }

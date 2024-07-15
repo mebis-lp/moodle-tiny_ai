@@ -24,13 +24,11 @@
 
 import {prefetchStrings} from 'core/prefetch';
 import Log from 'core/log';
+import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
+import DataManager from 'tiny_ai/datamanager';
 
-export default class {
-
-    constructor(baseSelector) {
-        this.baseElement = document.querySelector(baseSelector);
-    }
+export default class extends BaseController {
 
     async init() {
         const summarizeButton = this.baseElement.querySelector('[data-action="loadsummarize"]');
@@ -42,31 +40,37 @@ export default class {
 
         if (summarizeButton) {
             summarizeButton.addEventListener('click', async(event) => {
+                DataManager.setCurrentTool('summarize');
                 await Renderer.renderSummarize();
             });
         }
         if (translateButton) {
             translateButton.addEventListener('click', async(event) => {
+                DataManager.setCurrentTool('translate');
                 await Renderer.renderTranslate();
             });
         }
         if (describeButton) {
             describeButton.addEventListener('click', async(event) => {
+                DataManager.setCurrentTool('describe');
                 await Renderer.renderDescribe();
             });
         }
         if (ttsButton) {
             ttsButton.addEventListener('click', async(event) => {
+                DataManager.setCurrentTool('tts');
                 await Renderer.renderTts();
             });
         }
         if (audiogenButton) {
             audiogenButton.addEventListener('click', async(event) => {
+                DataManager.setCurrentTool('audiogen');
                 await Renderer.renderAudiogen();
             });
         }
         if (imggenButton) {
             imggenButton.addEventListener('click', async(event) => {
+                DataManager.setCurrentTool('imggen');
                 await Renderer.renderImggen();
             });
         }

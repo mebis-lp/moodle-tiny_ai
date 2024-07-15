@@ -68,6 +68,7 @@
   border-radius: 8px;
   border: 1px solid #D33F01;
   background: #E99F80;
+  text-decoration: none;
   transition: background-color ease-in-out 0.5s;
 }
 .tiny_ai-card-button.disabled {
@@ -152,7 +153,7 @@
 
 .tiny_ai-input-container {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   border: 1px solid #E8E8EA;
   border-radius: 8px;
   padding: 10px;
@@ -250,6 +251,7 @@
 }
 .tiny_ai-modal--dialog .modal-content {
   border: none;
+  overflow: visible !important;
 }
 .tiny_ai-modal--dialog .tiny_ai-modal--header {
   padding: 24px 24px 16px 24px;
@@ -275,10 +277,21 @@
   line-height: 1;
 }
 .tiny_ai-modal--dialog [data-region=body] {
+  overflow-y: visible !important;
+}
+.tiny_ai-modal--dialog [data-region=body] :first-child[id^=tiny_ai_] {
   display: flex;
   padding: 8px 24px 0px 24px;
   flex-direction: column;
+}
+.tiny_ai-modal--dialog [data-region=body] :first-child[id^=tiny_ai_].tiny_ai_wrapper-l {
   gap: 24px;
+}
+.tiny_ai-modal--dialog [data-region=body] :first-child[id^=tiny_ai_].tiny_ai_wrapper-m {
+  gap: 16px;
+}
+.tiny_ai-modal--dialog [data-region=body] :first-child[id^=tiny_ai_].tiny_ai_wrapper-s {
+  gap: 10px;
 }
 .tiny_ai-modal--dialog [data-region=body] .tiny_ai-modal--button-wrapper {
   display: flex;

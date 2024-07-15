@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tiny AI utils library.
+ * Textarea handler.
  *
  * @module      tiny_ai/controllers/textarea_controller
  * @copyright   2024, ISB Bayern

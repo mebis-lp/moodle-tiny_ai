@@ -14,33 +14,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tiny AI data manager.
+ * Controller for the main selection.
  *
- * @module      tiny_ai/datamanager
+ * This controller is needed to update the "select button"
+ *
+ * @module      tiny_ai/controllers/dropdown
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const DataManager = new _DataManager();
-
-class _DataManager {
-
-    currentTool = null;
-    setCurrentTool(currentTool) {
-        this.currentTool = currentTool;
-    }
-
-    getCurrentTool() {
-        return this.currentTool;
-    }
-
-    setCurrentPrompt(prompt) {
-
-    }
+export const init = (dropDownSelector) => {
+    const dropdown = document.querySelector(dropDownSelector);
+    dropdown.querySelectorAll('[data-dropdown="option"]').forEach((item) => {
+        item.addEventListener('click', () => {
+            const dropdownSelect = dropdown.querySelector('[data-dropdown="select"]');
+            const dropdownTextElement = dropdown.querySelector('[data-dropdown="selecttext"]');
+            dropdownTextElement.innerText = item.innerText;
+            dropdownSelect.dataset.value = item.dataset.value;
+        });
+    });
 }
-
-export default DataManager;
-
-
-

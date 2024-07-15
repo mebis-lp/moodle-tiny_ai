@@ -1,4 +1,4 @@
-<div id="tiny_ai_{{controller}}_{{uniqid}}">
+<div id="tiny_ai_{{tool}}_{{uniqid}}">
     <div class="row">
         {{#modal_dropdowns}}
             <div class="col-12 col-md-6 mb-3">
@@ -14,10 +14,10 @@
     </div>
 </div>
 {{#js}}
-    require(['tiny_ai/controllers/{{controller}}', 'tiny_ai/controllers/promptedit'], function(Controller, PromptEditController) {
-        const controller = new Controller('#tiny_ai_{{controller}}_{{uniqid}}');
+    require(['tiny_ai/controllers/preferences', 'tiny_ai/controllers/promptedit'], function(Controller, PromptEditController) {
+        const controller = new Controller('#tiny_ai_{{tool}}_{{uniqid}}', '{{tool}}');
         Promise.resolve(controller.init());
-        const promptEditController = new PromptEditController('#tiny_ai_{{controller}}_{{uniqid}}');
+        const promptEditController = new PromptEditController('#tiny_ai_{{tool}}_{{uniqid}}');
         Promise.resolve(promptEditController.init());
     });
 {{/js}}

@@ -61,7 +61,6 @@ export const displayDialogue = async (source) => {
         mode = constants.modalModes.general;
     }
 
-    await Renderer.init();
 
     // We initially render the modal without content, because we need to rerender it anyway.
     modal = await AiModal.create({
@@ -70,49 +69,9 @@ export const displayDialogue = async (source) => {
             headerclasses: 'tiny_ai-modal--header'
         }
     });
+    await Renderer.init(modal, userId);
     // Unfortunately, the modal will not execute any JS code in the template, so we need to rerender the modal as a whole again.
     await Renderer.renderStart(mode);
 };
 
-/**
- * Re-renders the content auf the modal once it has been created.
- *
- * @param bodyComponentTemplate the name of the body template to use (without the prefix 'tiny_ai/components/')
- * @param footerComponentTemplate the name of the footer template to use (without the prefix 'tiny_ai/components/')
- * @param templateContext the template context being used for all partial templates
- * @returns {Promise<void>} the async promise
- */
-export const renderModalContent = async (bodyComponentTemplate, footerComponentTemplate, templateContext) => {
-    const result = await Promise.all([
-        Templates.renderForPromise('tiny_ai/components/moodle-modal-header-title', templateContext),
-        Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
-        Templates.renderForPromise('tiny_ai/components/' + footerComponentTemplate, templateContext)
-    ]);
-    if (templateContext.hasOwnProperty('modal_headline')) {
-        // If there is no headline specified, we keep the old one.
-        modal.setTitle(result[0].html);
-    }
-    modal.setBody(result[1].html);
-    modal.setFooter(result[2].html);
-    result.forEach((item) => {
-        Templates.runTemplateJS(item.js);
-    })
-    await insertInfoBox();
-    await insertUserQuotaBox();
-};
-
-export const insertInfoBox = async () => {
-    // TODO extract used purposes
-    const infoBoxSelector = '[data-rendertarget="infobox"]';
-    if (document.querySelector(infoBoxSelector)) {
-        await renderInfoBox('tiny_ai', userId, infoBoxSelector, ['singleprompt', 'tts', 'imggen']);
-    }
-};
-
-export const insertUserQuotaBox = async () => {
-    const usageBoxSelector = '[data-rendertarget="usageinfo"]';
-    if (document.querySelector(usageBoxSelector)) {
-        await renderUserQuota(usageBoxSelector, ['singleprompt', 'tts', 'imggen']);
-    }
-};
 

@@ -42,7 +42,6 @@ import Templates from 'core/templates';
 import * as DataManager from 'tiny_ai/datamanager';
 import {constants} from 'tiny_ai/constants';
 import {getAiConfig} from 'local_ai_manager/config';
-import {renderModalContent} from "./utils";
 
 
 const stringKeys = [
@@ -66,8 +65,11 @@ let aiConfig = null;
 
 prefetchStrings('tiny_ai', stringKeys);
 let strings = {};
+let modal = null;
+let userId = null;
 
-export const init = async () => {
+export const init = async (existingModal, userIdFromEditor) => {
+    modal = existingModal;
     aiConfig = await getAiConfig();
     const stringRequest = stringKeys.map(key => {
         return {key, component: 'tiny_ai'}
@@ -127,15 +129,18 @@ const getReplaceButtonsContext = () => {
         footer_iconbuttons:
             [
                 {
-                    "iconName": "trash"
+                    action: 'delete',
+                    iconName: 'trash'
                 },
                 {
-                    "iconName": "arrows-rotate"
+                    action: 'regenerate',
+                    iconName: 'arrows-rotate'
                 }
             ],
         footer_buttons:
             [
                 {
+                    action: 'insert',
                     hasText: true,
                     button_text: "UNTEN EINFUEGEN",
                     icon_left: true,
@@ -145,6 +150,7 @@ const getReplaceButtonsContext = () => {
                     customicon: true
                 },
                 {
+                    action: 'replace',
                     hasText: true,
                     button_text: "AUSWAHL ERSETZEN",
                     icon_left: true,
@@ -310,8 +316,10 @@ export const getTemplateContextSummarize = async (extendPrompt) => {
         showIcon: true,
         modal_dropdowns: [
             {
+                preference: 'maxwordcount',
                 dropdown_description: "Max. Anzahl der Wörter",
                 dropdown_default: "Keine Auswahl",
+                dropdown_default_value: "0",
                 dropdown_options: [
                     {
                         optionLabel: "Test 1",
@@ -332,6 +340,7 @@ export const getTemplateContextSummarize = async (extendPrompt) => {
                 ]
             },
             {
+                preference: 'languagetype',
                 dropdown_description: "Art der Sprache",
                 dropdown_default: "Fachsprache",
                 dropdown_options: [
@@ -357,14 +366,44 @@ export const getTemplateContextSummarize = async (extendPrompt) => {
 
 
     };
-    Object.assign(context, getShowPromptButtonContext(extendPrompt));
+    Object.assign(context, getShowPromptButtonContext());
     Object.assign(context, getBackAndGenerateButtonContext());
-    context.controller = 'summarize_options';
     return context;
 }
 
 export const getTemplateContextTranslate = async () => {
-    return {};
+    const context = {
+        modal_headline: "Übersetzen des markierten Textes",
+        showIcon: true,
+        modal_dropdowns: [
+            {
+                preference: 'targetlanguage',
+                dropdown_description: 'Ausgabesprache',
+                dropdown_default: 'Englisch',
+                dropdown_options: [
+                    {
+                        optionLabel: "Test 1",
+                        optionValue: "1"
+                    },
+                    {
+                        optionLabel: "Test 2",
+                        optionValue: "2"
+                    },
+                    {
+                        optionLabel: "Test 3",
+                        optionValue: "3"
+                    },
+                    {
+                        optionLabel: "Test 4",
+                        optionValue: "4"
+                    }
+                ]
+            }
+        ],
+    };
+    Object.assign(context, getShowPromptButtonContext());
+    Object.assign(context, getBackAndGenerateButtonContext());
+    return context;
 }
 
 export const getTemplateContextDescribe = async () => {
@@ -420,17 +459,17 @@ export const renderStart = async (mode) => {
 
 export const renderSummarize = async () => {
     const templateContext = await getTemplateContextSummarize();
-    await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
 }
 
 export const renderTranslate = async () => {
     const templateContext = await getTemplateContextTranslate();
-    await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
 }
 
 export const renderDescribe = async () => {
     const templateContext = await getTemplateContextDescribe();
-    await renderModalContent('moodle-modal-body-options', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
 }
 
 export const renderTts = async () => {
@@ -461,3 +500,45 @@ export const renderSuggestion = async (aiAnswer) => {
     Object.assign(templateContext, getReplaceButtonsContext());
     await renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
 }
+
+/**
+ * Re-renders the content auf the modal once it has been created.
+ *
+ * @param bodyComponentTemplate the name of the body template to use (without the prefix 'tiny_ai/components/')
+ * @param footerComponentTemplate the name of the footer template to use (without the prefix 'tiny_ai/components/')
+ * @param templateContext the template context being used for all partial templates
+ * @returns {Promise<void>} the async promise
+ */
+export const renderModalContent = async (bodyComponentTemplate, footerComponentTemplate, templateContext) => {
+    const result = await Promise.all([
+        Templates.renderForPromise('tiny_ai/components/moodle-modal-header-title', templateContext),
+        Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
+        Templates.renderForPromise('tiny_ai/components/' + footerComponentTemplate, templateContext)
+    ]);
+    if (templateContext.hasOwnProperty('modal_headline')) {
+        // If there is no headline specified, we keep the old one.
+        modal.setTitle(result[0].html);
+    }
+    modal.setBody(result[1].html);
+    modal.setFooter(result[2].html);
+    result.forEach((item) => {
+        Templates.runTemplateJS(item.js);
+    })
+    await insertInfoBox();
+    await insertUserQuotaBox();
+};
+
+export const insertInfoBox = async () => {
+    // TODO extract used purposes
+    const infoBoxSelector = '[data-rendertarget="infobox"]';
+    if (document.querySelector(infoBoxSelector)) {
+        await renderInfoBox('tiny_ai', userId, infoBoxSelector, ['singleprompt', 'tts', 'imggen']);
+    }
+};
+
+export const insertUserQuotaBox = async () => {
+    const usageBoxSelector = '[data-rendertarget="usageinfo"]';
+    if (document.querySelector(usageBoxSelector)) {
+        await renderUserQuota(usageBoxSelector, ['singleprompt', 'tts', 'imggen']);
+    }
+};

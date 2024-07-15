@@ -13,34 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+import * as Renderer from 'tiny_ai/renderer';
+import DataManager from 'tiny_ai/datamanager';
+
 /**
- * Tiny AI data manager.
+ * Base controller class providing some basic functionalities.
  *
- * @module      tiny_ai/datamanager
+ * All tiny_ai controllers should inherit from this class.
+ *
+ * @module      tiny_ai/controllers/base
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-const DataManager = new _DataManager();
-
-class _DataManager {
-
-    currentTool = null;
-    setCurrentTool(currentTool) {
-        this.currentTool = currentTool;
+export default class {
+    constructor(baseSelector) {
+        this.baseElement = document.querySelector(baseSelector);
+        this.footer = this.baseElement.parentElement.parentElement.querySelector('[data-region="footer"]');
     }
 
-    getCurrentTool() {
-        return this.currentTool;
-    }
-
-    setCurrentPrompt(prompt) {
-
+    callRendererFunction() {
+        console.log(DataManager.getCurrentTool())
+        const toolNameWithUppercaseLetter = DataManager.getCurrentTool().charAt(0).toUpperCase() + DataManager.getCurrentTool().slice(1);
+        Renderer['render' + toolNameWithUppercaseLetter]();
     }
 }
-
-export default DataManager;
-
-
-
