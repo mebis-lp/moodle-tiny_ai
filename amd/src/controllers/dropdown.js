@@ -32,6 +32,13 @@ export const init = (dropDownSelector) => {
             const dropdownTextElement = dropdown.querySelector('[data-dropdown="selecttext"]');
             dropdownTextElement.innerText = item.innerText;
             dropdownSelect.dataset.value = item.dataset.value;
+            const event = new CustomEvent('dropdownSelectionUpdated', {
+                detail: {
+                    dropdownPreference: dropdown.dataset.preference,
+                    newValue: dropdownSelect.dataset.value,
+                }
+            });
+            dropdown.dispatchEvent(event);
         });
     });
 }

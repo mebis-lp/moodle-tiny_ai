@@ -24,28 +24,20 @@
 
 // import Modal from 'core/modal';
 import AiModal from './modal';
-import Selectors from './selectors';
-import {makeRequest} from 'local_ai_manager/make_request';
-import {getPurposeConfig} from 'local_ai_manager/config';
-import ModalEvents from 'core/modal_events';
-import {getDraftItemId} from 'editor_tiny/options';
-import {getString} from 'core/str';
-import {alert, exception as displayException} from 'core/notification';
-import {renderInfoBox} from 'local_ai_manager/render_infobox';
-import {getContextId} from 'editor_tiny/options';
 import {getUserId} from 'tiny_ai/options';
-import {renderUserQuota} from 'local_ai_manager/userquota';
 import {constants} from 'tiny_ai/constants';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
 import * as Renderer from 'tiny_ai/renderer';
-import Templates from 'core/templates';
+import DataManager from 'tiny_ai/datamanager';
 
 
 let userId = null;
 let modal = null;
+let editor = null;
 
-export const init = async (editor) => {
-    userId = getUserId(editor)
+export const init = async (editorObject) => {
+    editor = editorObject;
+    userId = getUserId(editor);
 }
 
 /**
@@ -69,6 +61,11 @@ export const displayDialogue = async (source) => {
             headerclasses: 'tiny_ai-modal--header'
         }
     });
+
+    if (mode === constants.modalModes.selection) {
+        console.log(editor)
+        DataManager.setSelection(editor.selection.getContent());
+    }
     await Renderer.init(modal, userId);
     // Unfortunately, the modal will not execute any JS code in the template, so we need to rerender the modal as a whole again.
     await Renderer.renderStart(mode);

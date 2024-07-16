@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+import SELECTORS from 'tiny_ai/selectors';
+
 /**
  * Tiny AI data manager.
  *
@@ -26,7 +28,13 @@ const DataManager = new _DataManager();
 
 class _DataManager {
 
+    constructor() {
+        this.eventEmitterElement = document.createElement('div');
+    }
+
     currentTool = null;
+    prompt = null;
+
     setCurrentTool(currentTool) {
         this.currentTool = currentTool;
     }
@@ -36,7 +44,36 @@ class _DataManager {
     }
 
     setCurrentPrompt(prompt) {
+        this.prompt = prompt;
+        const promptUpdatedEvent = new CustomEvent('promptUpdated', {
+            detail: {
+                newPrompt: prompt
+            }
+        });
+        this.eventEmitterElement.dispatchEvent(promptUpdatedEvent);
+    }
 
+    getCurrentPrompt() {
+        return this.prompt;
+
+    }
+
+    getSelection() {
+        return this.selection;
+    }
+
+    getSelectionText() {
+        const span = document.createElement('span');
+        span.innerHTML = this.selection;
+        return span.textContent;
+    }
+
+    setSelection(selection) {
+        this.selection = selection;
+    }
+
+    getEventEmitterElement() {
+        return this.eventEmitterElement;
     }
 }
 

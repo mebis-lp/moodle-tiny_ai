@@ -27,6 +27,8 @@ import {constants} from 'tiny_ai/constants';
 import * as Renderer from 'tiny_ai/renderer';
 import SELECTORS from 'tiny_ai/selectors';
 import BaseController from 'tiny_ai/controllers/base';
+import DataManager from 'tiny_ai/datamanager';
+import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 
 export default class extends BaseController {
 
@@ -35,6 +37,27 @@ export default class extends BaseController {
         const modalFooter = document.querySelector(SELECTORS.modalFooter);
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
+
+        switch(DataManager.getCurrentTool()) {
+            case 'summarize':
+                const maxWordCountElement = this.baseElement.querySelector('[data-preference="maxWordCount"]');
+                const languageTypeElement = this.baseElement.querySelector('[data-preference="languageType"]');
+                SummarizeHandler.setMaxWordCount(maxWordCountElement.querySelector('[data-dropdown="select"]').dataset.value);
+                SummarizeHandler.setLanguageType(languageTypeElement.querySelector('[data-dropdown="select"]').dataset.value);
+                DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
+                maxWordCountElement.addEventListener('dropdownSelectionUpdated', event => {
+                    SummarizeHandler.setMaxWordCount(event.detail.newValue);
+                    DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
+                    console.log(DataManager.getCurrentPrompt())
+                });
+                languageTypeElement.addEventListener('dropdownSelectionUpdated', event => {
+                    SummarizeHandler.setLanguageType(event.detail.newValue);
+                    DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
+                    console.log(DataManager.getCurrentPrompt())
+                });
+        }
+
+        console.log(DataManager.getCurrentPrompt())
 
         if (backButton) {
             backButton.addEventListener('click', async() => {
@@ -46,10 +69,14 @@ export default class extends BaseController {
             generateButton.addEventListener('click', async() => {
                 await Renderer.renderLoading();
                 // TODO remove again, just a delay until we have a real AI interaction
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                //await aiAnswer = makeRequest(...)
-                await Renderer.renderSuggestion("BLINDTEXT");
+                const result = await SummarizeHandler.getAiAnswer();
+                if (result === null) {
+                    this.callRendererFunction();
+                    return;
+                }
+                await Renderer.renderSuggestion(result);
             });
         }
+
     }
 }

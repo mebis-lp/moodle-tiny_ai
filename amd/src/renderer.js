@@ -42,6 +42,7 @@ import Templates from 'core/templates';
 import * as DataManager from 'tiny_ai/datamanager';
 import {constants} from 'tiny_ai/constants';
 import {getAiConfig} from 'local_ai_manager/config';
+import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 
 
 const stringKeys = [
@@ -313,61 +314,49 @@ export const getTemplateContextStart = async (mode) => {
 export const getTemplateContextSummarize = async (extendPrompt) => {
     const context = {
         modal_headline: "Zusammenfassen des markierten Textes",
-        showIcon: true,
-        modal_dropdowns: [
-            {
-                preference: 'maxwordcount',
-                dropdown_description: "Max. Anzahl der Wörter",
-                dropdown_default: "Keine Auswahl",
-                dropdown_default_value: "0",
-                dropdown_options: [
-                    {
-                        optionLabel: "Test 1",
-                        optionValue: "1"
-                    },
-                    {
-                        optionLabel: "Test 2",
-                        optionValue: "2"
-                    },
-                    {
-                        optionLabel: "Test 3",
-                        optionValue: "3"
-                    },
-                    {
-                        optionLabel: "Test 4",
-                        optionValue: "4"
-                    }
-                ]
-            },
-            {
-                preference: 'languagetype',
-                dropdown_description: "Art der Sprache",
-                dropdown_default: "Fachsprache",
-                dropdown_options: [
-                    {
-                        "optionLabel": "Test 1",
-                        "optionValue": "1"
-                    },
-                    {
-                        "optionLabel": "Test 2",
-                        "optionValue": "2"
-                    },
-                    {
-                        "optionLabel": "Test 3",
-                        "optionValue": "3"
-                    },
-                    {
-                        "optionLabel": "Test 4",
-                        "optionValue": "4"
-                    }
-                ]
-            }
-        ],
-
-
+        showIcon: true
     };
     Object.assign(context, getShowPromptButtonContext());
     Object.assign(context, getBackAndGenerateButtonContext());
+
+    const maxWordCountDropdownContext = {};
+    maxWordCountDropdownContext.preference = 'maxWordCount';
+    maxWordCountDropdownContext.dropdown_default = Object.values(SummarizeHandler.maxWordCountOptions)[0];
+    maxWordCountDropdownContext.dropdown_default_value = Object.keys(SummarizeHandler.maxWordCountOptions)[0];
+    maxWordCountDropdownContext.dropdown_description = 'MAXIMALE WORTANZAHL';
+    const maxWordCountDropdownOptions = [];
+    for (const [key, value] of Object.entries(SummarizeHandler.maxWordCountOptions)) {
+        maxWordCountDropdownOptions.push({
+            optionValue: key,
+            optionLabel: value,
+        })
+    }
+    delete maxWordCountDropdownOptions[Object.keys(SummarizeHandler.languageTypeOptions)[0]]
+    maxWordCountDropdownContext.dropdown_options = maxWordCountDropdownOptions;
+
+    const languageTypeDropdownContext = {};
+    languageTypeDropdownContext.preference = 'languageType';
+    languageTypeDropdownContext.dropdown_default = Object.values(SummarizeHandler.languageTypeOptions)[0];
+    languageTypeDropdownContext.dropdown_default_value = Object.keys(SummarizeHandler.languageTypeOptions)[0];
+    languageTypeDropdownContext.dropdown_description = 'ART DER SPRACHE';
+    const languageTypeDropdownOptions = [];
+    for (const [key, value] of Object.entries(SummarizeHandler.languageTypeOptions)) {
+        languageTypeDropdownOptions.push({
+            optionValue: key,
+            optionLabel: value,
+        })
+    }
+    delete languageTypeDropdownOptions[Object.keys(SummarizeHandler.languageTypeOptions)[0]];
+    languageTypeDropdownContext.dropdown_options = languageTypeDropdownOptions;
+
+
+    Object.assign(context, {
+        modal_dropdowns: [
+            maxWordCountDropdownContext,
+            languageTypeDropdownContext,
+        ]
+    })
+
     return context;
 }
 

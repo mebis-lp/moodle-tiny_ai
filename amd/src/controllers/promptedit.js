@@ -23,9 +23,9 @@
  */
 
 import {prefetchStrings} from 'core/prefetch';
-import Log from 'core/log';
-import * as Renderer from 'tiny_ai/renderer';
 import {getStrings} from 'core/str';
+import DataManager from 'tiny_ai/datamanager';
+import SELECTORS from 'tiny_ai/selectors';
 
 export default class {
 
@@ -37,7 +37,16 @@ export default class {
         const showPromptButton = this.baseElement.querySelector('[data-action="showprompt"]');
         const textarea = this.baseElement.querySelector('textarea[data-type="prompt"]');
 
-        console.log(showPromptButton)
+        textarea.innerHTML = DataManager.getCurrentPrompt();
+        DataManager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
+            textarea.value = event.detail.newPrompt;
+        });
+        textarea.addEventListener('keyup', event => {
+            console.log(textarea.value)
+            DataManager.setCurrentPrompt(textarea.value);
+            console.log(DataManager.getCurrentPrompt())
+
+        });
 
         if (showPromptButton) {
             const [showPromptString, hidePromptString] = await getStrings(
