@@ -39,7 +39,7 @@ import {call as fetchMany} from 'core/ajax';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
 import Log from 'core/log';
 import Templates from 'core/templates';
-import * as DataManager from 'tiny_ai/datamanager';
+import DataManager from 'tiny_ai/datamanager';
 import {constants} from 'tiny_ai/constants';
 import {getAiConfig} from 'local_ai_manager/config';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
@@ -441,6 +441,17 @@ export const getTemplateContextImggen = async () => {
     return context;
 }
 
+export const getTemplateContextOptimizePrompt = () => {
+    const context = {
+        modal_headline: "LETZTEN PROMPT UEBERARBEITEN",
+        showIcon: true,
+        textareatype: 'prompt'
+    }
+    Object.assign(context, getBackAndGenerateButtonContext());
+    return context;
+
+};
+
 export const renderStart = async (mode) => {
     const templateContext = await getTemplateContextStart(mode);
     await renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
@@ -482,12 +493,17 @@ export const renderLoading = async () => {
     await renderModalContent('moodle-modal-body-loading', 'moodle-modal-footer-empty', templateContext);
 }
 
-export const renderSuggestion = async (aiAnswer) => {
+export const renderSuggestion = async () => {
     const templateContext = {};
     templateContext.modal_headline = "KI-VORSCHLAG";
-    templateContext.result_text = aiAnswer;
+    templateContext.result_text = DataManager.getCurrentAiResult();
     Object.assign(templateContext, getReplaceButtonsContext());
     await renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
+}
+
+export const renderOptimizePrompt = async () => {
+    const templateContext = getTemplateContextOptimizePrompt();
+    await renderModalContent('moodle-modal-body-optimize', 'moodle-modal-footer-generate', templateContext);
 }
 
 /**

@@ -29,6 +29,9 @@ import {constants} from 'tiny_ai/constants';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
+import {exception as displayException} from 'core/notification';
+import {getString} from 'core/str';
+import {makeRequest} from 'local_ai_manager/make_request';
 
 
 let userId = null;
@@ -71,4 +74,17 @@ export const displayDialogue = async (source) => {
     await Renderer.renderStart(mode);
 };
 
-
+export const getAiAnswer = async(prompt, purpose) => {
+    let result = null;
+    try {
+        result = await makeRequest(purpose, prompt);
+    } catch (exception) {
+        displayException(exception);
+    }
+    if (result.code !== 200) {
+        const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
+        await alert(errorString, result.result);
+        return null;
+    }
+    return result.result;
+}

@@ -16,7 +16,7 @@
 /**
  * Controller for the main selection.
  *
- * @module      tiny_ai/controllers/suggestion
+ * @module      tiny_ai/controllers/optimize
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,24 +25,31 @@
 import {prefetchStrings} from 'core/prefetch';
 import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
-import {getAiAnswer} from "../utils";
-import DataManager from "../datamanager";
+import {getAiAnswer} from 'tiny_ai/utils';
+import DataManager from 'tiny_ai/datamanager';
 
 export default class extends BaseController {
 
     async init() {
-        const trashButton = this.footer.querySelector('[data-action="delete"]');
-        const regenerateButton = this.footer.querySelector('[data-action="regenerate"]');
+        const backButton = this.footer.querySelector('[data-action="back"]');
+        const generateButton = this.footer.querySelector('[data-action="generate"]');
 
-        if (trashButton) {
-            trashButton.addEventListener('click', async() => {
-                await this.callRendererFunction();
+        if (backButton) {
+            backButton.addEventListener('click', async() => {
+                await Renderer.renderSuggestion();
             });
         }
 
-        if (regenerateButton) {
-            regenerateButton.addEventListener('click', async() => {
-                await Renderer.renderOptimizePrompt();
+        if (generateButton) {
+            generateButton.addEventListener('click', async() => {
+                await Renderer.renderLoading();
+                const result = await getAiAnswer(DataManager.getCurrentPrompt(),'singleprompt');
+                if (result === null) {
+                    this.callRendererFunction();
+                    return;
+                }
+                DataManager.setCurrentAiResult(result);
+                await Renderer.renderSuggestion();
             });
         }
     }

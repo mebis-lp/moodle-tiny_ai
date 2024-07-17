@@ -18,7 +18,6 @@ import DataManager from 'tiny_ai/datamanager';
 import {exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 
-
 /**
  * Tiny AI data manager.
  *
@@ -61,28 +60,12 @@ class _SummarizeHandler {
     getPrompt() {
         let prompt = 'Vereinfache den Text nachfolgenden Text.';
         if (parseInt(this.maxWordCount) !== 0) {
-            prompt += ' Der Text darf aus höchstens ' + this.maxWordCount + ' Wörter bestehen.';
+            prompt += ' Der Text muss höchstens ' + this.maxWordCount + ' Wörter besitzen.';
         }
         if (this.languageType !== 'nospeciallanguage') {
             prompt += ' Der Text muss in ' + this.languageTypeOptions[this.languageType] + ' verfasst sein.';
         }
-        return prompt + '\nDer zu vereinfachende Text lautet:' + DataManager.getSelectionText();
-    }
-
-    async getAiAnswer() {
-        let result = null;
-        try {
-            result = await makeRequest('singleprompt', this.getPrompt());
-        } catch (exception) {
-            displayException(exception);
-        }
-        if (result.code !== 200) {
-            const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
-            await alert(errorString, result.result);
-            return null;
-        }
-        console.log(result)
-        return result.result;
+        return prompt + '\nDer zu vereinfachende Text lautet: ' + DataManager.getSelectionText();
     }
 
 }

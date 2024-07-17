@@ -27,7 +27,6 @@ export const init = (textareaSelector) => {
     const textarea = document.querySelector(textareaSelector);
     if (textarea) {
         textarea.addEventListener('input', () => {
-            console.log("bla")
             const minHeight = 40;
             // Set height to minimum to recalculate scrollHeight.
             textarea.style.height = minHeight + 'px';

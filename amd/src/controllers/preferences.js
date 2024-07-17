@@ -29,6 +29,8 @@ import SELECTORS from 'tiny_ai/selectors';
 import BaseController from 'tiny_ai/controllers/base';
 import DataManager from 'tiny_ai/datamanager';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
+import {getAiAnswer} from 'tiny_ai/utils';
+import summarize from "tiny_ai/datamanager";
 
 export default class extends BaseController {
 
@@ -68,13 +70,13 @@ export default class extends BaseController {
         if (generateButton) {
             generateButton.addEventListener('click', async() => {
                 await Renderer.renderLoading();
-                // TODO remove again, just a delay until we have a real AI interaction
-                const result = await SummarizeHandler.getAiAnswer();
+                const result = await getAiAnswer(DataManager.getCurrentPrompt(),'singleprompt');
                 if (result === null) {
                     this.callRendererFunction();
                     return;
                 }
-                await Renderer.renderSuggestion(result);
+                DataManager.setCurrentAiResult(result);
+                await Renderer.renderSuggestion();
             });
         }
 

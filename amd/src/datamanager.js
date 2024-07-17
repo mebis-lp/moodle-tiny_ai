@@ -33,6 +33,7 @@ class _DataManager {
     }
 
     currentTool = null;
+    currentAiResult = null;
     prompt = null;
 
     setCurrentTool(currentTool) {
@@ -74,6 +75,14 @@ class _DataManager {
 
     getEventEmitterElement() {
         return this.eventEmitterElement;
+    }
+
+    setCurrentAiResult(aiResult) {
+        this.currentAiResult = aiResult;
+    }
+
+    getCurrentAiResult() {
+        return this.currentAiResult;
     }
 }
 
