@@ -16,7 +16,7 @@
 /**
  * Controller for the main selection.
  *
- * @module      tiny_ai/controllers/summarize_options
+ * @module      tiny_ai/controllers/translate
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,8 +29,8 @@ import SELECTORS from 'tiny_ai/selectors';
 import BaseController from 'tiny_ai/controllers/base';
 import DataManager from 'tiny_ai/datamanager';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
+import TranslateHandler from 'tiny_ai/datahandler/translate';
 import {getAiAnswer} from 'tiny_ai/utils';
-import summarize from "tiny_ai/datamanager";
 
 export default class extends BaseController {
 
@@ -55,8 +55,17 @@ export default class extends BaseController {
                 languageTypeElement.addEventListener('dropdownSelectionUpdated', event => {
                     SummarizeHandler.setLanguageType(event.detail.newValue);
                     DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
-                    console.log(DataManager.getCurrentPrompt())
                 });
+                break;
+            case 'translate':
+                const targetLanguageElement = this.baseElement.querySelector('[data-preference="targetLanguage"]');
+                TranslateHandler.setTargetLanguage(targetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value)
+                DataManager.setCurrentPrompt(TranslateHandler.getPrompt());
+                targetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
+                    TranslateHandler.setTargetLanguage(event.detail.newValue);
+                    DataManager.setCurrentPrompt(TranslateHandler.getPrompt())
+                });
+                break;
         }
 
         console.log(DataManager.getCurrentPrompt())

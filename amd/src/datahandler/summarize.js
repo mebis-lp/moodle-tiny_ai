@@ -21,7 +21,7 @@ import {getString} from 'core/str';
 /**
  * Tiny AI data manager.
  *
- * @module      tiny_ai/datamanager
+ * @module      tiny_ai/datahandler/summarize
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

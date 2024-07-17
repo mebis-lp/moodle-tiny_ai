@@ -43,6 +43,7 @@ import DataManager from 'tiny_ai/datamanager';
 import {constants} from 'tiny_ai/constants';
 import {getAiConfig} from 'local_ai_manager/config';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
+import TranslateHandler from 'tiny_ai/datahandler/translate';
 
 
 const stringKeys = [
@@ -355,41 +356,35 @@ export const getTemplateContextSummarize = async (extendPrompt) => {
             maxWordCountDropdownContext,
             languageTypeDropdownContext,
         ]
-    })
+    });
 
     return context;
 }
 
 export const getTemplateContextTranslate = async () => {
     const context = {
-        modal_headline: "Übersetzen des markierten Textes",
-        showIcon: true,
-        modal_dropdowns: [
-            {
-                preference: 'targetlanguage',
-                dropdown_description: 'Ausgabesprache',
-                dropdown_default: 'Englisch',
-                dropdown_options: [
-                    {
-                        optionLabel: "Test 1",
-                        optionValue: "1"
-                    },
-                    {
-                        optionLabel: "Test 2",
-                        optionValue: "2"
-                    },
-                    {
-                        optionLabel: "Test 3",
-                        optionValue: "3"
-                    },
-                    {
-                        optionLabel: "Test 4",
-                        optionValue: "4"
-                    }
-                ]
-            }
-        ],
+        modal_headline: 'Übersetzen des markierten Textes',
+        showIcon: true
     };
+    const targetLanguageDropdownContext = {};
+    targetLanguageDropdownContext.preference = 'targetLanguage';
+    targetLanguageDropdownContext.dropdown_default = Object.values(TranslateHandler.targetLanguageOptions)[0];
+    targetLanguageDropdownContext.dropdown_default_value = Object.keys(TranslateHandler.targetLanguageOptions)[0];
+    targetLanguageDropdownContext.dropdown_description = 'ZIELSPRACHE';
+    const targetLanguageDropdownOptions = [];
+    for (const [key, value] of Object.entries(TranslateHandler.targetLanguageOptions)) {
+        targetLanguageDropdownOptions.push({
+            optionValue: key,
+            optionLabel: value,
+        })
+    }
+    targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+
+    Object.assign(context, {
+        modal_dropdowns: [
+            targetLanguageDropdownContext,
+        ]
+    });
     Object.assign(context, getShowPromptButtonContext());
     Object.assign(context, getBackAndGenerateButtonContext());
     return context;
