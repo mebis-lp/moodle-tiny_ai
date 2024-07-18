@@ -8,7 +8,7 @@
     flex: 1 0 0;
     align-self: stretch;
     min-height: 120px;
-    max-height: 140px;
+    height: 100%;
     width: 100%;
     resize: none; /* Prevent manual resizing */
     overflow-y: auto; /* Enable vertical scroll */
@@ -17,8 +17,6 @@
     border: 1px solid $neutral-grey-100;
     background: $neutral-white;
 }
-
-
 
 .dark {
     .tiny_ai-textarea {
