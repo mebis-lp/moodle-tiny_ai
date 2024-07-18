@@ -210,23 +210,18 @@ export const getTemplateContextStart = async (mode) => {
     // TODO Test if this logic is correct
     const isToolDisabled = (tool) => {
         if (!aiConfig.tenantenabled && aiConfig.role !== 'role_basic') {
-            console.log("bla1")
             return true;
         }
         if (aiConfig.userlocked) {
-            console.log("bla2")
             return true;
         }
         const purposeInfo = getPurposeConfig(tool);
         if (!purposeInfo.isconfigured && aiConfig.role !== 'role_basic') {
-            console.log("bla3")
             return true;
         }
         if (purposeInfo.limitreached) {
-            console.log("bla1")
             return true;
         }
-        console.log("bla4")
         return false;
     }
 
@@ -315,7 +310,8 @@ export const getTemplateContextStart = async (mode) => {
 export const getTemplateContextSummarize = async (extendPrompt) => {
     const context = {
         modal_headline: "Zusammenfassen des markierten Textes",
-        showIcon: true
+        showIcon: true,
+        tool: 'summarize'
     };
     Object.assign(context, getShowPromptButtonContext());
     Object.assign(context, getBackAndGenerateButtonContext());
@@ -364,7 +360,8 @@ export const getTemplateContextSummarize = async (extendPrompt) => {
 export const getTemplateContextTranslate = async () => {
     const context = {
         modal_headline: 'Übersetzen des markierten Textes',
-        showIcon: true
+        showIcon: true,
+        tool: 'translate'
     };
     const targetLanguageDropdownContext = {};
     targetLanguageDropdownContext.preference = 'targetLanguage';
@@ -391,7 +388,10 @@ export const getTemplateContextTranslate = async () => {
 }
 
 export const getTemplateContextDescribe = async () => {
-    return {};
+    const context = getTemplateContextSummarize();
+    context.tool = 'describe';
+    context.modal_headline = "AUSFÜHRLICHE BESCHREIBUNG DES MARKIERTEN TEXTES";
+    return context;
 }
 
 export const getTemplateContextTts = async () => {
@@ -406,6 +406,7 @@ export const getTemplateContextImggen = async () => {
     const context = {
         modal_headline: "BILDGENERIERUNG",
         showIcon: true,
+        tool: 'imggen',
         modal_dropdowns: [
             {
                 dropdown_description: "AUFLOESUNG",

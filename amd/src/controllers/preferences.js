@@ -39,9 +39,11 @@ export default class extends BaseController {
         const modalFooter = document.querySelector(SELECTORS.modalFooter);
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
-
+console.log(DataManager.getCurrentTool())
         switch(DataManager.getCurrentTool()) {
             case 'summarize':
+            case 'describe':
+                SummarizeHandler.setTool(DataManager.getCurrentTool());
                 const maxWordCountElement = this.baseElement.querySelector('[data-preference="maxWordCount"]');
                 const languageTypeElement = this.baseElement.querySelector('[data-preference="languageType"]');
                 SummarizeHandler.setMaxWordCount(maxWordCountElement.querySelector('[data-dropdown="select"]').dataset.value);
@@ -67,8 +69,6 @@ export default class extends BaseController {
                 });
                 break;
         }
-
-        console.log(DataManager.getCurrentPrompt())
 
         if (backButton) {
             backButton.addEventListener('click', async() => {

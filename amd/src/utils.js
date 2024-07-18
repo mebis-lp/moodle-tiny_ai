@@ -22,8 +22,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// import Modal from 'core/modal';
-import AiModal from './modal';
+import AiModal from 'tiny_ai/modal';
+import ModalEvents from 'core/modal_events';
 import {getUserId} from 'tiny_ai/options';
 import {constants} from 'tiny_ai/constants';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
@@ -72,6 +72,9 @@ export const displayDialogue = async (source) => {
     await Renderer.init(modal, userId);
     // Unfortunately, the modal will not execute any JS code in the template, so we need to rerender the modal as a whole again.
     await Renderer.renderStart(mode);
+    modal.getRoot().on(ModalEvents.outsideClick, event => {
+        event.preventDefault();
+    });
 };
 
 export const getAiAnswer = async(prompt, purpose) => {
@@ -87,4 +90,16 @@ export const getAiAnswer = async(prompt, purpose) => {
         return null;
     }
     return result.result;
+}
+
+export const insertAfterContent = (textToInsert) => {
+    editor.setContent(editor.getContent() + '<p>' + textToInsert + '</p>');
+}
+
+export const replaceSelection = (textToReplace) => {
+    editor.selection.setContent(textToReplace);
+}
+
+export const destroyModal = () => {
+    modal.destroy();
 }

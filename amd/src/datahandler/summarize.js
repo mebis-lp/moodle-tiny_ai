@@ -31,6 +31,8 @@ const SummarizeHandler = new _SummarizeHandler();
 
 class _SummarizeHandler {
 
+    currentTool = null;
+
     languageTypeOptions = {
         nospeciallanguage: 'KEINE VERAENDERUNG DER SPRACHE',
         simplelanguage: 'EINFACHE SPRACHE',
@@ -58,16 +60,24 @@ class _SummarizeHandler {
     }
 
     getPrompt() {
-        let prompt = 'Vereinfache den Text nachfolgenden Text.';
+        let prompt = '';
+        if (this.currentTool === 'summarize') {
+            prompt += 'Vereinfache den nachfolgenden Text.';
+        } else if (this.currentTool === 'describe') {
+            prompt += 'Beschreibe den nachfolgenden Text.';
+        }
         if (parseInt(this.maxWordCount) !== 0) {
             prompt += ' Der Text muss höchstens ' + this.maxWordCount + ' Wörter besitzen.';
         }
         if (this.languageType !== 'nospeciallanguage') {
             prompt += ' Der Text muss in ' + this.languageTypeOptions[this.languageType] + ' verfasst sein.';
         }
-        return prompt + '\nDer zu vereinfachende Text lautet: ' + DataManager.getSelectionText();
+        return prompt + '\nDer zu bearbeitende Text lautet: ' + DataManager.getSelectionText();
     }
 
+    setTool(currentTool) {
+        this.currentTool = currentTool;
+    }
 }
 
 export default SummarizeHandler;

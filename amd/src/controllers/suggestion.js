@@ -27,12 +27,15 @@ import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
 import {getAiAnswer} from "../utils";
 import DataManager from "../datamanager";
+import {insertAfterContent, replaceSelection, destroyModal} from 'tiny_ai/utils';
 
 export default class extends BaseController {
 
     async init() {
         const trashButton = this.footer.querySelector('[data-action="delete"]');
         const regenerateButton = this.footer.querySelector('[data-action="regenerate"]');
+        const insertButton = this.footer.querySelector('[data-action="insert"]');
+        const replaceButton = this.footer.querySelector('[data-action="replace"]');
 
         if (trashButton) {
             trashButton.addEventListener('click', async() => {
@@ -43,6 +46,21 @@ export default class extends BaseController {
         if (regenerateButton) {
             regenerateButton.addEventListener('click', async() => {
                 await Renderer.renderOptimizePrompt();
+            });
+        }
+
+        if (insertButton) {
+            insertButton.addEventListener('click', () => {
+                insertAfterContent(DataManager.getCurrentAiResult());
+                destroyModal();
+            });
+        }
+
+        if (replaceButton) {
+            replaceButton.addEventListener('click', () => {
+                replaceSelection(DataManager.getCurrentAiResult());
+                console.log('hiding')
+                destroyModal();
             });
         }
     }
