@@ -31,6 +31,7 @@ import DataManager from 'tiny_ai/datamanager';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import {getAiAnswer} from 'tiny_ai/utils';
+import TtsHandler from 'tiny_ai/datahandler/tts';
 
 export default class extends BaseController {
 
@@ -39,8 +40,8 @@ export default class extends BaseController {
         const modalFooter = document.querySelector(SELECTORS.modalFooter);
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
-console.log(DataManager.getCurrentTool())
-        switch(DataManager.getCurrentTool()) {
+
+        switch (DataManager.getCurrentTool()) {
             case 'summarize':
             case 'describe':
                 SummarizeHandler.setTool(DataManager.getCurrentTool());
@@ -68,26 +69,43 @@ console.log(DataManager.getCurrentTool())
                     DataManager.setCurrentPrompt(TranslateHandler.getPrompt())
                 });
                 break;
+            case 'tts':
+            case 'audiogen':
+                const ttsTargetLanguageElement = this.baseElement.querySelector('[data-preference="targetLanguage"]');
+                const voiceElement = this.baseElement.querySelector('[data-preference="voice"]');
+                TtsHandler.setTargetLanguage(ttsTargetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value)
+                TtsHandler.setVoice(voiceElement.querySelector('[data-dropdown="select"]').dataset.value)
+                DataManager.setCurrentPrompt(TtsHandler.getPrompt());
+                ttsTargetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
+                    TtsHandler.setTargetLanguage(event.detail.newValue);
+                    DataManager.setCurrentOptions(TtsHandler.getOptions());
+                });
+                voiceElement.addEventListener('dropdownSelectionUpdated', event => {
+                    TtsHandler.setVoice(event.detail.newValue);
+                    DataManager.setCurrentOptions(TtsHandler.getOptions());
+                });
+                break;
         }
 
         if (backButton) {
-            backButton.addEventListener('click', async() => {
+            backButton.addEventListener('click', async () => {
                 await Renderer.renderStart(constants.modalModes.selection);
             });
         }
 
         if (generateButton) {
-            generateButton.addEventListener('click', async() => {
+            generateButton.addEventListener('click', async () => {
                 await Renderer.renderLoading();
-                const result = await getAiAnswer(DataManager.getCurrentPrompt(),'singleprompt');
+                const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
+                    DataManager.getCurrentOptions());
                 if (result === null) {
                     this.callRendererFunction();
                     return;
                 }
                 DataManager.setCurrentAiResult(result);
+                console.log(result)
                 await Renderer.renderSuggestion();
             });
         }
-
     }
 }

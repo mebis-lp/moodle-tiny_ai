@@ -21,38 +21,57 @@ import {getString} from 'core/str';
 /**
  * Tiny AI data manager.
  *
- * @module      tiny_ai/datahandler/translation
+ * @module      tiny_ai/datahandler/tts
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const TranslateHandler = new _TranslateHandler();
+const TtsHandler = new _TtsHandler();
 
-class _TranslateHandler {
+class _TtsHandler {
 
     targetLanguageOptions = {
         en: 'ENGLISCH',
         de: 'DEUTSCH',
         uk: 'UKRAINISCH',
     }
-    targetLanguage = null;
 
+    voiceOptions = {
+        'alloy': 'ALLOY',
+        'echo': 'ECHO',
+        'fable': 'FABLE'
+    }
+
+    targetLanguage = null;
+    voice = null;
 
     setTargetLanguage = (targetLanguage) => {
         this.targetLanguage = targetLanguage;
     }
 
-    getPrompt() {
-        let prompt = 'Übersetze den folgenden Text in die Sprache '
-            + this.targetLanguageOptions[this.targetLanguage] + ': ';
-        prompt += DataManager.getSelectionText();
-        return prompt;
+    setVoice = (voice) => {
+        this.voice = voice;
     }
 
+    getOptions() {
+        if (this.targetLanguage === null && this.voice === null) {
+            return {};
+        }
+        const options = {};
+        options['languages'] = ['en-US'];
+        options['voices'] = ['echo'];
+        return options;
+    }
+
+    getPrompt() {
+        // This handler handles both 'tts' and 'audiogen' tool types which basically are pretty much the same,
+        // but not exactly.
+        return DataManager.getCurrentTool() === 'tts' ? DataManager.getSelectionText() : '';
+    }
 }
 
-export default TranslateHandler;
+export default TtsHandler;
 
 
 

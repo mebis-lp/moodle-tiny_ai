@@ -51,15 +51,14 @@ export default class extends BaseController {
 
         if (insertButton) {
             insertButton.addEventListener('click', () => {
-                insertAfterContent(DataManager.getCurrentAiResult());
+                insertAfterContent(Renderer.renderAiResultForEditor());
                 destroyModal();
             });
         }
 
         if (replaceButton) {
             replaceButton.addEventListener('click', () => {
-                replaceSelection(DataManager.getCurrentAiResult());
-                console.log('hiding')
+                replaceSelection(Renderer.renderAiResultForEditor());
                 destroyModal();
             });
         }

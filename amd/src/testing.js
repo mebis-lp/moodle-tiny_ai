@@ -19,7 +19,7 @@ export const testSimplify = async() => {
     options['itemid'] = 3;
     options['filename'] = 'test.mp3';
     console.log(options);
-    const result = makeRequest('tts', 'Dieser Satz kein Verb, hallihallo', JSON.stringify(options))
+    const result = makeRequest('tts', 'Dieser Satz kein Verb, hallihallo', options)
     console.log(result)
 }
 

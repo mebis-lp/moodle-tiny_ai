@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import SELECTORS from 'tiny_ai/selectors';
+import {getDraftItemId, getContextId} from 'tiny_ai/utils';
 
 /**
  * Tiny AI data manager.
@@ -35,6 +35,20 @@ class _DataManager {
     currentTool = null;
     currentAiResult = null;
     prompt = null;
+    options = null;
+
+    getDefaultOptions() {
+        const defaultOptions = {
+            itemid: getDraftItemId(),
+            contextid: getContextId()
+        }
+        if (['tts', 'audiogen'].includes(this.getCurrentTool())) {
+            defaultOptions.filename = 'audio_' + Math.random().toString(16).slice(2) + '.mp3';
+        } else if (this.getCurrentTool() === 'imggen') {
+            defaultOptions.filename = 'img_' + Math.random().toString(16).slice(2) + '.png';
+        }
+        return defaultOptions;
+    };
 
     setCurrentTool(currentTool) {
         this.currentTool = currentTool;
@@ -83,6 +97,18 @@ class _DataManager {
 
     getCurrentAiResult() {
         return this.currentAiResult;
+    }
+
+    setCurrentOptions(options) {
+        this.options = options;
+    }
+
+    getCurrentOptions() {
+        const optionsToReturn = this.options === null ? {} : this.options;
+        console.log(this.options)
+        Object.assign(optionsToReturn, this.getDefaultOptions());
+        console.log(optionsToReturn)
+        return optionsToReturn;
     }
 }
 

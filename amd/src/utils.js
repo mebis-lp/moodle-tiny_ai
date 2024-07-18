@@ -32,6 +32,7 @@ import DataManager from 'tiny_ai/datamanager';
 import {exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
+import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
 
 
 let userId = null;
@@ -77,10 +78,10 @@ export const displayDialogue = async (source) => {
     });
 };
 
-export const getAiAnswer = async(prompt, purpose) => {
+export const getAiAnswer = async(prompt, purpose, options = {}) => {
     let result = null;
     try {
-        result = await makeRequest(purpose, prompt);
+        result = await makeRequest(purpose, prompt, options);
     } catch (exception) {
         displayException(exception);
     }
@@ -102,4 +103,12 @@ export const replaceSelection = (textToReplace) => {
 
 export const destroyModal = () => {
     modal.destroy();
+}
+
+export const getDraftItemId = () => {
+    return getDraftItemIdTinyCore(editor);
+}
+
+export const getContextId = () => {
+    return getContextItemIdTinyCore(editor);
 }

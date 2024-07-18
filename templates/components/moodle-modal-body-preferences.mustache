@@ -6,12 +6,12 @@
             </div>
         {{/modal_dropdowns}}
     </div>
-    <div class="row flex-grow-1">
-        <div class="col-12 mb-3">
-            {{> tiny_ai/components/ai-button}}
-            {{> tiny_ai/components/ai-textarea}}
+        <div class="row flex-grow-1">
+            <div class="col-12 mb-3">
+                {{> tiny_ai/components/ai-button}}
+                {{> tiny_ai/components/ai-textarea}}
+            </div>
         </div>
-    </div>
 </div>
 {{#js}}
     require(['tiny_ai/controllers/preferences', 'tiny_ai/controllers/promptedit'], function(Controller, PromptEditController) {

@@ -27,6 +27,7 @@ import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
 import {getAiAnswer} from 'tiny_ai/utils';
 import DataManager from 'tiny_ai/datamanager';
+import {constants} from "../constants";
 
 export default class extends BaseController {
 
@@ -40,15 +41,18 @@ export default class extends BaseController {
             });
         }
 
+        // TODO Avoid code duplication, see preferences.js
         if (generateButton) {
-            generateButton.addEventListener('click', async() => {
+            generateButton.addEventListener('click', async () => {
                 await Renderer.renderLoading();
-                const result = await getAiAnswer(DataManager.getCurrentPrompt(),'singleprompt');
+                const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
+                    DataManager.getCurrentOptions());
                 if (result === null) {
                     this.callRendererFunction();
                     return;
                 }
                 DataManager.setCurrentAiResult(result);
+                console.log(result)
                 await Renderer.renderSuggestion();
             });
         }

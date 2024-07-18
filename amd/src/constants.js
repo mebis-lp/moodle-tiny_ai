@@ -29,6 +29,7 @@ export const constants = {
         general: 'general'
     },
     toolPurposeMapping: {
+        audiogen: 'tts',
         summarize: 'singleprompt',
         translate: 'translate',
         describe: 'singleprompt',

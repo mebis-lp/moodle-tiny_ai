@@ -44,6 +44,8 @@ import {constants} from 'tiny_ai/constants';
 import {getAiConfig} from 'local_ai_manager/config';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
+import TtsHandler from 'tiny_ai/datahandler/tts';
+import Selectors from "./selectors";
 
 
 const stringKeys = [
@@ -293,8 +295,8 @@ export const getTemplateContextStart = async (mode) => {
                     tool: strings.toolname_audiogen,
                     iconstyle: 'solid',
                     iconname: 'microphone',
-                    disabled: isToolDisabled('tts'),
-                    action: 'loadtts'
+                    disabled: isToolDisabled('audiogen'),
+                    action: 'loadaudiogen'
                 });
             }
             if (!isToolHidden('imggen')) {
@@ -320,9 +322,9 @@ export const getTemplateContextStart = async (mode) => {
 
 export const getTemplateContextSummarize = async (extendPrompt) => {
     const context = {
-        modal_headline: "Zusammenfassen des markierten Textes",
+        modal_headline: "ZUSAMMENFASSEN DES MARKIERTEN TEXTES",
         showIcon: true,
-        tool: 'summarize'
+        tool: 'summarize',
     };
     Object.assign(context, getShowPromptButtonContext());
     Object.assign(context, getBackAndGenerateButtonContext());
@@ -372,7 +374,7 @@ export const getTemplateContextTranslate = async () => {
     const context = {
         modal_headline: 'Übersetzen des markierten Textes',
         showIcon: true,
-        tool: 'translate'
+        tool: 'translate',
     };
     const targetLanguageDropdownContext = {};
     targetLanguageDropdownContext.preference = 'targetLanguage';
@@ -406,11 +408,58 @@ export const getTemplateContextDescribe = async () => {
 }
 
 export const getTemplateContextTts = async () => {
-    return {};
+    const context = {
+        modal_headline: 'AUDIO AUS MARKIERTEM TEXT GENERIEREN',
+        showIcon: true,
+        tool: 'tts',
+    };
+    const targetLanguageDropdownContext = {};
+    targetLanguageDropdownContext.preference = 'targetLanguage';
+    targetLanguageDropdownContext.dropdown_default = Object.values(TtsHandler.targetLanguageOptions)[0];
+    targetLanguageDropdownContext.dropdown_default_value = Object.keys(TtsHandler.targetLanguageOptions)[0];
+    targetLanguageDropdownContext.dropdown_description = 'ZIELSPRACHE';
+    const targetLanguageDropdownOptions = [];
+    for (const [key, value] of Object.entries(TranslateHandler.targetLanguageOptions)) {
+        targetLanguageDropdownOptions.push({
+            optionValue: key,
+            optionLabel: value,
+        })
+    }
+    targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+
+    const voiceDropdownContext = {};
+    voiceDropdownContext.preference = 'voice';
+    voiceDropdownContext.dropdown_default = Object.values(TtsHandler.voiceOptions)[0];
+    voiceDropdownContext.dropdown_default_value = Object.keys(TtsHandler.voiceOptions)[0];
+    voiceDropdownContext.dropdown_description = 'STIMME';
+    const voiceDropdownOptions = [];
+    for (const [key, value] of Object.entries(TtsHandler.voiceOptions)) {
+        voiceDropdownOptions.push({
+            optionValue: key,
+            optionLabel: value,
+        })
+    }
+    voiceDropdownContext.dropdown_options = voiceDropdownOptions;
+
+    Object.assign(context, {
+        modal_dropdowns: [
+            targetLanguageDropdownContext,
+            voiceDropdownContext
+        ]
+    });
+    Object.assign(context, getShowPromptButtonContext());
+    Object.assign(context, getBackAndGenerateButtonContext());
+    return context;
 }
 
 export const getTemplateContextAudiogen = async () => {
-    return {};
+    const context = await getTemplateContextTts();
+    context.modal_headline = "AUDIO GENERIEREN";
+    context.tool = 'audiogen';
+    context.collapsed = false;
+    context.placeholder = 'BITTE HIER DEN TEXT EINGEBEN ODER EINFÜGEN, DER ZU TEXT UMGEWANDELT WERDEN SOLL.'
+    console.log(context)
+    return context;
 }
 
 export const getTemplateContextImggen = async () => {
@@ -418,6 +467,7 @@ export const getTemplateContextImggen = async () => {
         modal_headline: "BILDGENERIERUNG",
         showIcon: true,
         tool: 'imggen',
+        textareatype: 'prompt',
         modal_dropdowns: [
             {
                 dropdown_description: "AUFLOESUNG",
@@ -481,17 +531,18 @@ export const renderDescribe = async () => {
 
 export const renderTts = async () => {
     const templateContext = await getTemplateContextTts();
-    await renderModalContent('moodle-modal-body-audio', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
 }
 
 export const renderAudiogen = async () => {
+    console.log('sdflskdjflk')
     const templateContext = await getTemplateContextAudiogen();
-    await renderModalContent('moodle-modal-body-audio', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
 }
 
 export const renderImggen = async () => {
     const templateContext = await getTemplateContextImggen();
-    await renderModalContent('moodle-modal-body-imggen', 'moodle-modal-footer-generate', templateContext);
+    await renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
 }
 
 export const renderLoading = async () => {
@@ -503,7 +554,10 @@ export const renderLoading = async () => {
 export const renderSuggestion = async () => {
     const templateContext = {};
     templateContext.modal_headline = "KI-VORSCHLAG";
-    templateContext.result_text = DataManager.getCurrentAiResult();
+    // TODO Eventually do not use the same rendering in the suggestion like in the course, or just leave it because we
+    //  consider it beautiful
+    templateContext.result_text = renderAiResultForEditor();
+
     Object.assign(templateContext, getReplaceButtonsContext());
     await renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
 }
@@ -511,6 +565,29 @@ export const renderSuggestion = async () => {
 export const renderOptimizePrompt = async () => {
     const templateContext = getTemplateContextOptimizePrompt();
     await renderModalContent('moodle-modal-body-optimize', 'moodle-modal-footer-generate', templateContext);
+}
+
+export const renderAiResultForEditor = () => {
+    let html;
+    switch (DataManager.getCurrentTool()) {
+        case 'tts':
+        case 'audiogen':
+            const audioPlayer = document.createElement('audio');
+            audioPlayer.controls = 'controls';
+            audioPlayer.src = DataManager.getCurrentAiResult();
+            audioPlayer.type = 'audio/mpeg';
+            html = audioPlayer.outerHTML;
+            break;
+        case 'imggen':
+            const img = document.createElement('img');
+            img.src = DataManager.getCurrentAiResult();
+            img.classList.add('mw-100');
+            html = img.outerHTML;
+            break;
+        default:
+            html = DataManager.getCurrentAiResult();
+    }
+    return html;
 }
 
 /**
