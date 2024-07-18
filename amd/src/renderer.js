@@ -246,56 +246,67 @@ export const getTemplateContextStart = async (mode) => {
     let toolButtons = [];
     switch (mode) {
         case 'selection':
-            toolButtons.push({
-                tool: strings.toolname_summarize,
-                description: strings.toolname_summarize_extension,
-                customicon: true,
-                iconname: 'shorten',
-                disabled: isToolDisabled('summarize'),
-                action: 'loadsummarize'
-            });
-            toolButtons.push({
-                tool: strings.toolname_translate,
-                description: strings.toolname_translate_extension,
-                iconname: 'language',
-                iconstyle: 'solid',
-                disabled: isToolDisabled('translate'),
-                action: 'loadtranslate'
-            });
-            toolButtons.push({
-                tool: strings.toolname_describe,
-                description: strings.toolname_describe_extension,
-                customicon: true,
-                iconname: 'extend',
-                disabled: isToolDisabled('describe'),
-                action: 'loaddescribe'
-            });
-            toolButtons.push({
-                tool: strings.toolname_tts,
-                description: strings.toolname_tts_extension,
-                iconstyle: 'solid',
-                iconname: 'microphone',
-                disabled: isToolDisabled('tts'),
-                action: 'loadtts'
-            });
+            if (!isToolHidden('summarize')) {
+                toolButtons.push({
+                    tool: strings.toolname_summarize,
+                    description: strings.toolname_summarize_extension,
+                    customicon: true,
+                    iconname: 'shorten',
+                    disabled: isToolDisabled('summarize'),
+                    action: 'loadsummarize'
+                });
+            }
+            if (!isToolHidden('translate')) {
+                toolButtons.push({
+                    tool: strings.toolname_translate,
+                    description: strings.toolname_translate_extension,
+                    iconname: 'language',
+                    iconstyle: 'solid',
+                    disabled: isToolDisabled('translate'),
+                    action: 'loadtranslate'
+                });
+            }
+            if (!isToolHidden('describe')) {
+                toolButtons.push({
+                    tool: strings.toolname_describe,
+                    description: strings.toolname_describe_extension,
+                    customicon: true,
+                    iconname: 'extend',
+                    disabled: isToolDisabled('describe'),
+                    action: 'loaddescribe'
+                });
+            }
+            if (!isToolHidden('tts')) {
+                toolButtons.push({
+                    tool: strings.toolname_tts,
+                    description: strings.toolname_tts_extension,
+                    iconstyle: 'solid',
+                    iconname: 'microphone',
+                    disabled: isToolDisabled('tts'),
+                    action: 'loadtts'
+                });
+            }
             break;
         case 'general':
-            toolButtons.push({
-                tool: strings.toolname_audiogen,
-                iconstyle: 'solid',
-                iconname: 'microphone',
-                disabled: isToolDisabled('tts'),
-                action: 'loadtts'
-            });
-            toolButtons.push({
-                tool: strings.toolname_imggen,
-                iconstyle: 'solid',
-                iconname: 'image',
-                disabled: isToolDisabled('imggen'),
-                action: 'loadimggen'
-            });
+            if (!isToolHidden('tts')) {
+                toolButtons.push({
+                    tool: strings.toolname_audiogen,
+                    iconstyle: 'solid',
+                    iconname: 'microphone',
+                    disabled: isToolDisabled('tts'),
+                    action: 'loadtts'
+                });
+            }
+            if (!isToolHidden('imggen')) {
+                toolButtons.push({
+                    tool: strings.toolname_imggen,
+                    iconstyle: 'solid',
+                    iconname: 'image',
+                    disabled: isToolDisabled('imggen'),
+                    action: 'loadimggen'
+                });
+            }
     }
-    toolButtons = toolButtons.filter(buttonContext => !isToolHidden(buttonContext.tool));
 
     const templateContext = {
         showIcon: true,
