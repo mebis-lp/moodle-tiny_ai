@@ -45,7 +45,7 @@ import {getAiConfig} from 'local_ai_manager/config';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
-import Selectors from "./selectors";
+import ImggenHandler from 'tiny_ai/datahandler/imggen';
 import {getMode} from 'tiny_ai/utils';
 
 
@@ -500,32 +500,34 @@ export const getTemplateContextImggen = async () => {
         showIcon: true,
         tool: 'imggen',
         textareatype: 'prompt',
-        modal_dropdowns: [
-            {
-                dropdown_description: "AUFLOESUNG",
-                dropdown_default: "Keine Auswahl",
-                dropdown_options: [
-                    {
-                        optionLabel: "Test 1",
-                        optionValue: "1"
-                    },
-                    {
-                        optionLabel: "Test 2",
-                        optionValue: "2"
-                    },
-                    {
-                        optionLabel: "Test 3",
-                        optionValue: "3"
-                    },
-                    {
-                        optionLabel: "Test 4",
-                        optionValue: "4"
-                    }
-                ]
-            },
-        ],
         placeholder: "BESCHREIBUNG DES BILDS EINGEBEN",
     };
+
+    const modalDropdowns = [];
+
+    const sizesOptions = await ImggenHandler.getSizesOptions();
+    console.log(sizesOptions)
+    if (sizesOptions !== null && Object.keys(sizesOptions).length > 0) {
+        const sizesDropdownContext = {};
+        sizesDropdownContext.preference = 'sizes';
+        sizesDropdownContext.dropdown_default = sizesOptions[0]['displayname'];
+        sizesDropdownContext.dropdown_default_value = sizesOptions[0]['key'];
+        sizesDropdownContext.dropdown_description = 'GROESSEN';
+        const sizesDropdownOptions = [];
+        console.log(sizesOptions)
+        sizesOptions.forEach(option => {
+            sizesDropdownOptions.push({
+                optionValue: option.key,
+                optionLabel: option.displayname,
+            });
+        });
+        sizesDropdownContext.dropdown_options = sizesDropdownOptions;
+        modalDropdowns.push(sizesDropdownContext);
+    }
+
+    Object.assign(context, {
+        modal_dropdowns: modalDropdowns
+    });
     Object.assign(context, getBackAndGenerateButtonContext())
     return context;
 }

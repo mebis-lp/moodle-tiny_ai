@@ -68,7 +68,7 @@ class _TtsHandler {
     }
 
     getOptions() {
-        if (this.targetLanguage === null && this.voice === null) {
+        if (this.targetLanguage === null && this.voice === null && this.gender === null) {
             return {};
         }
         const options = {};

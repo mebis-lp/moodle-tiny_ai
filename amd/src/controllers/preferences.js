@@ -32,6 +32,7 @@ import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import {getAiAnswer} from 'tiny_ai/utils';
 import TtsHandler from 'tiny_ai/datahandler/tts';
+import ImggenHandler from 'tiny_ai/datahandler/imggen';
 
 export default class extends BaseController {
 
@@ -96,6 +97,18 @@ export default class extends BaseController {
                     });
                 }
                 DataManager.setCurrentPrompt(TtsHandler.getPrompt());
+                break;
+            case 'imggen':
+                const sizesElement = this.baseElement.querySelector('[data-preference="sizes"]');
+
+                if (sizesElement) {
+                    ImggenHandler.setSize(sizesElement.querySelector('[data-dropdown="select"]').dataset.value)
+                    sizesElement.addEventListener('dropdownSelectionUpdated', event => {
+                        ImggenHandler.setSize(event.detail.newValue);
+                        DataManager.setCurrentOptions(ImggenHandler.getOptions());
+                    });
+                }
+                DataManager.setCurrentPrompt('');
                 break;
         }
 
