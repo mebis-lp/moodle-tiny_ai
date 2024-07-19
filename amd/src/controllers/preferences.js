@@ -73,17 +73,29 @@ export default class extends BaseController {
             case 'audiogen':
                 const ttsTargetLanguageElement = this.baseElement.querySelector('[data-preference="targetLanguage"]');
                 const voiceElement = this.baseElement.querySelector('[data-preference="voice"]');
-                TtsHandler.setTargetLanguage(ttsTargetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value)
-                TtsHandler.setVoice(voiceElement.querySelector('[data-dropdown="select"]').dataset.value)
+                const genderElement = this.baseElement.querySelector('[data-preference="gender"]');
+                if (ttsTargetLanguageElement) {
+                    TtsHandler.setTargetLanguage(ttsTargetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value)
+                    ttsTargetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
+                        TtsHandler.setTargetLanguage(event.detail.newValue);
+                        DataManager.setCurrentOptions(TtsHandler.getOptions());
+                    });
+                }
+                if (voiceElement) {
+                    TtsHandler.setVoice(voiceElement.querySelector('[data-dropdown="select"]').dataset.value)
+                    voiceElement.addEventListener('dropdownSelectionUpdated', event => {
+                        TtsHandler.setVoice(event.detail.newValue);
+                        DataManager.setCurrentOptions(TtsHandler.getOptions());
+                    });
+                }
+                if (genderElement) {
+                    TtsHandler.setGender(genderElement.querySelector('[data-dropdown="select"]').dataset.value)
+                    genderElement.addEventListener('dropdownSelectionUpdated', event => {
+                        TtsHandler.setGender(event.detail.newValue);
+                        DataManager.setCurrentOptions(TtsHandler.getOptions());
+                    });
+                }
                 DataManager.setCurrentPrompt(TtsHandler.getPrompt());
-                ttsTargetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
-                    TtsHandler.setTargetLanguage(event.detail.newValue);
-                    DataManager.setCurrentOptions(TtsHandler.getOptions());
-                });
-                voiceElement.addEventListener('dropdownSelectionUpdated', event => {
-                    TtsHandler.setVoice(event.detail.newValue);
-                    DataManager.setCurrentOptions(TtsHandler.getOptions());
-                });
                 break;
         }
 

@@ -415,39 +415,69 @@ export const getTemplateContextTts = async () => {
         showIcon: true,
         tool: 'tts',
     };
-    const targetLanguageDropdownContext = {};
-    targetLanguageDropdownContext.preference = 'targetLanguage';
-    targetLanguageDropdownContext.dropdown_default = Object.values(TtsHandler.targetLanguageOptions)[0];
-    targetLanguageDropdownContext.dropdown_default_value = Object.keys(TtsHandler.targetLanguageOptions)[0];
-    targetLanguageDropdownContext.dropdown_description = 'ZIELSPRACHE';
-    const targetLanguageDropdownOptions = [];
-    for (const [key, value] of Object.entries(TranslateHandler.targetLanguageOptions)) {
-        targetLanguageDropdownOptions.push({
-            optionValue: key,
-            optionLabel: value,
-        })
-    }
-    targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
 
-    const voiceDropdownContext = {};
-    voiceDropdownContext.preference = 'voice';
-    voiceDropdownContext.dropdown_default = Object.values(TtsHandler.voiceOptions)[0];
-    voiceDropdownContext.dropdown_default_value = Object.keys(TtsHandler.voiceOptions)[0];
-    voiceDropdownContext.dropdown_description = 'STIMME';
-    const voiceDropdownOptions = [];
-    for (const [key, value] of Object.entries(TtsHandler.voiceOptions)) {
-        voiceDropdownOptions.push({
-            optionValue: key,
-            optionLabel: value,
-        })
+    const modalDropdowns = [];
+
+    const targetLanguageOptions = await TtsHandler.getTargetLanguageOptions();
+    if (targetLanguageOptions !== null && Object.keys(targetLanguageOptions).length > 0) {
+        const targetLanguageDropdownContext = {};
+        targetLanguageDropdownContext.preference = 'targetLanguage';
+        targetLanguageDropdownContext.dropdown_default = targetLanguageOptions[0]['displayname'];
+        targetLanguageDropdownContext.dropdown_default_value = targetLanguageOptions[0]['key'];
+        targetLanguageDropdownContext.dropdown_description = 'ZIELSPRACHE';
+        const targetLanguageDropdownOptions = [];
+        targetLanguageOptions.forEach(option => {
+            targetLanguageDropdownOptions.push({
+                optionValue: option.key,
+                optionLabel: option.displayname,
+            });
+        });
+        targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+        modalDropdowns.push(targetLanguageDropdownContext);
     }
-    voiceDropdownContext.dropdown_options = voiceDropdownOptions;
+
+    const voiceOptions = await TtsHandler.getVoiceOptions();
+    if (voiceOptions !== null && Object.keys(voiceOptions).length > 0) {
+        const voiceDropdownContext = {};
+        voiceDropdownContext.preference = 'voice';
+        voiceDropdownContext.dropdown_default = voiceOptions[0]['displayname'];
+        voiceDropdownContext.dropdown_default_value = voiceOptions[0]['key'];
+        console.log(Object.values(targetLanguageOptions))
+        console.log(Object.keys(targetLanguageOptions))
+        voiceDropdownContext.dropdown_description = 'STIMME';
+        const voiceDropdownOptions = [];
+        console.log(voiceOptions)
+        voiceOptions.forEach(option => {
+            voiceDropdownOptions.push({
+                optionValue: option.key,
+                optionLabel: option.displayname,
+            });
+        });
+        voiceDropdownContext.dropdown_options = voiceDropdownOptions;
+        modalDropdowns.push(voiceDropdownContext);
+    }
+
+    const genderOptions = await TtsHandler.getGenderOptions();
+    if (genderOptions !== null && Object.keys(genderOptions).length > 0) {
+        const genderDropdownContext = {};
+        genderDropdownContext.preference = 'gender';
+        genderDropdownContext.dropdown_default = genderOptions[0]['displayname'];
+        genderDropdownContext.dropdown_default_value = genderOptions[0]['key'];
+        genderDropdownContext.dropdown_description = 'GESCHLECHT';
+        const genderDropdownOptions = [];
+        console.log(genderOptions)
+        genderOptions.forEach(option => {
+            genderDropdownOptions.push({
+                optionValue: option.key,
+                optionLabel: option.displayname,
+            });
+        });
+        genderDropdownContext.dropdown_options = genderDropdownOptions;
+        modalDropdowns.push(genderDropdownContext);
+    }
 
     Object.assign(context, {
-        modal_dropdowns: [
-            targetLanguageDropdownContext,
-            voiceDropdownContext
-        ]
+        modal_dropdowns: modalDropdowns
     });
     Object.assign(context, getShowPromptButtonContext());
     Object.assign(context, getBackAndGenerateButtonContext());

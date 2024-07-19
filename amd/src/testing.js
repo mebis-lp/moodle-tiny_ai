@@ -7,6 +7,7 @@ export const testSimplify = async() => {
     const receivedOptions = JSON.parse(ttsOptions.options);
     console.log(receivedOptions);
 
+
     // openai: nur voices
     // google synthesize: gender und languages
 
