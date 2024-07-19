@@ -588,6 +588,9 @@
 .tiny_ai-result-text p {
   margin: 0;
 }
+.tiny_ai-result-text img {
+  max-height: 50vh;
+}
 
 .dark .tiny_ai-result-text {
   border: 1px solid #D33F01;

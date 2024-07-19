@@ -46,6 +46,7 @@ import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
 import Selectors from "./selectors";
+import {getMode} from 'tiny_ai/utils';
 
 
 const stringKeys = [
@@ -313,6 +314,7 @@ export const getTemplateContextStart = async (mode) => {
     const templateContext = {
         showIcon: true,
         modal_headline: strings.mainselection_heading,
+        action: 'loadfreeprompt',
         modal_buttons: toolButtons,
     };
     Object.assign(templateContext, getInputContext());
@@ -509,8 +511,9 @@ export const getTemplateContextOptimizePrompt = () => {
 
 };
 
-export const renderStart = async (mode) => {
-    const templateContext = await getTemplateContextStart(mode);
+export const renderStart = async () => {
+    DataManager.reset();
+    const templateContext = await getTemplateContextStart(getMode());
     await renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
 }
 

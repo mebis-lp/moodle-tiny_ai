@@ -110,6 +110,13 @@ class _DataManager {
         console.log(optionsToReturn)
         return optionsToReturn;
     }
+
+    reset() {
+        this.setCurrentPrompt('');
+        this.setCurrentOptions(null);
+        this.setCurrentTool(null);
+        this.setCurrentAiResult(null);
+    }
 }
 
 export default DataManager;

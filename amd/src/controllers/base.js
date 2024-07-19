@@ -34,6 +34,9 @@ export default class {
 
     callRendererFunction() {
         console.log(DataManager.getCurrentTool())
+        if (DataManager.getCurrentTool() === 'freeprompt') {
+            Renderer.renderStart();
+        }
         const toolNameWithUppercaseLetter = DataManager.getCurrentTool().charAt(0).toUpperCase() + DataManager.getCurrentTool().slice(1);
         Renderer['render' + toolNameWithUppercaseLetter]();
     }

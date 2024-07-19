@@ -37,6 +37,7 @@ import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItem
 
 let userId = null;
 let modal = null;
+let mode = null;
 let editor = null;
 
 export const init = async (editorObject) => {
@@ -50,7 +51,6 @@ export const init = async (editorObject) => {
  * @param {string} source the different sources from where the modal is being created, defined in common module
  */
 export const displayDialogue = async (source) => {
-    let mode;
     if (source === selectionbarSource) {
         mode = constants.modalModes.selection;
     } else if (source === toolbarSource || source === menubarSource) {
@@ -112,3 +112,7 @@ export const getDraftItemId = () => {
 export const getContextId = () => {
     return getContextItemIdTinyCore(editor);
 }
+
+export const getMode = () => {
+    return mode;
+};

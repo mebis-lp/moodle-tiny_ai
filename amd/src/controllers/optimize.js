@@ -44,6 +44,10 @@ export default class extends BaseController {
         // TODO Avoid code duplication, see preferences.js
         if (generateButton) {
             generateButton.addEventListener('click', async () => {
+                if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
+                    await alert('BITTE EINEN PROMPT EINGEBEN');
+                    return;
+                }
                 await Renderer.renderLoading();
                 const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
                     DataManager.getCurrentOptions());
