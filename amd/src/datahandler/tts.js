@@ -102,7 +102,7 @@ class _TtsHandler {
      */
     getTemplateContext = async (tool) => {
         const context = {
-            modal_headline: Basedatahandler.getTinyAiString(tool + '_headline'),
+            modal_headline: BasedataHandler.getTinyAiString(tool + '_headline'),
             showIcon: true,
             tool: tool,
         };
