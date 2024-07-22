@@ -16,7 +16,7 @@
 /**
  * Textarea handler.
  *
- * @module      tiny_ai/controllers/textarea_controller
+ * @module      tiny_ai/controllers/textarea
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
