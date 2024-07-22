@@ -12,7 +12,7 @@
     <span class="tiny_ai-input-error">{{errorMessage}}</span>
 {{/hasError}}
 {{#js}}
-    require(['tiny_ai/controllers/textarea_controller'], function(TextareaController) {
+    require(['tiny_ai/controllers/textarea'], function(TextareaController) {
         TextareaController.init('#tiny_ai-input-field-{{uniqid}}');
     });
 {{/js}}
