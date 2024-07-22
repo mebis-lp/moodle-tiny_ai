@@ -25,8 +25,6 @@
 import {prefetchStrings} from 'core/prefetch';
 import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
-import {getAiAnswer} from "../utils";
-import DataManager from "../datamanager";
 import {insertAfterContent, replaceSelection, destroyModal} from 'tiny_ai/utils';
 
 export default class extends BaseController {

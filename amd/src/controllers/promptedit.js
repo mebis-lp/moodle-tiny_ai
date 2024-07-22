@@ -25,7 +25,6 @@
 import {prefetchStrings} from 'core/prefetch';
 import {getStrings} from 'core/str';
 import DataManager from 'tiny_ai/datamanager';
-import SELECTORS from 'tiny_ai/selectors';
 
 export default class {
 
@@ -42,10 +41,7 @@ export default class {
             textarea.value = event.detail.newPrompt;
         });
         textarea.addEventListener('keyup', event => {
-            console.log(textarea.value)
             DataManager.setCurrentPrompt(textarea.value);
-            console.log(DataManager.getCurrentPrompt())
-
         });
 
         if (showPromptButton) {

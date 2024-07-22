@@ -33,6 +33,8 @@ import TranslateHandler from 'tiny_ai/datahandler/translate';
 import {getAiAnswer} from 'tiny_ai/utils';
 import TtsHandler from 'tiny_ai/datahandler/tts';
 import ImggenHandler from 'tiny_ai/datahandler/imggen';
+import {alert as Alert} from 'core/notification';
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 
 export default class extends BaseController {
 
@@ -50,24 +52,28 @@ export default class extends BaseController {
                 const languageTypeElement = this.baseElement.querySelector('[data-preference="languageType"]');
                 SummarizeHandler.setMaxWordCount(maxWordCountElement.querySelector('[data-dropdown="select"]').dataset.value);
                 SummarizeHandler.setLanguageType(languageTypeElement.querySelector('[data-dropdown="select"]').dataset.value);
-                DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
-                maxWordCountElement.addEventListener('dropdownSelectionUpdated', event => {
+                const currentPromptSummarize = await SummarizeHandler.getPrompt();
+                DataManager.setCurrentPrompt(currentPromptSummarize)
+                maxWordCountElement.addEventListener('dropdownSelectionUpdated', async(event) => {
                     SummarizeHandler.setMaxWordCount(event.detail.newValue);
-                    DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
-                    console.log(DataManager.getCurrentPrompt())
+                    const currentPrompt = await SummarizeHandler.getPrompt();
+                    DataManager.setCurrentPrompt(currentPrompt)
                 });
-                languageTypeElement.addEventListener('dropdownSelectionUpdated', event => {
+                languageTypeElement.addEventListener('dropdownSelectionUpdated', async(event) => {
                     SummarizeHandler.setLanguageType(event.detail.newValue);
-                    DataManager.setCurrentPrompt(SummarizeHandler.getPrompt())
+                    const currentPrompt = await SummarizeHandler.getPrompt();
+                    DataManager.setCurrentPrompt(currentPrompt);
                 });
                 break;
             case 'translate':
                 const targetLanguageElement = this.baseElement.querySelector('[data-preference="targetLanguage"]');
                 TranslateHandler.setTargetLanguage(targetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value)
-                DataManager.setCurrentPrompt(TranslateHandler.getPrompt());
-                targetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
+                const currentPromptTranslate = await TranslateHandler.getPrompt();
+                DataManager.setCurrentPrompt(currentPromptTranslate);
+                targetLanguageElement.addEventListener('dropdownSelectionUpdated', async(event) => {
                     TranslateHandler.setTargetLanguage(event.detail.newValue);
-                    DataManager.setCurrentPrompt(TranslateHandler.getPrompt())
+                    const currentPromptTranslate = await TranslateHandler.getPrompt();
+                    DataManager.setCurrentPrompt(currentPromptTranslate);
                 });
                 break;
             case 'tts':
@@ -97,6 +103,7 @@ export default class extends BaseController {
                     });
                 }
                 DataManager.setCurrentPrompt(TtsHandler.getPrompt());
+                DataManager.setCurrentOptions(TtsHandler.getOptions());
                 break;
             case 'imggen':
                 const sizesElement = this.baseElement.querySelector('[data-preference="sizes"]');
@@ -109,6 +116,7 @@ export default class extends BaseController {
                     });
                 }
                 DataManager.setCurrentPrompt('');
+                DataManager.setCurrentOptions(ImggenHandler.getOptions());
                 break;
         }
 
@@ -121,7 +129,7 @@ export default class extends BaseController {
         if (generateButton) {
             generateButton.addEventListener('click', async () => {
                 if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
-                    await alert('BITTE EINEN PROMPT EINGEBEN');
+                    await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
                     return;
                 }
                 await Renderer.renderLoading();

@@ -23,12 +23,13 @@
  */
 
 import {prefetchStrings} from 'core/prefetch';
-import Log from 'core/log';
 import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
 import {getAiAnswer} from "../utils";
 import {constants} from "../constants";
+import {alert as Alert} from 'core/notification';
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 
 export default class extends BaseController {
 
@@ -84,7 +85,7 @@ export default class extends BaseController {
                 console.log(this.baseElement.querySelector('[data-type="freepromptinput"]'))
                 DataManager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
                 if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
-                    await alert('BITTE EINEN PROMPT EINGEBEN');
+                    await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
                     return;
                 }
                 await Renderer.renderLoading();

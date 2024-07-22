@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {makeRequest} from 'local_ai_manager/make_request';
 import DataManager from 'tiny_ai/datamanager';
-import {exception as displayException} from 'core/notification';
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import Config from 'core/config';
 import {getString} from 'core/str';
 
 /**
  * Tiny AI data manager.
  *
- * @module      tiny_ai/datahandler/translation
+ * @module      tiny_ai/datahandler/translate
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -31,10 +31,12 @@ const TranslateHandler = new _TranslateHandler();
 
 class _TranslateHandler {
 
+    languageNameInCurrentUserLanguage = new Intl.DisplayNames([Config.language], {type: 'language'});
+
     targetLanguageOptions = {
-        en: 'ENGLISCH',
-        de: 'DEUTSCH',
-        uk: 'UKRAINISCH',
+        en: this.languageNameInCurrentUserLanguage.of('en'),
+        de: this.languageNameInCurrentUserLanguage.of('de'),
+        uk: this.languageNameInCurrentUserLanguage.of('uk')
     }
     targetLanguage = null;
 
@@ -43,16 +45,41 @@ class _TranslateHandler {
         this.targetLanguage = targetLanguage;
     }
 
-    getPrompt() {
-        let prompt = 'Übersetze den folgenden Text in die Sprache '
-            + this.targetLanguageOptions[this.targetLanguage] + ': ';
-        prompt += DataManager.getSelectionText();
+    async getPrompt() {
+        let prompt = await getString('translate_prompt', 'tiny_ai', this.targetLanguageOptions[this.targetLanguage]);
+        prompt += ': ' + DataManager.getSelectionText();
         return prompt;
     }
 
+    getTemplateContext = () => {
+        const context = {
+            modal_headline: BasedataHandler.getTinyAiString('translate_headline'),
+            showIcon: true,
+            tool: 'translate',
+        };
+        const targetLanguageDropdownContext = {};
+        targetLanguageDropdownContext.preference = 'targetLanguage';
+        targetLanguageDropdownContext.dropdown_default = Object.values(TranslateHandler.targetLanguageOptions)[0];
+        targetLanguageDropdownContext.dropdown_default_value = Object.keys(TranslateHandler.targetLanguageOptions)[0];
+        targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
+        const targetLanguageDropdownOptions = [];
+        for (const [key, value] of Object.entries(TranslateHandler.targetLanguageOptions)) {
+            targetLanguageDropdownOptions.push({
+                optionValue: key,
+                optionLabel: value,
+            })
+        }
+        targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+
+        Object.assign(context, {
+            modal_dropdowns: [
+                targetLanguageDropdownContext,
+            ]
+        });
+        Object.assign(context, BasedataHandler.getShowPromptButtonContext());
+        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
+        return context;
+    }
 }
 
 export default TranslateHandler;
-
-
-

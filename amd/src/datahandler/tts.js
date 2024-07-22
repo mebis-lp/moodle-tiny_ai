@@ -13,11 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {makeRequest} from 'local_ai_manager/make_request';
 import DataManager from 'tiny_ai/datamanager';
-import {exception as displayException} from 'core/notification';
-import {getString} from 'core/str';
 import * as AiConfig from 'local_ai_manager/config';
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 
 /**
  * Tiny AI data manager.
@@ -95,6 +93,93 @@ class _TtsHandler {
             const fetchedOptions = await AiConfig.getPurposeOptions('tts');
             this.ttsOptions = JSON.parse(fetchedOptions.options);
         }
+    }
+
+    /**
+     * Get the rendering context.
+     *
+     * @param {string} tool the tool to generate the context for, can be 'tts' and 'audiogen'
+     */
+    getTemplateContext = async (tool) => {
+        const context = {
+            modal_headline: Basedatahandler.getTinyAiString(tool + '_headline'),
+            showIcon: true,
+            tool: tool,
+        };
+
+        const modalDropdowns = [];
+
+        const targetLanguageOptions = await TtsHandler.getTargetLanguageOptions();
+        if (targetLanguageOptions !== null && Object.keys(targetLanguageOptions).length > 0) {
+            const targetLanguageDropdownContext = {};
+            targetLanguageDropdownContext.preference = 'targetLanguage';
+            targetLanguageDropdownContext.dropdown_default = targetLanguageOptions[0]['displayname'];
+            targetLanguageDropdownContext.dropdown_default_value = targetLanguageOptions[0]['key'];
+            targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
+            const targetLanguageDropdownOptions = [];
+            targetLanguageOptions.forEach(option => {
+                targetLanguageDropdownOptions.push({
+                    optionValue: option.key,
+                    optionLabel: option.displayname,
+                });
+            });
+            targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+            modalDropdowns.push(targetLanguageDropdownContext);
+        }
+
+        const voiceOptions = await TtsHandler.getVoiceOptions();
+        if (voiceOptions !== null && Object.keys(voiceOptions).length > 0) {
+            const voiceDropdownContext = {};
+            voiceDropdownContext.preference = 'voice';
+            voiceDropdownContext.dropdown_default = voiceOptions[0]['displayname'];
+            voiceDropdownContext.dropdown_default_value = voiceOptions[0]['key'];
+            console.log(Object.values(targetLanguageOptions))
+            console.log(Object.keys(targetLanguageOptions))
+            voiceDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('voice');
+            const voiceDropdownOptions = [];
+            console.log(voiceOptions)
+            voiceOptions.forEach(option => {
+                voiceDropdownOptions.push({
+                    optionValue: option.key,
+                    optionLabel: option.displayname,
+                });
+            });
+            voiceDropdownContext.dropdown_options = voiceDropdownOptions;
+            modalDropdowns.push(voiceDropdownContext);
+        }
+
+        const genderOptions = await TtsHandler.getGenderOptions();
+        if (genderOptions !== null && Object.keys(genderOptions).length > 0) {
+            const genderDropdownContext = {};
+            genderDropdownContext.preference = 'gender';
+            genderDropdownContext.dropdown_default = genderOptions[0]['displayname'];
+            genderDropdownContext.dropdown_default_value = genderOptions[0]['key'];
+            genderDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('gender');
+            const genderDropdownOptions = [];
+            console.log(genderOptions)
+            genderOptions.forEach(option => {
+                genderDropdownOptions.push({
+                    optionValue: option.key,
+                    optionLabel: option.displayname,
+                });
+            });
+            genderDropdownContext.dropdown_options = genderDropdownOptions;
+            modalDropdowns.push(genderDropdownContext);
+        }
+
+        Object.assign(context, {
+            modal_dropdowns: modalDropdowns
+        });
+
+        Object.assign(context, BasedataHandler.getShowPromptButtonContext());
+
+        if (tool === 'audiogen') {
+            // Overwrite some prompt textarea specific attributes.
+            context.collapsed = false;
+            context.placeholder = BasedataHandler.getTinyAiString('audiogen_placeholder');
+        }
+        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
+        return context;
     }
 }
 
