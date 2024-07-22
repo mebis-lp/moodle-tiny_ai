@@ -46,7 +46,7 @@ class _TranslateHandler {
     }
 
     async getPrompt() {
-        let prompt = await getString('translate_prompt', 'tiny_ai', this.targetLanguageOptions[this.targetLanguage]);
+        let prompt = await getString('translate_baseprompt', 'tiny_ai', this.targetLanguageOptions[this.targetLanguage]);
         prompt += ': ' + DataManager.getSelectionText();
         return prompt;
     }

@@ -26,10 +26,6 @@ import {prefetchStrings} from 'core/prefetch';
 import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
-import {getAiAnswer} from "../utils";
-import {constants} from "../constants";
-import {alert as Alert} from 'core/notification';
-import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 
 export default class extends BaseController {
 
@@ -82,21 +78,11 @@ export default class extends BaseController {
         if (freePromptButton) {
             freePromptButton.addEventListener('click', async(event) => {
                 DataManager.setCurrentTool('freeprompt');
-                console.log(this.baseElement.querySelector('[data-type="freepromptinput"]'))
                 DataManager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
-                if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
-                    await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
-                    return;
-                }
-                await Renderer.renderLoading();
-                const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
-                    DataManager.getCurrentOptions());
+                const result = await this.generateAiAnswer();
                 if (result === null) {
-                    this.callRendererFunction();
                     return;
                 }
-                DataManager.setCurrentAiResult(result);
-                console.log(result)
                 await Renderer.renderSuggestion();
             });
         }

@@ -29,7 +29,7 @@ import {constants} from 'tiny_ai/constants';
 import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
-import {exception as displayException} from 'core/notification';
+import {alert as Alert, exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
 import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
@@ -87,7 +87,7 @@ export const getAiAnswer = async(prompt, purpose, options = {}) => {
     }
     if (result.code !== 200) {
         const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
-        await alert(errorString, result.result);
+        await Alert(errorString, result.result);
         return null;
     }
     return result.result;

@@ -31,10 +31,6 @@ export default class AiModal extends Modal {
     registerEventListeners() {
         // Call the parent registration.
         super.registerEventListeners();
-
-        // Register to close on save/cancel.
-        this.registerCloseOnSave();
-        this.registerCloseOnCancel();
     }
 
     configure(modalConfig) {

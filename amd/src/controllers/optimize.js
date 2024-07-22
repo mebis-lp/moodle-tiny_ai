@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {prefetchStrings} from 'core/prefetch';
 import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
 import {getAiAnswer} from 'tiny_ai/utils';
@@ -46,19 +45,10 @@ export default class extends BaseController {
         // TODO Avoid code duplication, see preferences.js
         if (generateButton) {
             generateButton.addEventListener('click', async () => {
-                if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
-                    await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
-                    return;
-                }
-                await Renderer.renderLoading();
-                const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
-                    DataManager.getCurrentOptions());
+                const result = await this.generateAiAnswer();
                 if (result === null) {
-                    this.callRendererFunction();
                     return;
                 }
-                DataManager.setCurrentAiResult(result);
-                console.log(result)
                 await Renderer.renderSuggestion();
             });
         }

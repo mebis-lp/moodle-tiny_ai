@@ -15,6 +15,10 @@
 
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
+import {alert as Alert} from 'core/notification';
+import * as BasedataHandler from "../datahandler/basedata";
+import {getAiAnswer} from 'tiny_ai/utils';
+import {constants} from 'tiny_ai/constants';
 
 /**
  * Base controller class providing some basic functionalities.
@@ -28,10 +32,25 @@ import DataManager from 'tiny_ai/datamanager';
  */
 export default class {
     constructor(baseSelector) {
+        console.log(baseSelector)
         this.baseElement = document.querySelector(baseSelector);
         this.footer = this.baseElement.parentElement.parentElement.querySelector('[data-region="footer"]');
     }
 
+    async generateAiAnswer() {
+        if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
+            await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
+            return null;
+        }
+        await Renderer.renderLoading();
+        const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
+            DataManager.getCurrentOptions());
+        if (result === null) {
+            this.callRendererFunction();
+            return null;
+        }
+        DataManager.setCurrentAiResult(result);
+    }
     callRendererFunction() {
         console.log(DataManager.getCurrentTool())
         if (DataManager.getCurrentTool() === 'freeprompt') {

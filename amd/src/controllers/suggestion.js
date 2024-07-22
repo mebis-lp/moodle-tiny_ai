@@ -37,7 +37,7 @@ export default class extends BaseController {
 
         if (trashButton) {
             trashButton.addEventListener('click', async() => {
-                await this.callRendererFunction();
+                await Renderer.renderDismiss();
             });
         }
 

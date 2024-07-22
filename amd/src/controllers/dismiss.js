@@ -13,33 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
-
 /**
- * Tiny AI data handler for optimize prompt page.
+ * Controller for dismiss page.
  *
- * @module      tiny_ai/datahandler/optimize
+ * @module      tiny_ai/controllers/dismiss
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const OptimizeHandler = new _OptimizeHandler();
+import {prefetchStrings} from 'core/prefetch';
+import BaseController from 'tiny_ai/controllers/base';
+import * as Renderer from 'tiny_ai/renderer';
 
-class _OptimizeHandler {
+export default class extends BaseController {
 
-    getTemplateContext = () => {
-        const context = {
-            modal_headline: BasedataHandler.getTinyAiString('reworkprompt'),
-            showIcon: true,
-            textareatype: 'prompt'
+    async init() {
+        const cancelButton = this.baseElement.querySelector('[data-action="canceldismiss"]');
+        const dismissButton = this.baseElement.querySelector('[data-action="dismiss"]');
+
+        if (cancelButton) {
+            cancelButton.addEventListener('click', async(event) => {
+                await Renderer.renderSuggestion();
+            });
         }
-        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
-        return context;
-    };
+        if (dismissButton) {
+            dismissButton.addEventListener('click', async(event) => {
+                await this.callRendererFunction();
+            });
+        }
+    }
 }
-
-export default OptimizeHandler;
-
-
-

@@ -128,19 +128,10 @@ export default class extends BaseController {
 
         if (generateButton) {
             generateButton.addEventListener('click', async () => {
-                if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
-                    await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
-                    return;
-                }
-                await Renderer.renderLoading();
-                const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
-                    DataManager.getCurrentOptions());
+                const result = await this.generateAiAnswer();
                 if (result === null) {
-                    this.callRendererFunction();
                     return;
                 }
-                DataManager.setCurrentAiResult(result);
-                console.log(result)
                 await Renderer.renderSuggestion();
             });
         }

@@ -102,6 +102,37 @@ export const renderOptimizePrompt = async () => {
     await renderModalContent('moodle-modal-body-optimize', 'moodle-modal-footer-generate', templateContext);
 }
 
+export const renderDismiss = async() => {
+    const templateContext = {
+        modal_headline: '',
+        centered_headline: BasedataHandler.getTinyAiString('dismisssuggestion'),
+        showIcon: false,
+        buttons: [
+            {
+                hasText: true,
+                button_text: BasedataHandler.getTinyAiString('cancel'),
+                icon_left: false,
+                icon_right: false,
+                primary: false,
+                secondary: true,
+                tertiary: false,
+                action: 'canceldismiss'
+            },
+            {
+                hasText: true,
+                button_text: BasedataHandler.getTinyAiString('dismiss'),
+                icon_left: false,
+                icon_right: false,
+                primary: true,
+                secondary: false,
+                tertiary: false,
+                action: 'dismiss'
+            }
+        ]
+    };
+    await renderModalContent('moodle-modal-body-dismiss', 'moodle-modal-footer-empty', templateContext);
+}
+
 export const renderAiResultForEditor = () => {
     let html;
     switch (DataManager.getCurrentTool()) {

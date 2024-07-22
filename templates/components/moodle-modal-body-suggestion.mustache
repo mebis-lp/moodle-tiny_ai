@@ -4,7 +4,7 @@
 </div>
 {{#js}}
     require(['tiny_ai/controllers/suggestion'], function(Controller) {
-        const controller = new Controller('#tiny_ai_suggestion_{{uniqid}}', '{{tool}}');
+        const controller = new Controller('#tiny_ai_suggestion_{{uniqid}}');
         Promise.resolve(controller.init());
     });
 {{/js}}
