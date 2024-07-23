@@ -57,6 +57,8 @@
         padding: 8px;
         box-sizing: border-box;
 
+        @include custom-scrollbar;
+
         &::placeholder {
             color: $neutral-grey-300;
         }

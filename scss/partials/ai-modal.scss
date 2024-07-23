@@ -44,18 +44,7 @@
 
     [data-region="body"] {
 
-        &::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: $neutral-grey-500;
-            border-radius: 20px;
-            border: 3px solid $neutral-white;
-        }
-        &::-webkit-scrollbar-track {
-            background: $neutral-white;
-        }
+        @include custom-scrollbar;
 
         :first-child[id^="tiny_ai_"] {
             display: flex;
