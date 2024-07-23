@@ -26,6 +26,7 @@ import {prefetchStrings} from 'core/prefetch';
 import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
+import DatahandlerStart from 'tiny_ai/datahandler/start';
 
 export default class extends BaseController {
 
@@ -37,6 +38,15 @@ export default class extends BaseController {
         const audiogenButton = this.baseElement.querySelector('[data-action="loadaudiogen"]');
         const imggenButton = this.baseElement.querySelector('[data-action="loadimggen"]');
         const freePromptButton = this.baseElement.querySelector('[data-action="loadfreeprompt"]');
+
+        if (!DatahandlerStart.isTinyAiDisabled()) {
+            document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
+                button.parentElement.addEventListener(
+                    'click', (event) => {
+                        alert(DatahandlerStart.isToolDisabled(button.dataset.tool));
+                    });
+            });
+        }
 
         if (summarizeButton) {
             summarizeButton.addEventListener('click', async(event) => {
@@ -74,17 +84,24 @@ export default class extends BaseController {
                 await Renderer.renderImggen();
             });
         }
-        // TODO Avoid code duplication, see preferences.js
         if (freePromptButton) {
-            freePromptButton.addEventListener('click', async(event) => {
-                DataManager.setCurrentTool('freeprompt');
-                DataManager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
-                const result = await this.generateAiAnswer();
-                if (result === null) {
-                    return;
+            if (!freePromptButton.classList.contains('disabled')) {
+                freePromptButton.addEventListener('click', async (event) => {
+                    DataManager.setCurrentTool('freeprompt');
+                    DataManager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
+                    const result = await this.generateAiAnswer();
+                    if (result === null) {
+                        return;
+                    }
+                    await Renderer.renderSuggestion();
+                });
+            } else {
+                if (!DatahandlerStart.isTinyAiDisabled()) {
+                    freePromptButton.addEventListener('click', event => {
+                        alert(DatahandlerStart.isToolDisabled('freeprompt'));
+                    });
                 }
-                await Renderer.renderSuggestion();
-            });
+            }
         }
     }
 }

@@ -24,11 +24,6 @@
 
 import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
-import {getAiAnswer} from 'tiny_ai/utils';
-import DataManager from 'tiny_ai/datamanager';
-import {constants} from 'tiny_ai/constants';
-import {alert as Alert} from 'core/notification';
-import * as BasedataHandler from 'tiny_ai/datahandler/base';
 
 export default class extends BaseController {
 
@@ -42,7 +37,6 @@ export default class extends BaseController {
             });
         }
 
-        // TODO Avoid code duplication, see preferences.js
         if (generateButton) {
             generateButton.addEventListener('click', async () => {
                 const result = await this.generateAiAnswer();

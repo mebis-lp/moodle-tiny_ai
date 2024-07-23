@@ -42,42 +42,53 @@ class _StartHandler {
         if (this.aiConfig === null) {
             throw new Error('Coding error: init function was not called before accessing this.getPurposeConfig!');
         }
+        console.log(tool)
         const toolPurpose = constants.toolPurposeMapping[tool];
         return this.aiConfig.purposes.filter(purpose => purpose['purpose'] === toolPurpose)[0];
     }
 
-    // TODO Test if this logic is correct
-    isToolDisabled = (tool) => {
-        if (!this.aiConfig.tenantenabled && this.aiConfig.role !== 'role_basic') {
-            return true;
+    isTinyAiDisabled() {
+        if (!this.aiConfig.tenantenabled) {
+            return 'TENANT NICHT AKTIV, BYCS ADMIN MUSS AKTIVIEREN';
+        }
+        if (!this.aiConfig.userconfirmed) {
+            return 'NICHT BESTÄTIGT, HIER IST DER LINK: /local/ai_manager/confirm_ai_usage.php';
         }
         if (this.aiConfig.userlocked) {
-            return true;
+            return 'IHR NUTZER WURDE DURCH DEN BYCS ADMIN GESPERRT';
         }
+        return '';
+    }
+
+    isToolDisabled(tool) {
         const purposeInfo = this.getPurposeConfig(tool);
-        if (!purposeInfo.isconfigured && this.aiConfig.role !== 'role_basic') {
-            return true;
+        if (!purposeInfo.isconfigured) {
+            return 'FÜR DIESEN ZWECK IST KEIN KI-TOOL HINTERLEGT, BITTE MIT DEM BYCS ADMIN SPRECHEN';
         }
         if (purposeInfo.limitreached) {
-            return true;
+            return 'SIE HABEN BEREITS DAS LIMIT DER KI-NUTZUNG IM ENTSPRECHENDEN ZEITRAUM ERREICHT.'
+                + ' BITTE WARTEN, BIS DER COUNTER ZURÜCKGESETZT WIRD';
         }
-        return false;
+
+        if (getMode() === constants.modalModes.selection) {
+            return ['audiogen', 'imggen'].includes(tool) ? 'DIESES TOOL IST NUR VERFÜGBAR, WENN TEXT MARKIERT WURDE' : '';
+        } else if (getMode() === constants.modalModes.general) {
+            return ['summarize', 'translate', 'describe', 'tts'].includes(tool) ? 'DIESES TOOL IST NUR VERFÜGBAR, WENN KEIN TEXT MARKIERT WURDE' : '';
+        }
     }
 
     // TODO Test if this logic is correct
-    isToolHidden = (tool) => {
-        if (this.aiConfig.role !== 'role_basic') {
-            return false;
-        }
-        if (!this.aiConfig.tenantenabled) {
-            return true;
-        }
+    isToolHidden(tool) {
         const purposeInfo = this.getPurposeConfig(tool);
-        if (!purposeInfo.isconfigured) {
-            return true;
-        }
-        if (purposeInfo.limitreached) {
-            return true;
+        // If the tenant is not allowed the plugin is being disabled completely, so we do not need
+        // to check this case here.
+        if (this.aiConfig.role === 'role_basic') {
+            if (!this.aiConfig.tenantenabled) {
+                return true;
+            }
+            if (!purposeInfo.isconfigured) {
+                return true;
+            }
         }
         return false;
     }
@@ -85,77 +96,98 @@ class _StartHandler {
     getTemplateContext() {
         let toolButtons = [];
 
-        switch (getMode()) {
-            case 'selection':
-                if (!this.isToolHidden('summarize')) {
-                    toolButtons.push({
-                        tool: BasedataHandler.getTinyAiString('toolname_summarize'),
-                        description: BasedataHandler.getTinyAiString('toolname_summarize_extension'),
-                        customicon: true,
-                        iconname: 'shorten',
-                        disabled: this.isToolDisabled('summarize'),
-                        action: 'loadsummarize'
-                    });
-                }
-                if (!this.isToolHidden('translate')) {
-                    toolButtons.push({
-                        tool: BasedataHandler.getTinyAiString('toolname_translate'),
-                        description: BasedataHandler.getTinyAiString('toolname_translate_extension'),
-                        iconname: 'language',
-                        iconstyle: 'solid',
-                        disabled: this.isToolDisabled('translate'),
-                        action: 'loadtranslate'
-                    });
-                }
-                if (!this.isToolHidden('describe')) {
-                    toolButtons.push({
-                        tool: BasedataHandler.getTinyAiString('toolname_describe'),
-                        description: BasedataHandler.getTinyAiString('toolname_describe_extension'),
-                        customicon: true,
-                        iconname: 'extend',
-                        disabled: this.isToolDisabled('describe'),
-                        action: 'loaddescribe'
-                    });
-                }
-                if (!this.isToolHidden('tts')) {
-                    toolButtons.push({
-                        tool: BasedataHandler.getTinyAiString('toolname_tts'),
-                        description: BasedataHandler.getTinyAiString('toolname_tts_extension'),
-                        iconstyle: 'solid',
-                        iconname: 'microphone',
-                        disabled: this.isToolDisabled('tts'),
-                        action: 'loadtts'
-                    });
-                }
-                break;
-            case 'general':
-                if (!this.isToolHidden('tts')) {
-                    toolButtons.push({
-                        tool: BasedataHandler.getTinyAiString('toolname_audiogen'),
-                        iconstyle: 'solid',
-                        iconname: 'microphone',
-                        disabled: this.isToolDisabled('audiogen'),
-                        action: 'loadaudiogen'
-                    });
-                }
-                if (!this.isToolHidden('imggen')) {
-                    toolButtons.push({
-                        tool: BasedataHandler.getTinyAiString('toolname_imggen'),
-                        iconstyle: 'solid',
-                        iconname: 'image',
-                        disabled: this.isToolDisabled('imggen'),
-                        action: 'loadimggen'
-                    });
-                }
+        if (!this.isToolHidden('summarize')) {
+            toolButtons.push({
+                toolname: 'summarize',
+                tool: BasedataHandler.getTinyAiString('toolname_summarize'),
+                description: BasedataHandler.getTinyAiString('toolname_summarize_extension'),
+                customicon: true,
+                iconname: 'shorten',
+                disabled: this.isToolDisabled('summarize').length > 0,
+                action: 'loadsummarize'
+            });
         }
+        if (!this.isToolHidden('translate')) {
+            toolButtons.push({
+                toolname: 'translate',
+                tool: BasedataHandler.getTinyAiString('toolname_translate'),
+                description: BasedataHandler.getTinyAiString('toolname_translate_extension'),
+                iconname: 'language',
+                iconstyle: 'solid',
+                disabled: this.isToolDisabled('translate').length > 0,
+                action: 'loadtranslate'
+            });
+        }
+        if (!this.isToolHidden('describe')) {
+            toolButtons.push({
+                toolname: 'describe',
+                tool: BasedataHandler.getTinyAiString('toolname_describe'),
+                description: BasedataHandler.getTinyAiString('toolname_describe_extension'),
+                customicon: true,
+                iconname: 'extend',
+                disabled: this.isToolDisabled('describe').length > 0,
+                action: 'loaddescribe'
+            });
+        }
+        if (!this.isToolHidden('tts')) {
+            toolButtons.push({
+                toolname: 'tts',
+                tool: BasedataHandler.getTinyAiString('toolname_tts'),
+                description: BasedataHandler.getTinyAiString('toolname_tts_extension'),
+                iconstyle: 'solid',
+                iconname: 'microphone',
+                disabled: this.isToolDisabled('tts').length > 0,
+                action: 'loadtts'
+            });
+        }
+        if (!this.isToolHidden('audiogen')) {
+            toolButtons.push({
+                toolname: 'audiogen',
+                tool: BasedataHandler.getTinyAiString('toolname_audiogen'),
+                iconstyle: 'solid',
+                iconname: 'microphone',
+                disabled: this.isToolDisabled('audiogen').length > 0,
+                action: 'loadaudiogen'
+            });
+            console.log(this.isToolDisabled('audiogen'));
+        }
+        if (!this.isToolHidden('imggen')) {
+            toolButtons.push({
+                toolname: 'imggen',
+                tool: BasedataHandler.getTinyAiString('toolname_imggen'),
+                iconstyle: 'solid',
+                iconname: 'image',
+                disabled: this.isToolDisabled('imggen').length > 0,
+                action: 'loadimggen'
+            });
+        }
+        // We sort the not disabled tools to the top while keeping the groups "disabled tools" and "not disabled tools" in the same order inside the groups.
+        toolButtons.sort((a, b) => {
+            if (a.disabled && !b.disabled) {
+                return 1;
+            } else if (b.disabled && !a.disabled) {
+                return -1;
+            } else {
+                return 0;
+            }
+        })
 
         const templateContext = {
             showIcon: true,
             modal_headline: BasedataHandler.getTinyAiString('mainselection_heading'),
             action: 'loadfreeprompt',
             modal_buttons: toolButtons,
+            freeprompthidden: true
         };
         Object.assign(templateContext, BasedataHandler.getInputContext());
+        if (this.isTinyAiDisabled()) {
+            templateContext.input[0].disabled = true;
+            templateContext.input[0].hasError = true;
+            templateContext.input[0].errorMessage = this.isTinyAiDisabled();
+        }
+        if (this.isToolDisabled('freeprompt')) {
+            templateContext.input[0].disabled = true;
+        }
         return templateContext;
     }
 }

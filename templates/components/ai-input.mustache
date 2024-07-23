@@ -3,7 +3,7 @@
         {{> tiny_ai/components/ai-icon }}
     </div>
     <textarea id="tiny_ai-input-field-{{uniqid}}" {{#disabled}}disabled{{/disabled}} class="tiny_ai-input-field" {{!
-    }} data-type="freepromptinput" placeholder="Lass die KI deinen markierten Text bearbeiten..."></textarea>
+    }} data-type="freepromptinput" placeholder="{{#str}}freeprompt_placeholder, tiny_ai{{/str}}"></textarea>
     {{#button}}
         {{> tiny_ai/components/ai-button}}
     {{/button}}

@@ -51,7 +51,7 @@ export const init = async (editorObject) => {
  * @param {string} source the different sources from where the modal is being created, defined in common module
  */
 export const displayDialogue = async (source) => {
-    if (source === selectionbarSource) {
+    if (source === selectionbarSource || editor.selection.getContent().length > 0) {
         mode = constants.modalModes.selection;
     } else if (source === toolbarSource || source === menubarSource) {
         mode = constants.modalModes.general;
@@ -67,7 +67,6 @@ export const displayDialogue = async (source) => {
     });
 
     if (mode === constants.modalModes.selection) {
-        console.log(editor)
         DataManager.setSelection(editor.selection.getContent());
     }
     await Renderer.init(modal, userId);

@@ -41,6 +41,7 @@ $string['dismisssuggestion'] = 'Do you want to dismiss the AI suggestion?';
 $string['describe_baseprompt'] = 'Describe the following text';
 $string['errorwithcode'] = 'An error occured with error code {$a}';
 $string['error_nopromptgiven'] = 'No prompt given. Please insert a prompt.';
+$string['freeprompt_placeholder'] = 'Give any order to the AI...';
 $string['gender'] = 'Gender';
 $string['generalerror'] = 'Ein Fehler ist aufgetreten';
 $string['generate'] = 'Generate now';

@@ -41,6 +41,7 @@ const stringKeys = [
     'dismiss',
     'dismisssuggestion',
     'error_nopromptgiven',
+    'freeprompt_placeholder',
     'gender',
     'generalerror',
     'generate',
@@ -103,6 +104,7 @@ export const init = async() => {
         strings.dismiss,
         strings.dismisssuggestion,
         strings.error_nopromptgiven,
+        strings.freeprompt_placeholder,
         strings.gender,
         strings.generalerror,
         strings.generate,
@@ -145,7 +147,6 @@ export const init = async() => {
 }
 
 export const getTinyAiString = (string) => {
-    console.log(string + '   ' + strings[string])
     return strings[string];
 }
 
