@@ -25,13 +25,17 @@
 
 export const init = (textareaSelector) => {
     const textarea = document.querySelector(textareaSelector);
+    const minHeight = 40;
+    const maxHeight = 342;
+
+    const adjustHeight = () => {
+        textarea.style.height = minHeight + 'px';
+        textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
+    };
+
     if (textarea) {
-        textarea.addEventListener('input', () => {
-            const minHeight = 40;
-            // Set height to minimum to recalculate scrollHeight.
-            textarea.style.height = minHeight + 'px';
-            const newHeight = Math.min(textarea.scrollHeight, 342);
-            textarea.style.height = newHeight + 'px';
-        });
+        adjustHeight();
+        textarea.addEventListener('input', adjustHeight);
+        window.addEventListener('resize', adjustHeight);
     }
-}
+};

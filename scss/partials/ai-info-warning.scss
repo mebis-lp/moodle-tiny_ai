@@ -2,7 +2,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: $neutral-grey-300;
   font-family: "Atkinson Hyperlegible";
   font-size: 14px;
   font-style: normal;
@@ -12,10 +11,16 @@
   p {
     margin: 0;
   }
+
+  a:not(.mbs-footer-link-list) {
+    color: $neutral-grey-300;
+  }
 }
 
 .dark {
   .tiny_ai-info-warning {
-    color: $neutral-grey-200;
+    a:not(.mbs-footer-link-list) {
+      color: $neutral-grey-200;
+    }
   }
 }

@@ -43,7 +43,6 @@
     }
 
     [data-region="body"] {
-        overflow-y: visible!important;
 
         :first-child[id^="tiny_ai_"] {
             display: flex;
@@ -59,7 +58,13 @@
             &.tiny_ai_wrapper-s {
                 gap: 10px;
             }
-            
+        }
+
+        .tiny_ai-prompt-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
         }
 
         .tiny_ai-modal--button-wrapper {
