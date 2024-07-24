@@ -41,6 +41,7 @@
     .tiny_ai-icon {
         font-size: 16px;
         color: $neutral-grey-500;
+        transition: transform ease-in-out 0.2s;
     }
 
     .tiny_ai-dropdown-menu {
@@ -78,6 +79,27 @@
         &:hover {
             background-color: #f5f5f5;
         }
+        }
+    }
+
+    &.dropup {
+        .tiny_ai-dropdown-menu {
+            margin-top: -4px;
+        }
+
+        .tiny_ai-btn {
+            &::after {
+                content: unset;
+            }
+        }
+    }
+
+    &.show {
+        .tiny_ai-btn {
+            .tiny_ai-icon {
+                transform: rotate(180deg);
+                transition: transform ease-in-out 0.2s;
+            }
         }
     }
 }
