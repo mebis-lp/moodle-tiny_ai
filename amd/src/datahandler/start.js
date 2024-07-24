@@ -61,6 +61,9 @@ class _StartHandler {
     }
 
     isToolDisabled(tool) {
+        if (this.isTinyAiDisabled()) {
+            return this.isTinyAiDisabled();
+        }
         const purposeInfo = this.getPurposeConfig(tool);
         if (!purposeInfo.isconfigured) {
             return 'FÜR DIESEN ZWECK IST KEIN KI-TOOL HINTERLEGT, BITTE MIT DEM BYCS ADMIN SPRECHEN';

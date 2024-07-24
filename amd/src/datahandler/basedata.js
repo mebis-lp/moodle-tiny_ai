@@ -13,11 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {makeRequest} from 'local_ai_manager/make_request';
-import DataManager from 'tiny_ai/datamanager';
-import {exception as displayException} from 'core/notification';
-import {getStrings, getString} from 'core/str';
-import * as AiConfig from 'local_ai_manager/config';
+import {getStrings} from 'core/str';
 import {prefetchStrings} from 'core/prefetch';
 
 /**
