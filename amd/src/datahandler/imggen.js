@@ -76,7 +76,6 @@ class _ImggenHandler {
         const modalDropdowns = [];
 
         const sizesOptions = await ImggenHandler.getSizesOptions();
-        console.log(sizesOptions)
         if (sizesOptions !== null && Object.keys(sizesOptions).length > 0) {
             const sizesDropdownContext = {};
             sizesDropdownContext.preference = 'sizes';
@@ -84,7 +83,6 @@ class _ImggenHandler {
             sizesDropdownContext.dropdown_default_value = sizesOptions[0]['key'];
             sizesDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('size');
             const sizesDropdownOptions = [];
-            console.log(sizesOptions)
             sizesOptions.forEach(option => {
                 sizesDropdownOptions.push({
                     optionValue: option.key,
@@ -94,6 +92,11 @@ class _ImggenHandler {
             sizesDropdownContext.dropdown_options = sizesDropdownOptions;
             modalDropdowns.push(sizesDropdownContext);
         }
+        // In the imggen view the dropdowns are at the bottom, so we need to make the dropdowns dropup instead of dropdown.
+        // We only have one here of course, but in case we will have more options, we use a forEach.
+        modalDropdowns.forEach(dropdownContext => {
+            dropdownContext.dropup = true;
+        })
 
         Object.assign(context, {
             modal_dropdowns: modalDropdowns

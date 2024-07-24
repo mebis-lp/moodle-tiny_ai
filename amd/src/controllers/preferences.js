@@ -35,6 +35,7 @@ import TtsHandler from 'tiny_ai/datahandler/tts';
 import ImggenHandler from 'tiny_ai/datahandler/imggen';
 import {alert as Alert} from 'core/notification';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import {exception as displayException} from 'core/notification';
 
 export default class extends BaseController {
 

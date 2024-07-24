@@ -36,7 +36,11 @@ class _TranslateHandler {
     targetLanguageOptions = {
         en: this.languageNameInCurrentUserLanguage.of('en'),
         de: this.languageNameInCurrentUserLanguage.of('de'),
-        uk: this.languageNameInCurrentUserLanguage.of('uk')
+        it: this.languageNameInCurrentUserLanguage.of('it'),
+        es: this.languageNameInCurrentUserLanguage.of('es'),
+        ru: this.languageNameInCurrentUserLanguage.of('ru'),
+        uk: this.languageNameInCurrentUserLanguage.of('uk'),
+        zh: this.languageNameInCurrentUserLanguage.of('zh'),
     }
     targetLanguage = null;
 

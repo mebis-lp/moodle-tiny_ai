@@ -15,8 +15,8 @@
 
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
-import {alert as Alert} from 'core/notification';
-import * as BasedataHandler from "../datahandler/basedata";
+import {alert as Alert, exception as displayException} from 'core/notification';
+import * as BasedataHandler from '../datahandler/basedata';
 import {getAiAnswer} from 'tiny_ai/utils';
 import {constants} from 'tiny_ai/constants';
 
@@ -43,8 +43,14 @@ export default class {
             return null;
         }
         await Renderer.renderLoading();
-        const result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
-            DataManager.getCurrentOptions());
+        let result = null;
+        try {
+            result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
+                DataManager.getCurrentOptions());
+        } catch (exception) {
+            displayException(exception);
+        }
+
         if (result === null) {
             this.callRendererFunction();
             return null;

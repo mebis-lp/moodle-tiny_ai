@@ -166,6 +166,12 @@ class _TtsHandler {
             genderDropdownContext.dropdown_options = genderDropdownOptions;
             modalDropdowns.push(genderDropdownContext);
         }
+        if (tool === 'audiogen') {
+            // In the audiogen view the dropdowns are at the bottom, so we need to make the dropdowns dropup instead of dropdown.
+            modalDropdowns.forEach(dropdownContext => {
+                dropdownContext.dropup = true;
+            });
+        }
 
         Object.assign(context, {
             modal_dropdowns: modalDropdowns

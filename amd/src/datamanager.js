@@ -39,6 +39,7 @@ class _DataManager {
 
     getDefaultOptions() {
         const defaultOptions = {
+            component: 'tiny_ai',
             itemid: getDraftItemId(),
             contextid: getContextId()
         }
