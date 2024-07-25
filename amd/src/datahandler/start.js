@@ -13,10 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {constants} from '../constants';
+import * as config from 'core/config';
+import {getString, getStrings} from 'core/str';
+import {constants} from 'tiny_ai/constants';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import {getAiConfig} from 'local_ai_manager/config';
-import {getMode} from 'tiny_ai/utils';
+import {getMode, destroyModal} from 'tiny_ai/utils';
+import {alert as Alert} from 'core/notification';
 
 
 /**
@@ -32,30 +35,61 @@ const StartHandler = new _StartHandler();
 
 class _StartHandler {
 
+    stringKeys = [
+        'error_limitreached',
+        'error_purposenotconfigured',
+        'error_tenantdisabled',
+        'error_unavailable_noselection',
+        'error_unavailable_selection',
+        'error_userlocked',
+        'error_usernotconfirmed'
+    ];
+
     aiConfig = null;
+    strings = {};
 
     async init() {
         this.aiConfig = await getAiConfig();
+        // It's easier to fetch alle these strings before even if we do not use them
+        // instead of making all functions async just because of getString returning a promise.
+        const stringRequest = this.stringKeys.map(key => {
+            return {key, component: 'local_ai_manager'}
+        });
+
+        [
+            this.strings.error_limitreached,
+            this.strings.error_purposenotconfigured,
+            this.strings.error_tenantdisabled,
+            this.strings.error_unavailable_noselection,
+            this.strings.error_unavailable_selection,
+            this.strings.error_userlocked,
+            this.strings.error_usernotconfirmed
+        ] = await getStrings(stringRequest);
+        this.strings.error_editor_notavailable = await getString('error_tiny_ai_notavailable', 'tiny_ai');
+        const confirmLink = document.createElement('a');
+        confirmLink.href = `${config.wwwroot}/local/ai_manager/confirm_ai_usage.php`;
+        confirmLink.innerText = confirmLink.href;
+        confirmLink.target = '_blank';
+        this.strings.error_usernotconfirmed = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
     }
 
     getPurposeConfig = (tool) => {
         if (this.aiConfig === null) {
             throw new Error('Coding error: init function was not called before accessing this.getPurposeConfig!');
         }
-        console.log(tool)
         const toolPurpose = constants.toolPurposeMapping[tool];
         return this.aiConfig.purposes.filter(purpose => purpose['purpose'] === toolPurpose)[0];
     }
 
     isTinyAiDisabled() {
         if (!this.aiConfig.tenantenabled) {
-            return 'TENANT NICHT AKTIV, BYCS ADMIN MUSS AKTIVIEREN';
+            return this.strings.error_tenantdisabled;
         }
         if (!this.aiConfig.userconfirmed) {
-            return 'NICHT BESTÄTIGT, HIER IST DER LINK: /local/ai_manager/confirm_ai_usage.php';
+            return this.strings.error_usernotconfirmed;
         }
         if (this.aiConfig.userlocked) {
-            return 'IHR NUTZER WURDE DURCH DEN BYCS ADMIN GESPERRT';
+            return this.strings.error_userlocked;
         }
         return '';
     }
@@ -66,17 +100,16 @@ class _StartHandler {
         }
         const purposeInfo = this.getPurposeConfig(tool);
         if (!purposeInfo.isconfigured) {
-            return 'FÜR DIESEN ZWECK IST KEIN KI-TOOL HINTERLEGT, BITTE MIT DEM BYCS ADMIN SPRECHEN';
+            return this.strings.error_purposenotconfigured;
         }
         if (purposeInfo.limitreached) {
-            return 'SIE HABEN BEREITS DAS LIMIT DER KI-NUTZUNG IM ENTSPRECHENDEN ZEITRAUM ERREICHT.'
-                + ' BITTE WARTEN, BIS DER COUNTER ZURÜCKGESETZT WIRD';
+            return this.strings.error_limitreached;
         }
 
         if (getMode() === constants.modalModes.selection) {
-            return ['audiogen', 'imggen'].includes(tool) ? 'DIESES TOOL IST NUR VERFÜGBAR, WENN TEXT MARKIERT WURDE' : '';
+            return ['audiogen', 'imggen'].includes(tool) ? this.strings.error_unavailable_noselection : '';
         } else if (getMode() === constants.modalModes.general) {
-            return ['summarize', 'translate', 'describe', 'tts'].includes(tool) ? 'DIESES TOOL IST NUR VERFÜGBAR, WENN KEIN TEXT MARKIERT WURDE' : '';
+            return ['summarize', 'translate', 'describe', 'tts'].includes(tool) ? this.strings.error_unavailable_selection : '';
         }
     }
 
@@ -96,8 +129,13 @@ class _StartHandler {
         return false;
     }
 
-    getTemplateContext() {
+    async getTemplateContext() {
         let toolButtons = [];
+        if (this.aiConfig.role === 'role_basic' && this.isTinyAiDisabled()) {
+            await Alert(await getString('generalerror', 'tiny_ai'),
+                await getString('error_tiny_ai_notavailable', 'tiny_ai'));
+            destroyModal();
+        }
 
         if (!this.isToolHidden('summarize')) {
             toolButtons.push({

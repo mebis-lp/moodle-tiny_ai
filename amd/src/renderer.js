@@ -46,7 +46,7 @@ export const init = async (existingModal) => {
 
 export const renderStart = async () => {
     DataManager.reset();
-    const templateContext = StartHandler.getTemplateContext();
+    const templateContext = await StartHandler.getTemplateContext();
     await renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
 }
 

@@ -22,11 +22,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {alert as Alert} from 'core/notification';
 import {prefetchStrings} from 'core/prefetch';
 import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
 import DatahandlerStart from 'tiny_ai/datahandler/start';
+import * as BasedataHandler from "../datahandler/basedata";
 
 export default class extends BaseController {
 
@@ -39,11 +41,11 @@ export default class extends BaseController {
         const imggenButton = this.baseElement.querySelector('[data-action="loadimggen"]');
         const freePromptButton = this.baseElement.querySelector('[data-action="loadfreeprompt"]');
 
-        if (!DatahandlerStart.isTinyAiDisabled()) {
+        if (!(await DatahandlerStart.isTinyAiDisabled())) {
             document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
                 button.parentElement.addEventListener(
-                    'click', (event) => {
-                        alert(DatahandlerStart.isToolDisabled(button.dataset.tool));
+                    'click', async(event) => {
+                        await Alert(BasedataHandler.getTinyAiString('generalerror'), DatahandlerStart.isToolDisabled(button.dataset.tool));
                     });
             });
         }
@@ -96,9 +98,9 @@ export default class extends BaseController {
                     await Renderer.renderSuggestion();
                 });
             } else {
-                if (!DatahandlerStart.isTinyAiDisabled()) {
-                    freePromptButton.addEventListener('click', event => {
-                        alert(DatahandlerStart.isToolDisabled('freeprompt'));
+                if (!(await DatahandlerStart.isTinyAiDisabled())) {
+                    freePromptButton.addEventListener('click', async(event) => {
+                        await Alert(BasedataHandler.getTinyAiString('generalerror'), DatahandlerStart.isToolDisabled('freeprompt'));
                     });
                 }
             }

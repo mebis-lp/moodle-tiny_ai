@@ -41,6 +41,7 @@ $string['dismiss'] = 'Verwerfen';
 $string['dismisssuggestion'] = 'Möchtest du den KI-Vorschlag verwerfen?';
 $string['errorwithcode'] = 'Ein Fehler ist aufgetreten, Fehlercode: {$a}';
 $string['error_nopromptgiven'] = 'Kein Prompt angegeben. Bitte einen Prompt eintippen oder einfügen.';
+$string['error_tiny_ai_notavailable'] = 'Die KI-Funktionen stehen Ihnen nicht zur Verfügung.';
 $string['freeprompt_placeholder'] = 'Gib der KI eine beliebige Anweisung...';
 $string['gender'] = 'Geschlecht';
 $string['generalerror'] = 'Ein Fehler ist aufgetreten';

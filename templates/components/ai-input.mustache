@@ -9,7 +9,7 @@
     {{/button}}
 </div>
 {{#hasError}}
-    <span class="tiny_ai-input-error">{{errorMessage}}</span>
+    <span class="tiny_ai-input-error">{{{errorMessage}}}</span>
 {{/hasError}}
 {{#js}}
     require(['tiny_ai/controllers/textarea'], function(TextareaController) {
