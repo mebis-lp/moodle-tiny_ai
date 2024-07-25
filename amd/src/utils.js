@@ -83,6 +83,7 @@ export const getAiAnswer = async(prompt, purpose, options = {}) => {
         result = await makeRequest(purpose, prompt, options);
     } catch (exception) {
         displayException(exception);
+        return;
     }
     if (result.code !== 200) {
         const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
