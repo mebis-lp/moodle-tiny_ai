@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {renderInfoBox} from 'local_ai_manager/render_infobox';
+import {renderInfoBox} from 'local_ai_manager/infobox';
 import {renderUserQuota} from 'local_ai_manager/userquota';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import Templates from 'core/templates';

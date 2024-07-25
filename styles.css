@@ -581,27 +581,6 @@
   color: #00091E;
 }
 
-.tiny_ai-info-warning {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: "Atkinson Hyperlegible";
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-}
-.tiny_ai-info-warning p {
-  margin: 0;
-}
-.tiny_ai-info-warning a:not(.mbs-footer-link-list) {
-  color: #60616D;
-}
-
-.dark .tiny_ai-info-warning a:not(.mbs-footer-link-list) {
-  color: #A4A5AC;
-}
-
 .tiny_ai-icon-button {
   display: flex;
   justify-content: center;

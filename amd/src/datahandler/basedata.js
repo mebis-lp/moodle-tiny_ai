@@ -87,7 +87,9 @@ export const init = async() => {
     const stringRequest = stringKeys.map(key => {
         return {key, component: 'tiny_ai'}
     });
-    // Now get the strings. Strings where dynamic data has to be injected are not being fetched.
+    // We now get the strings. They are already prefetched, so this is not a performance feature.
+    // We just use this to avoid having to code asynchronously all the time just for retrieving the
+    // strings by using getString which returns a promise.
     [
         strings.aigenerating,
         strings.aisuggestion,

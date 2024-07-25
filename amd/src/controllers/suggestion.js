@@ -26,6 +26,7 @@ import {prefetchStrings} from 'core/prefetch';
 import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
 import {insertAfterContent, replaceSelection, destroyModal} from 'tiny_ai/utils';
+import {renderWarningBox} from 'local_ai_manager/warningbox';
 
 export default class extends BaseController {
 
@@ -59,6 +60,11 @@ export default class extends BaseController {
                 replaceSelection(Renderer.renderAiResultForEditor());
                 destroyModal();
             });
+        }
+
+        const warningBoxSelector = '[data-rendertarget="warningbox"]';
+        if (document.querySelector(warningBoxSelector)) {
+            await renderWarningBox(warningBoxSelector);
         }
     }
 }
