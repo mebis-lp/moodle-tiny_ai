@@ -33,8 +33,9 @@ export default class extends BaseController {
     async init() {
         const trashButton = this.footer.querySelector('[data-action="delete"]');
         const regenerateButton = this.footer.querySelector('[data-action="regenerate"]');
-        const insertButton = this.footer.querySelector('[data-action="insert"]');
+        const insertBelowButton = this.footer.querySelector('[data-action="insertbelow"]');
         const replaceButton = this.footer.querySelector('[data-action="replace"]');
+        const insertAtCaretButton = this.footer.querySelector('[data-action="insertatcaret"]');
 
         if (trashButton) {
             trashButton.addEventListener('click', async() => {
@@ -48,8 +49,8 @@ export default class extends BaseController {
             });
         }
 
-        if (insertButton) {
-            insertButton.addEventListener('click', () => {
+        if (insertBelowButton) {
+            insertBelowButton.addEventListener('click', () => {
                 insertAfterContent(Renderer.renderAiResultForEditor());
                 destroyModal();
             });
@@ -57,6 +58,13 @@ export default class extends BaseController {
 
         if (replaceButton) {
             replaceButton.addEventListener('click', () => {
+                replaceSelection(Renderer.renderAiResultForEditor());
+                destroyModal();
+            });
+        }
+
+        if (insertAtCaretButton) {
+            insertAtCaretButton.addEventListener('click', () => {
                 replaceSelection(Renderer.renderAiResultForEditor());
                 destroyModal();
             });

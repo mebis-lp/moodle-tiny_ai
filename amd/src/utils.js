@@ -33,7 +33,8 @@ import {alert as Alert, exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
 import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
-
+import * as BasedataHandler from "./datahandler/basedata";
+import $ from 'jquery';
 
 let userId = null;
 let modal = null;
@@ -57,7 +58,6 @@ export const displayDialogue = async (source) => {
         mode = constants.modalModes.general;
     }
 
-
     // We initially render the modal without content, because we need to rerender it anyway.
     modal = await AiModal.create({
         templateContext: {
@@ -77,7 +77,7 @@ export const displayDialogue = async (source) => {
     });
 };
 
-export const getAiAnswer = async(prompt, purpose, options = {}) => {
+export const getAiAnswer = async (prompt, purpose, options = {}) => {
     let result = null;
     try {
         result = await makeRequest(purpose, prompt, options);
@@ -86,8 +86,8 @@ export const getAiAnswer = async(prompt, purpose, options = {}) => {
         return;
     }
     if (result.code !== 200) {
-        const errorString = await getString('errorwithcode', 'tiny_ai', result.code);
-        await Alert(errorString, JSON.parse(result.result).message);
+        const alertTitle = await getString('errorwithcode', 'tiny_ai', result.code);
+        await errorAlert(JSON.parse(result.result).message, alertTitle);
         return null;
     }
     return result.result;
@@ -97,8 +97,15 @@ export const insertAfterContent = (textToInsert) => {
     editor.setContent(editor.getContent() + '<p>' + textToInsert + '</p>');
 }
 
-export const replaceSelection = (textToReplace) => {
-    editor.selection.setContent(textToReplace);
+/**
+ * Replaces a selected text with the given replacement.
+ *
+ * In case nothing is selected, it will be inserted at the current caret position.
+ *
+ * @param textReplacement the text by which the current selection will be replaced or which will be inserted at the caret (if no selection)
+ */
+export const replaceSelection = (textReplacement) => {
+    editor.selection.setContent(textReplacement);
 }
 
 export const destroyModal = () => {
@@ -116,3 +123,15 @@ export const getContextId = () => {
 export const getMode = () => {
     return mode;
 };
+
+export const errorAlert = async (message, title = null) => {
+    if (title === null) {
+        title = BasedataHandler.getTinyAiString('generalerror');
+    }
+    const alertModal = await Alert(title, message);
+    alertModal.getRoot().on(ModalEvents.hidden, () => {
+        document.querySelectorAll('button[data-action]').forEach(button => {
+            $(button).tooltip('hide');
+        });
+    });
+}

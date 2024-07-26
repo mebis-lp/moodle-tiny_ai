@@ -116,6 +116,8 @@ class _TtsHandler {
             targetLanguageDropdownContext.dropdown_default = targetLanguageOptions[0]['displayname'];
             targetLanguageDropdownContext.dropdown_default_value = targetLanguageOptions[0]['key'];
             targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
+            //targetLanguageDropdownContext.tooltip = BasedataHandler.getTinyAiString('targetlanguagedropdown_tooltip');
+            targetLanguageDropdownContext.tooltip = "WÄHLEN SIE DIE ZIELSPRACHE";
             const targetLanguageDropdownOptions = [];
             targetLanguageOptions.forEach(option => {
                 targetLanguageDropdownOptions.push({
@@ -133,11 +135,9 @@ class _TtsHandler {
             voiceDropdownContext.preference = 'voice';
             voiceDropdownContext.dropdown_default = voiceOptions[0]['displayname'];
             voiceDropdownContext.dropdown_default_value = voiceOptions[0]['key'];
-            console.log(Object.values(targetLanguageOptions))
-            console.log(Object.keys(targetLanguageOptions))
             voiceDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('voice');
+            voiceDropdownContext.tooltip = BasedataHandler.getTinyAiString('voicedropdown_tooltip');
             const voiceDropdownOptions = [];
-            console.log(voiceOptions)
             voiceOptions.forEach(option => {
                 voiceDropdownOptions.push({
                     optionValue: option.key,
@@ -155,8 +155,8 @@ class _TtsHandler {
             genderDropdownContext.dropdown_default = genderOptions[0]['displayname'];
             genderDropdownContext.dropdown_default_value = genderOptions[0]['key'];
             genderDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('gender');
+            genderDropdownContext.tooltip = BasedataHandler.getTinyAiString('genderdropdown_tooltip');
             const genderDropdownOptions = [];
-            console.log(genderOptions)
             genderOptions.forEach(option => {
                 genderDropdownOptions.push({
                     optionValue: option.key,

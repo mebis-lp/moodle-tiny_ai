@@ -15,9 +15,9 @@
 
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
-import {alert as Alert, exception as displayException} from 'core/notification';
+import {exception as displayException} from 'core/notification';
 import * as BasedataHandler from '../datahandler/basedata';
-import {getAiAnswer} from 'tiny_ai/utils';
+import {getAiAnswer, errorAlert} from 'tiny_ai/utils';
 import {constants} from 'tiny_ai/constants';
 
 /**
@@ -32,14 +32,13 @@ import {constants} from 'tiny_ai/constants';
  */
 export default class {
     constructor(baseSelector) {
-        console.log(baseSelector)
         this.baseElement = document.querySelector(baseSelector);
         this.footer = this.baseElement.parentElement.parentElement.querySelector('[data-region="footer"]');
     }
 
     async generateAiAnswer() {
         if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
-            await Alert(BasedataHandler.getTinyAiString('generalerror'), BasedataHandler.getTinyAiString('error_nopromptgiven'));
+            await errorAlert(BasedataHandler.getTinyAiString('error_nopromptgiven'));
             return null;
         }
         await Renderer.renderLoading();
@@ -57,10 +56,12 @@ export default class {
         }
         DataManager.setCurrentAiResult(result);
     }
+
     callRendererFunction() {
         console.log(DataManager.getCurrentTool())
         if (DataManager.getCurrentTool() === 'freeprompt') {
             Renderer.renderStart();
+            return;
         }
         const toolNameWithUppercaseLetter = DataManager.getCurrentTool().charAt(0).toUpperCase() + DataManager.getCurrentTool().slice(1);
         Renderer['render' + toolNameWithUppercaseLetter]();

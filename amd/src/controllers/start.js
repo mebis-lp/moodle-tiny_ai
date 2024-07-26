@@ -22,13 +22,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {alert as Alert} from 'core/notification';
 import {prefetchStrings} from 'core/prefetch';
 import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
 import DatahandlerStart from 'tiny_ai/datahandler/start';
-import * as BasedataHandler from "../datahandler/basedata";
+import {errorAlert} from 'tiny_ai/utils';
 
 export default class extends BaseController {
 
@@ -45,7 +44,7 @@ export default class extends BaseController {
             document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
                 button.parentElement.addEventListener(
                     'click', async(event) => {
-                        await Alert(BasedataHandler.getTinyAiString('generalerror'), DatahandlerStart.isToolDisabled(button.dataset.tool));
+                        await errorAlert(DatahandlerStart.isToolDisabled(button.dataset.tool));
                     });
             });
         }
@@ -100,7 +99,7 @@ export default class extends BaseController {
             } else {
                 if (!(await DatahandlerStart.isTinyAiDisabled())) {
                     freePromptButton.addEventListener('click', async(event) => {
-                        await Alert(BasedataHandler.getTinyAiString('generalerror'), DatahandlerStart.isToolDisabled('freeprompt'));
+                        await errorAlert(DatahandlerStart.isToolDisabled('freeprompt'));
                     });
                 }
             }

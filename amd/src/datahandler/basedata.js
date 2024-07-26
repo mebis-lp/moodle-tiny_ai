@@ -15,6 +15,8 @@
 
 import {getStrings} from 'core/str';
 import {prefetchStrings} from 'core/prefetch';
+import {getMode} from 'tiny_ai/utils';
+import {constants} from 'tiny_ai/constants';
 
 /**
  * Tiny AI base data provider.
@@ -31,20 +33,27 @@ const stringKeys = [
     'audiogen_headline',
     'audiogen_placeholder',
     'back',
+    'backbutton_tooltip',
     'cancel',
+    'deletebutton_tooltip',
     'describe_baseprompt',
     'describe_headline',
     'dismiss',
     'dismisssuggestion',
     'error_nopromptgiven',
     'freeprompt_placeholder',
+    'freepromptbutton_tooltip',
     'gender',
     'generalerror',
     'generate',
+    'generatebutton_tooltip',
     'hideprompt',
     'imggen_headline',
     'imggen_placeholder',
+    'insertatcaret',
+    'insertatcaretbutton_tooltip',
     'insertbelow',
+    'insertbelowbutton_tooltip',
     'keeplanguagetype',
     'languagetype',
     'languagetype_prompt',
@@ -52,11 +61,14 @@ const stringKeys = [
     'maxwordcount',
     'maxwordcount_prompt',
     'nomaxwordcount',
+    'regeneratebutton_tooltip',
     'replaceselection',
+    'replaceselectionbutton_tooltip',
     'reworkprompt',
     'simplelanguage',
     'size',
     'showprompt',
+    'showpromptbutton_tooltip',
     'summarize_baseprompt',
     'summarize_headline',
     'targetlanguage',
@@ -96,20 +108,27 @@ export const init = async() => {
         strings.audiogen_headline,
         strings.audiogen_placeholder,
         strings.back,
+        strings.backbutton_tooltip,
         strings.cancel,
+        strings.deletebutton_tooltip,
         strings.describe_baseprompt,
         strings.describe_headline,
         strings.dismiss,
         strings.dismisssuggestion,
         strings.error_nopromptgiven,
         strings.freeprompt_placeholder,
+        strings.freepromptbutton_tooltip,
         strings.gender,
         strings.generalerror,
         strings.generate,
+        strings.generatebutton_tooltip,
         strings.hideprompt,
         strings.imggen_headline,
         strings.imggen_placeholder,
+        strings.insertatcaret,
+        strings.insertatcaretbutton_tooltip,
         strings.insertbelow,
+        strings.insertbelowbutton_tooltip,
         strings.keeplanguagetype,
         strings.languagetype,
         strings.languagetype_prompt,
@@ -117,11 +136,14 @@ export const init = async() => {
         strings.maxwordcount,
         strings.maxwordcount_prompt,
         strings.nomaxwordcount,
+        strings.regeneratebutton_tooltip,
         strings.replaceselection,
+        strings.replaceselectionbutton_tooltip,
         strings.reworkprompt,
         strings.simplelanguage,
         strings.size,
         strings.showprompt,
+        strings.showpromptbutton_tooltip,
         strings.summarize_baseprompt,
         strings.summarize_headline,
         strings.targetlanguage,
@@ -161,7 +183,8 @@ export const getBackAndGenerateButtonContext = () => {
                 tertiary: true,
                 iconname: 'arrow-left',
                 iconstyle: 'solid',
-                action: 'back'
+                action: 'back',
+                tooltip: strings.backbutton_tooltip
             },
             {
                 hasText: true,
@@ -173,46 +196,52 @@ export const getBackAndGenerateButtonContext = () => {
                 tertiary: false,
                 iconname: 'sparkle',
                 customicon: true,
-                action: 'generate'
+                action: 'generate',
+                tooltip: strings.generatebutton_tooltip
             }
         ]
     };
 }
 
 export const getReplaceButtonsContext = () => {
-    return {
+
+    return  {
         footer_iconbuttons:
             [
                 {
                     action: 'delete',
-                    iconName: 'trash'
+                    iconname: 'trash',
+                    tooltip: strings.deletebutton_tooltip
                 },
                 {
                     action: 'regenerate',
-                    iconName: 'arrows-rotate'
+                    iconname: 'arrows-rotate',
+                    tooltip: strings.regeneratebutton_tooltip
                 }
             ],
         footer_buttons:
             [
                 {
-                    action: 'insert',
+                    action: 'insertbelow',
                     hasText: true,
                     button_text: strings.insertbelow,
                     icon_left: true,
                     icon_right: false,
                     secondary: true,
                     iconname: 'text-insert-last',
-                    customicon: true
+                    customicon: true,
+                    tooltip: strings.insertbelow_tooltip
                 },
                 {
-                    action: 'replace',
+                    action: getMode() === constants.modalModes.selection ? 'replace' : 'insertatcaret',
                     hasText: true,
-                    button_text: strings.replaceselection,
+                    button_text: getMode() === constants.modalModes.selection ? strings.replaceselection : strings.insertatcaret,
                     icon_left: true,
                     icon_right: false,
                     primary: true,
                     iconname: 'check',
-                    iconstyle: 'solid'
+                    iconstyle: 'solid',
+                    tooltip: getMode() === constants.modalModes.selection ? strings.replaceselection_tooltip : strings.insertatcaret_tooltip
                 }
             ],
     };
@@ -230,7 +259,8 @@ export const getInputContext = () => {
                         iconname: 'arrow-right',
                         iconstyle: 'solid',
                         icon_left: false,
-                        icon_right: true
+                        icon_right: true,
+                        tooltip: strings.freepromptbutton_tooltip
                     }
                 ]
             }
@@ -249,6 +279,7 @@ export const getShowPromptButtonContext = () => {
         iconstyle: 'solid',
         action: 'showprompt',
         textareatype: 'prompt',
-        collapsed: true
+        collapsed: true,
+        tooltip: strings.showpromptbutton_tooltip
     }
 };

@@ -31,8 +31,9 @@ import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
 import ImggenHandler from 'tiny_ai/datahandler/imggen';
-import StartHandler from "./datahandler/start";
-import OptimizeHandler from "./datahandler/optimize";
+import StartHandler from './datahandler/start';
+import OptimizeHandler from './datahandler/optimize';
+import $ from 'jquery';
 
 
 let modal = null;
@@ -174,6 +175,12 @@ export const renderModalContent = async (bodyComponentTemplate, footerComponentT
         // If there is no headline specified, we keep the old one.
         modal.setTitle(result[0].html);
     }
+    // Hide all eventually still existing tooltips first, because they show on 'hover' and
+    // 'focus'. So we need to remove them before removing the corresponding buttons from the DOM.
+    // Boostrap 4 still using jQuery for tooltips, so we need jQuery here.
+    document.querySelectorAll('button[data-action]').forEach(button => {
+        $(button).tooltip('hide');
+    });
     modal.setBody(result[1].html);
     modal.setFooter(result[2].html);
     result.forEach((item) => {
@@ -181,6 +188,11 @@ export const renderModalContent = async (bodyComponentTemplate, footerComponentT
     })
     await insertInfoBox();
     await insertUserQuotaBox();
+    document.querySelectorAll('button[data-action]').forEach(button => {
+        button.addEventListener('click', event => {
+            $(event.target).closest('button[data-action]').tooltip('hide');
+        })
+    });
 };
 
 export const insertInfoBox = async () => {

@@ -18,8 +18,7 @@ import {getString, getStrings} from 'core/str';
 import {constants} from 'tiny_ai/constants';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import {getAiConfig} from 'local_ai_manager/config';
-import {getMode, destroyModal} from 'tiny_ai/utils';
-import {alert as Alert} from 'core/notification';
+import {getMode, errorAlert, destroyModal} from 'tiny_ai/utils';
 
 
 /**
@@ -132,8 +131,7 @@ class _StartHandler {
     async getTemplateContext() {
         let toolButtons = [];
         if (this.aiConfig.role === 'role_basic' && this.isTinyAiDisabled()) {
-            await Alert(await getString('generalerror', 'tiny_ai'),
-                await getString('error_tiny_ai_notavailable', 'tiny_ai'));
+            await errorAlert(await getString('error_tiny_ai_notavailable', 'tiny_ai'));
             destroyModal();
         }
 
@@ -190,7 +188,6 @@ class _StartHandler {
                 disabled: this.isToolDisabled('audiogen').length > 0,
                 action: 'loadaudiogen'
             });
-            console.log(this.isToolDisabled('audiogen'));
         }
         if (!this.isToolHidden('imggen')) {
             toolButtons.push({

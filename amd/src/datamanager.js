@@ -106,7 +106,6 @@ class _DataManager {
 
     getCurrentOptions() {
         const optionsToReturn = this.options === null ? {} : this.options;
-        console.log(this.options)
         Object.assign(optionsToReturn, this.getDefaultOptions());
         console.log(optionsToReturn)
         return optionsToReturn;
