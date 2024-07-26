@@ -27,16 +27,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-
-    'tiny/ai:view' => [
-        'captype' => 'view',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'student' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
+        'tiny/ai:view' => [
+                'captype' => 'view',
+                'contextlevel' => CONTEXT_MODULE,
+                'archetypes' => [
+                        'user' => CAP_ALLOW,
+                ],
         ],
-        'clonepermissionsfrom' => 'moodle/course:view',
-    ],
 ];
