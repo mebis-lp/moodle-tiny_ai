@@ -16,6 +16,7 @@
 import DataManager from 'tiny_ai/datamanager';
 import * as AiConfig from 'local_ai_manager/config';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import Config from 'core/config';
 
 /**
  * Tiny AI data manager.
@@ -38,13 +39,11 @@ class _TtsHandler {
 
     async getTargetLanguageOptions(){
         await this.loadTtsOptions();
-        console.log(this.ttsOptions.languages)
         return this.ttsOptions.languages;
     }
 
     async getVoiceOptions() {
         await this.loadTtsOptions();
-        console.log(this.ttsOptions.voices);
         return this.ttsOptions.voices;
     }
 
@@ -113,11 +112,16 @@ class _TtsHandler {
         if (targetLanguageOptions !== null && Object.keys(targetLanguageOptions).length > 0) {
             const targetLanguageDropdownContext = {};
             targetLanguageDropdownContext.preference = 'targetLanguage';
-            targetLanguageDropdownContext.dropdown_default = targetLanguageOptions[0]['displayname'];
-            targetLanguageDropdownContext.dropdown_default_value = targetLanguageOptions[0]['key'];
+            let indexOfLanguageOption = 0;
+            const matchingEntry = targetLanguageOptions.map(entry => entry['key'].startsWith(Config.language));
+
+            if (matchingEntry.length > 0) {
+                // Language keys are of the form de-DE, so we check, if current user's language starts with same language code.
+                indexOfLanguageOption = targetLanguageOptions.findIndex(value => value['key'].startsWith(Config.language));
+            }
+            targetLanguageDropdownContext.dropdown_default = targetLanguageOptions[indexOfLanguageOption]['displayname'];
+            targetLanguageDropdownContext.dropdown_default_value = targetLanguageOptions[indexOfLanguageOption]['key'];
             targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
-            //targetLanguageDropdownContext.tooltip = BasedataHandler.getTinyAiString('targetlanguagedropdown_tooltip');
-            targetLanguageDropdownContext.tooltip = "WÄHLEN SIE DIE ZIELSPRACHE";
             const targetLanguageDropdownOptions = [];
             targetLanguageOptions.forEach(option => {
                 targetLanguageDropdownOptions.push({
@@ -136,7 +140,6 @@ class _TtsHandler {
             voiceDropdownContext.dropdown_default = voiceOptions[0]['displayname'];
             voiceDropdownContext.dropdown_default_value = voiceOptions[0]['key'];
             voiceDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('voice');
-            voiceDropdownContext.tooltip = BasedataHandler.getTinyAiString('voicedropdown_tooltip');
             const voiceDropdownOptions = [];
             voiceOptions.forEach(option => {
                 voiceDropdownOptions.push({
@@ -155,7 +158,6 @@ class _TtsHandler {
             genderDropdownContext.dropdown_default = genderOptions[0]['displayname'];
             genderDropdownContext.dropdown_default_value = genderOptions[0]['key'];
             genderDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('gender');
-            genderDropdownContext.tooltip = BasedataHandler.getTinyAiString('genderdropdown_tooltip');
             const genderDropdownOptions = [];
             genderOptions.forEach(option => {
                 genderDropdownOptions.push({
@@ -189,9 +191,4 @@ class _TtsHandler {
     }
 }
 
-
-
 export default TtsHandler;
-
-
-
