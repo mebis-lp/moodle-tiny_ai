@@ -26,15 +26,15 @@ import {getButtonImage} from 'editor_tiny/utils';
 import {
     component,
     toolbarButtonName,
-    toolbarButtonTitle,
     selectionbarButtonName,
-    selectionbarButtonTitle,
     icon,
     selectionbarSource,
     toolbarSource,
     menubarSource
 } from 'tiny_ai/common';
 import * as Utils from 'tiny_ai/utils';
+import {prefetchStrings} from 'core/prefetch';
+import {getString} from 'core/str';
 
 /**
  * Handle the action for your plugin.
@@ -56,10 +56,15 @@ import * as Utils from 'tiny_ai/utils';
  * @returns {function} The registration function to call within the Plugin.add function.
  */
 export const getSetup = async() => {
+    prefetchStrings('tiny_ai', ['toolbarbuttontitle', 'selectionbarbuttontitle']);
     const [
         buttonImage,
+        toolbarButtonTitle,
+        selectionbarButtonTitle
     ] = await Promise.all([
         getButtonImage('icon', component),
+        getString('toolbarbuttontitle', 'tiny_ai'),
+        getString('selectionbarbuttontitle', 'tiny_ai')
     ]);
 
     return (editor) => {
@@ -73,7 +78,7 @@ export const getSetup = async() => {
             icon,
             tooltip: toolbarButtonTitle,
             onAction: () => {
-                Utils.displayDialogue(toolbarSource)
+                Utils.displayDialogue(toolbarSource);
             }
         });
 
@@ -82,7 +87,7 @@ export const getSetup = async() => {
             icon,
             text: toolbarButtonTitle,
             onAction: () => {
-                Utils.displayDialogue(menubarSource)
+                Utils.displayDialogue(menubarSource);
             }
         });
 
@@ -90,7 +95,7 @@ export const getSetup = async() => {
             icon,
             tooltip: selectionbarButtonTitle,
             onAction: () => {
-                Utils.displayDialogue(selectionbarSource)
+                Utils.displayDialogue(selectionbarSource);
             }
         });
 
