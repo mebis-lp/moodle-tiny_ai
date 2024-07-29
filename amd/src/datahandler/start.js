@@ -143,6 +143,7 @@ class _StartHandler {
                 customicon: true,
                 iconname: 'shorten',
                 disabled: this.isToolDisabled('summarize').length > 0,
+                tooltip: this.isToolDisabled('summarize'),
                 action: 'loadsummarize'
             });
         }
@@ -154,6 +155,7 @@ class _StartHandler {
                 iconname: 'language',
                 iconstyle: 'solid',
                 disabled: this.isToolDisabled('translate').length > 0,
+                tooltip: this.isToolDisabled('translate'),
                 action: 'loadtranslate'
             });
         }
@@ -165,6 +167,7 @@ class _StartHandler {
                 customicon: true,
                 iconname: 'extend',
                 disabled: this.isToolDisabled('describe').length > 0,
+                tooltip: this.isToolDisabled('describe'),
                 action: 'loaddescribe'
             });
         }
@@ -176,6 +179,7 @@ class _StartHandler {
                 iconstyle: 'solid',
                 iconname: 'microphone',
                 disabled: this.isToolDisabled('tts').length > 0,
+                tooltip: this.isToolDisabled('tts'),
                 action: 'loadtts'
             });
         }
@@ -186,6 +190,7 @@ class _StartHandler {
                 iconstyle: 'solid',
                 iconname: 'microphone',
                 disabled: this.isToolDisabled('audiogen').length > 0,
+                tooltip: this.isToolDisabled('audiogen'),
                 action: 'loadaudiogen'
             });
         }
@@ -196,6 +201,7 @@ class _StartHandler {
                 iconstyle: 'solid',
                 iconname: 'image',
                 disabled: this.isToolDisabled('imggen').length > 0,
+                tooltip: this.isToolDisabled('imggen'),
                 action: 'loadimggen'
             });
         }

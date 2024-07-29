@@ -28,6 +28,8 @@ import * as Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
 import DatahandlerStart from 'tiny_ai/datahandler/start';
 import {errorAlert} from 'tiny_ai/utils';
+// We unfortunately need jquery for tooltip handling.
+import $ from 'jquery';
 
 export default class extends BaseController {
 
@@ -41,12 +43,14 @@ export default class extends BaseController {
         const freePromptButton = this.baseElement.querySelector('[data-action="loadfreeprompt"]');
 
         if (!(await DatahandlerStart.isTinyAiDisabled())) {
-            document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
-                button.parentElement.addEventListener(
-                    'click', async(event) => {
-                        await errorAlert(DatahandlerStart.isToolDisabled(button.dataset.tool));
-                    });
-            });
+            if(window.matchMedia("(pointer: coarse)").matches) {
+                document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
+                    button.parentElement.addEventListener(
+                        'click', async(event) => {
+                            $(button).tooltip('toggle');
+                        });
+                });
+            }
         }
 
         if (summarizeButton) {
