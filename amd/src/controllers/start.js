@@ -44,6 +44,7 @@ export default class extends BaseController {
 
         if (!(await DatahandlerStart.isTinyAiDisabled())) {
             if(window.matchMedia("(pointer: coarse)").matches) {
+                // If we have a touch device, we need to manually trigger the tooltips by touching the cards.
                 document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
                     button.parentElement.addEventListener(
                         'click', async(event) => {

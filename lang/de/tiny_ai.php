@@ -101,6 +101,6 @@ $string['toolname_translate_extension'] = 'des markierten Textes';
 $string['toolname_tts'] = 'Audio erstellen';
 $string['toolname_tts_extension'] = 'aus dem markierten Text';
 $string['translate_headline'] = 'Übersetzen des markierten Texts';
-$string['translate_baseprompt'] = 'Übersetze den folgenden Text in die Sprache {$a}';
+$string['translate_baseprompt'] = 'Übersetze den folgenden Text in die Sprache {$a} und gib dabei ausschließlich den übersetzten Text aus';
 $string['tts_headline'] = 'Audio aus markiertem Text generieren';
 $string['voice'] = 'Stimme';
