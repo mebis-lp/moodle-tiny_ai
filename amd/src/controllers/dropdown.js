@@ -41,4 +41,4 @@ export const init = (dropDownSelector) => {
             dropdown.dispatchEvent(event);
         });
     });
-}
+};

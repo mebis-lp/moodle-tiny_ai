@@ -97,7 +97,7 @@ let strings = {};
 export const init = async() => {
     prefetchStrings('tiny_ai', stringKeys);
     const stringRequest = stringKeys.map(key => {
-        return {key, component: 'tiny_ai'}
+        return {key, component: 'tiny_ai'};
     });
     // We now get the strings. They are already prefetched, so this is not a performance feature.
     // We just use this to avoid having to code asynchronously all the time just for retrieving the
@@ -164,11 +164,11 @@ export const init = async() => {
         strings.tts_headline,
         strings.voice
     ] = await getStrings(stringRequest);
-}
+};
 
 export const getTinyAiString = (string) => {
     return strings[string];
-}
+};
 
 export const getBackAndGenerateButtonContext = () => {
     return {
@@ -201,7 +201,7 @@ export const getBackAndGenerateButtonContext = () => {
             }
         ]
     };
-}
+};
 
 export const getReplaceButtonsContext = () => {
 
@@ -241,7 +241,8 @@ export const getReplaceButtonsContext = () => {
                     primary: true,
                     iconname: 'check',
                     iconstyle: 'solid',
-                    tooltip: getMode() === constants.modalModes.selection ? strings.replaceselection_tooltip : strings.insertatcaret_tooltip
+                    tooltip: getMode() === constants.modalModes.selection
+                        ? strings.replaceselection_tooltip : strings.insertatcaret_tooltip
                 }
             ],
     };
@@ -265,8 +266,8 @@ export const getInputContext = () => {
                 ]
             }
         ],
-    }
-}
+    };
+};
 
 export const getShowPromptButtonContext = () => {
     return {
@@ -281,5 +282,5 @@ export const getShowPromptButtonContext = () => {
         textareatype: 'prompt',
         collapsed: true,
         tooltip: strings.showpromptbutton_tooltip
-    }
+    };
 };

@@ -53,7 +53,7 @@ class _StartHandler {
         // It's easier to fetch alle these strings before even if we do not use them
         // instead of making all functions async just because of getString returning a promise.
         const stringRequest = this.stringKeys.map(key => {
-            return {key, component: 'local_ai_manager'}
+            return {key, component: 'local_ai_manager'};
         });
 
         [
@@ -74,7 +74,7 @@ class _StartHandler {
         this.strings.error_usernotconfirmed = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
     }
 
-    getPurposeConfig = (tool) => {
+    getPurposeConfig(tool) {
         if (this.aiConfig === null) {
             throw new Error('Coding error: init function was not called before accessing this.getPurposeConfig!');
         }
@@ -114,7 +114,6 @@ class _StartHandler {
         }
     }
 
-    // TODO Test if this logic is correct
     isToolHidden(tool) {
         const purposeInfo = this.getPurposeConfig(tool);
         // If the tenant is not allowed the plugin is being disabled completely, so we do not need
@@ -208,7 +207,8 @@ class _StartHandler {
                 action: 'loadimggen'
             });
         }
-        // We sort the not disabled tools to the top while keeping the groups "disabled tools" and "not disabled tools" in the same order inside the groups.
+        // We sort the not disabled tools to the top while keeping the groups "disabled tools" and "not disabled tools"
+        // in the same order inside the groups.
         toolButtons.sort((a, b) => {
             if (a.disabled && !b.disabled) {
                 return 1;
@@ -217,7 +217,7 @@ class _StartHandler {
             } else {
                 return 0;
             }
-        })
+        });
 
         const templateContext = {
             showIcon: true,

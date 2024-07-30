@@ -49,43 +49,43 @@ export const renderStart = async () => {
     DataManager.reset();
     const templateContext = await StartHandler.getTemplateContext();
     await renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
-}
+};
 
 export const renderSummarize = async () => {
     const templateContext = SummarizeHandler.getTemplateContext('summarize');
     await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderTranslate = async () => {
     const templateContext = TranslateHandler.getTemplateContext();
     await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderDescribe = async () => {
     const templateContext = SummarizeHandler.getTemplateContext('describe');
     await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderTts = async () => {
     const templateContext = await TtsHandler.getTemplateContext('tts');
     await renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderAudiogen = async () => {
     const templateContext = await TtsHandler.getTemplateContext('audiogen');
     await renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderImggen = async () => {
     const templateContext = await ImggenHandler.getTemplateContext();
     await renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderLoading = async () => {
     const templateContext = {};
     templateContext.modal_headline = BasedataHandler.getTinyAiString('aigenerating');
     await renderModalContent('moodle-modal-body-loading', 'moodle-modal-footer-empty', templateContext);
-}
+};
 
 export const renderSuggestion = async () => {
     const templateContext = {};
@@ -96,12 +96,12 @@ export const renderSuggestion = async () => {
 
     Object.assign(templateContext, BasedataHandler.getReplaceButtonsContext());
     await renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
-}
+};
 
 export const renderOptimizePrompt = async () => {
     const templateContext = OptimizeHandler.getTemplateContext();
     await renderModalContent('moodle-modal-body-optimize', 'moodle-modal-footer-generate', templateContext);
-}
+};
 
 export const renderDismiss = async() => {
     const templateContext = {
@@ -132,37 +132,40 @@ export const renderDismiss = async() => {
         ]
     };
     await renderModalContent('moodle-modal-body-dismiss', 'moodle-modal-footer-empty', templateContext);
-}
+};
 
 export const renderAiResultForEditor = () => {
     let html;
     switch (DataManager.getCurrentTool()) {
         case 'tts':
-        case 'audiogen':
+        case 'audiogen': {
             const audioPlayer = document.createElement('audio');
             audioPlayer.controls = 'controls';
             audioPlayer.src = DataManager.getCurrentAiResult();
             audioPlayer.type = 'audio/mpeg';
             html = audioPlayer.outerHTML;
             break;
-        case 'imggen':
+        }
+        case 'imggen': {
             const img = document.createElement('img');
             img.src = DataManager.getCurrentAiResult();
             img.classList.add('mw-100');
             html = img.outerHTML;
             break;
-        default:
+        }
+        default: {
             html = DataManager.getCurrentAiResult();
+        }
     }
     return html;
-}
+};
 
 /**
  * Re-renders the content auf the modal once it has been created.
  *
- * @param bodyComponentTemplate the name of the body template to use (without the prefix 'tiny_ai/components/')
- * @param footerComponentTemplate the name of the footer template to use (without the prefix 'tiny_ai/components/')
- * @param templateContext the template context being used for all partial templates
+ * @param {string} bodyComponentTemplate the name of the body template to use (without the prefix 'tiny_ai/components/')
+ * @param {string} footerComponentTemplate the name of the footer template to use (without the prefix 'tiny_ai/components/')
+ * @param {string} templateContext the template context being used for all partial templates
  * @returns {Promise<void>} the async promise
  */
 export const renderModalContent = async (bodyComponentTemplate, footerComponentTemplate, templateContext) => {
@@ -185,21 +188,20 @@ export const renderModalContent = async (bodyComponentTemplate, footerComponentT
     modal.setFooter(result[2].html);
     result.forEach((item) => {
         Templates.runTemplateJS(item.js);
-    })
+    });
     await insertInfoBox();
     await insertUserQuotaBox();
     document.querySelectorAll('button[data-action]').forEach(button => {
         button.addEventListener('click', event => {
             $(event.target).closest('button[data-action]').tooltip('hide');
-        })
+        });
     });
 };
 
 export const insertInfoBox = async () => {
-    // TODO extract used purposes
     const infoBoxSelector = '[data-rendertarget="infobox"]';
     if (document.querySelector(infoBoxSelector)) {
-        await renderInfoBox('tiny_ai', userId, infoBoxSelector, ['singleprompt', 'tts', 'imggen']);
+        await renderInfoBox('tiny_ai', userId, infoBoxSelector, ['singleprompt', 'translate', 'tts', 'imggen']);
     }
 };
 

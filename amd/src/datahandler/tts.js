@@ -37,7 +37,7 @@ class _TtsHandler {
     voice = null;
     gender = null;
 
-    async getTargetLanguageOptions(){
+    async getTargetLanguageOptions() {
         await this.loadTtsOptions();
         return this.ttsOptions.languages;
     }
@@ -52,15 +52,15 @@ class _TtsHandler {
         return this.ttsOptions.gender;
     }
 
-    setTargetLanguage = (targetLanguage) => {
+    setTargetLanguage(targetLanguage) {
         this.targetLanguage = targetLanguage;
     }
 
-    setVoice = (voice) => {
+    setVoice(voice) {
         this.voice = voice;
     }
 
-    setGender = (gender) => {
+    setGender(gender) {
         this.gender = gender;
     }
 
@@ -99,7 +99,7 @@ class _TtsHandler {
      *
      * @param {string} tool the tool to generate the context for, can be 'tts' and 'audiogen'
      */
-    getTemplateContext = async (tool) => {
+    async getTemplateContext(tool) {
         const context = {
             modal_headline: BasedataHandler.getTinyAiString(tool + '_headline'),
             showIcon: true,

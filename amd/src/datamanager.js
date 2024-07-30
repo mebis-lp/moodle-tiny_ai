@@ -42,14 +42,14 @@ class _DataManager {
             component: 'tiny_ai',
             itemid: getDraftItemId(),
             contextid: getContextId()
-        }
+        };
         if (['tts', 'audiogen'].includes(this.getCurrentTool())) {
             defaultOptions.filename = 'audio_' + Math.random().toString(16).slice(2) + '.mp3';
         } else if (this.getCurrentTool() === 'imggen') {
             defaultOptions.filename = 'img_' + Math.random().toString(16).slice(2) + '.png';
         }
         return defaultOptions;
-    };
+    }
 
     setCurrentTool(currentTool) {
         this.currentTool = currentTool;
@@ -107,7 +107,6 @@ class _DataManager {
     getCurrentOptions() {
         const optionsToReturn = this.options === null ? {} : this.options;
         Object.assign(optionsToReturn, this.getDefaultOptions());
-        console.log(optionsToReturn)
         return optionsToReturn;
     }
 

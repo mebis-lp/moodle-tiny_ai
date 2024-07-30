@@ -33,7 +33,7 @@ class _OptimizeHandler {
             modal_headline: BasedataHandler.getTinyAiString('reworkprompt'),
             showIcon: true,
             textareatype: 'prompt'
-        }
+        };
         Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
         return context;
     };

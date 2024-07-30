@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {prefetchStrings} from 'core/prefetch';
 import {getStrings} from 'core/str';
 import DataManager from 'tiny_ai/datamanager';
 
@@ -40,7 +39,7 @@ export default class {
         DataManager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
             textarea.value = event.detail.newPrompt;
         });
-        textarea.addEventListener('keyup', event => {
+        textarea.addEventListener('keyup', () => {
             DataManager.setCurrentPrompt(textarea.value);
         });
 
@@ -51,9 +50,10 @@ export default class {
                     {key: 'hideprompt', component: 'tiny_ai'}
                 ]
             );
-            showPromptButton.addEventListener('click', (event) => {
+            showPromptButton.addEventListener('click', () => {
                 const currentText = showPromptButton.querySelector('[data-text]').innerText;
-                showPromptButton.querySelector('[data-text]').innerText = currentText === showPromptString ? hidePromptString : showPromptString;
+                showPromptButton.querySelector('[data-text]').innerText =
+                    currentText === showPromptString ? hidePromptString : showPromptString;
                 const buttonIcon = showPromptButton.querySelector('i');
                 if (buttonIcon.classList.contains('fa-eye')) {
                     buttonIcon.classList.remove('fa-eye');

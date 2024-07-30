@@ -13,10 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {makeRequest} from 'local_ai_manager/make_request';
-import DataManager from 'tiny_ai/datamanager';
-import {exception as displayException} from 'core/notification';
-import {getString} from 'core/str';
 import * as AiConfig from 'local_ai_manager/config';
 import * as BasedataHandler from "./basedata";
 
@@ -37,12 +33,12 @@ class _ImggenHandler {
 
     size = null;
 
-    async getSizesOptions(){
+    async getSizesOptions() {
         await this.loadImggenOptions();
         return this.imggenOptions.sizes;
     }
 
-    setSize = (size) => {
+    setSize(size) {
         this.size = size;
     }
 
@@ -64,7 +60,7 @@ class _ImggenHandler {
         }
     }
 
-    getTemplateContext = async () => {
+    async getTemplateContext() {
         const context = {
             modal_headline: BasedataHandler.getTinyAiString('imggen_headline'),
             showIcon: true,
@@ -96,12 +92,12 @@ class _ImggenHandler {
         // We only have one here of course, but in case we will have more options, we use a forEach.
         modalDropdowns.forEach(dropdownContext => {
             dropdownContext.dropup = true;
-        })
+        });
 
         Object.assign(context, {
             modal_dropdowns: modalDropdowns
         });
-        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext())
+        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
         return context;
     }
 }

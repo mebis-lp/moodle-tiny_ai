@@ -44,7 +44,7 @@ let editor = null;
 export const init = async (editorObject) => {
     editor = editorObject;
     userId = getUserId(editor);
-}
+};
 
 /**
  * Shows and handles the dialog.
@@ -91,34 +91,35 @@ export const getAiAnswer = async (prompt, purpose, options = {}) => {
         return null;
     }
     return result.result;
-}
+};
 
 export const insertAfterContent = (textToInsert) => {
     editor.setContent(editor.getContent() + '<p>' + textToInsert + '</p>');
-}
+};
 
 /**
  * Replaces a selected text with the given replacement.
  *
  * In case nothing is selected, it will be inserted at the current caret position.
  *
- * @param textReplacement the text by which the current selection will be replaced or which will be inserted at the caret (if no selection)
+ * @param {strings} textReplacement the text by which the current selection will be replaced or which will be inserted
+ *  at the caret (if no selection), can be HTML code
  */
 export const replaceSelection = (textReplacement) => {
     editor.selection.setContent(textReplacement);
-}
+};
 
 export const destroyModal = () => {
     modal.destroy();
-}
+};
 
 export const getDraftItemId = () => {
     return getDraftItemIdTinyCore(editor);
-}
+};
 
 export const getContextId = () => {
     return getContextItemIdTinyCore(editor);
-}
+};
 
 export const getMode = () => {
     return mode;
@@ -134,4 +135,4 @@ export const errorAlert = async (message, title = null) => {
             $(button).tooltip('hide');
         });
     });
-}
+};

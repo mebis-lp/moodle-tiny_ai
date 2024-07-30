@@ -67,12 +67,12 @@ export default class {
     }
 
     callRendererFunction() {
-        console.log(DataManager.getCurrentTool())
         if (DataManager.getCurrentTool() === 'freeprompt') {
             Renderer.renderStart();
             return;
         }
-        const toolNameWithUppercaseLetter = DataManager.getCurrentTool().charAt(0).toUpperCase() + DataManager.getCurrentTool().slice(1);
+        const toolNameWithUppercaseLetter =
+            DataManager.getCurrentTool().charAt(0).toUpperCase() + DataManager.getCurrentTool().slice(1);
         Renderer['render' + toolNameWithUppercaseLetter]();
     }
 }

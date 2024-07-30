@@ -37,17 +37,6 @@ import {prefetchStrings} from 'core/prefetch';
 import {getString} from 'core/str';
 
 /**
- * Handle the action for your plugin.
- * @param {TinyMCE.editor} editor The tinyMCE editor instance.
- */
-// const handleAction = (editor) => {
-//     displayDialogue(editor);
-
-//     // TODO Handle the action.
-//     // window.console.log(editor);
-// };
-
-/**
  * Get the setup function for the buttons.
  *
  * This is performed in an async function which ultimately returns the registration function as the

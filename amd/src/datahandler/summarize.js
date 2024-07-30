@@ -49,8 +49,8 @@ class _SummarizeHandler {
             100: '100',
             200: '200',
             300: '300'
-        }
-    };
+        };
+    }
 
     languageType = null;
     maxWordCount = 0;
@@ -130,10 +130,10 @@ class _SummarizeHandler {
             maxWordCountDropdownOptions.push({
                 optionValue: key,
                 optionLabel: value,
-            })
+            });
         }
 
-        delete maxWordCountDropdownOptions[Object.keys(this.getLanguageTypeOptions())[0]]
+        delete maxWordCountDropdownOptions[Object.keys(this.getLanguageTypeOptions())[0]];
         maxWordCountDropdownContext.dropdown_options = maxWordCountDropdownOptions;
 
         const languageTypeDropdownContext = {};
@@ -146,7 +146,7 @@ class _SummarizeHandler {
             languageTypeDropdownOptions.push({
                 optionValue: key,
                 optionLabel: value,
-            })
+            });
         }
         delete languageTypeDropdownOptions[Object.keys(this.getLanguageTypeOptions)[0]];
         languageTypeDropdownContext.dropdown_options = languageTypeDropdownOptions;

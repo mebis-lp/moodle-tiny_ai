@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {prefetchStrings} from 'core/prefetch';
 import BaseController from 'tiny_ai/controllers/base';
 import * as Renderer from 'tiny_ai/renderer';
 
@@ -33,12 +32,12 @@ export default class extends BaseController {
         const dismissButton = this.baseElement.querySelector('[data-action="dismiss"]');
 
         if (cancelButton) {
-            cancelButton.addEventListener('click', async(event) => {
+            cancelButton.addEventListener('click', async() => {
                 await Renderer.renderSuggestion();
             });
         }
         if (dismissButton) {
-            dismissButton.addEventListener('click', async(event) => {
+            dismissButton.addEventListener('click', async() => {
                 await this.callRendererFunction();
             });
         }

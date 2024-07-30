@@ -41,11 +41,11 @@ class _TranslateHandler {
         ru: this.languageNameInCurrentUserLanguage.of('ru'),
         uk: this.languageNameInCurrentUserLanguage.of('uk'),
         zh: this.languageNameInCurrentUserLanguage.of('zh'),
-    }
+    };
     targetLanguage = null;
 
 
-    setTargetLanguage = (targetLanguage) => {
+    setTargetLanguage(targetLanguage) {
         this.targetLanguage = targetLanguage;
     }
 
@@ -55,7 +55,7 @@ class _TranslateHandler {
         return prompt;
     }
 
-    getTemplateContext = () => {
+    getTemplateContext() {
         const context = {
             modal_headline: BasedataHandler.getTinyAiString('translate_headline'),
             showIcon: true,
@@ -71,7 +71,7 @@ class _TranslateHandler {
             targetLanguageDropdownOptions.push({
                 optionValue: key,
                 optionLabel: value,
-            })
+            });
         }
         targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
 

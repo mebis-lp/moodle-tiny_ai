@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {prefetchStrings} from 'core/prefetch';
 import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
 import {insertAfterContent, replaceSelection, destroyModal} from 'tiny_ai/utils';
