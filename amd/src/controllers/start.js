@@ -34,6 +34,10 @@ import $ from 'jquery';
 export default class extends BaseController {
 
     async init() {
+        if (!this.baseElement) {
+            // In rare cases (display error messages etc.) we do not have a correct modal, so there is nothing to do here.
+            return;
+        }
         const summarizeButton = this.baseElement.querySelector('[data-action="loadsummarize"]');
         const translateButton = this.baseElement.querySelector('[data-action="loadtranslate"]');
         const describeButton = this.baseElement.querySelector('[data-action="loaddescribe"]');

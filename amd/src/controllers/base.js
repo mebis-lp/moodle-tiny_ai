@@ -31,8 +31,17 @@ import {constants} from 'tiny_ai/constants';
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 export default class {
+
+    baseElement = null;
+    footer = null;
+
     constructor(baseSelector) {
         this.baseElement = document.querySelector(baseSelector);
+        if (this.baseElement === null) {
+            // Sometimes (for example we display an error message before we even finish rendering the modal) we do not have
+            // a base element. In this case there is nothing to do, so we avoid console errors by early exiting.
+            return;
+        }
         this.footer = this.baseElement.parentElement.parentElement.querySelector('[data-region="footer"]');
     }
 

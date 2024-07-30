@@ -31,7 +31,7 @@ import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
 import ImggenHandler from 'tiny_ai/datahandler/imggen';
-import StartHandler from './datahandler/start';
+import StartHandler from 'tiny_ai/datahandler/start';
 import OptimizeHandler from './datahandler/optimize';
 import $ from 'jquery';
 
@@ -206,6 +206,6 @@ export const insertInfoBox = async () => {
 export const insertUserQuotaBox = async () => {
     const usageBoxSelector = '[data-rendertarget="usageinfo"]';
     if (document.querySelector(usageBoxSelector)) {
-        await renderUserQuota(usageBoxSelector, ['singleprompt', 'tts', 'imggen']);
+        await renderUserQuota(usageBoxSelector, ['singleprompt', 'translate', 'tts', 'imggen']);
     }
 };

@@ -36,6 +36,7 @@ class _StartHandler {
 
     stringKeys = [
         'error_limitreached',
+        'error_pleaseconfirm',
         'error_purposenotconfigured',
         'error_tenantdisabled',
         'error_unavailable_noselection',
@@ -57,6 +58,7 @@ class _StartHandler {
 
         [
             this.strings.error_limitreached,
+            this.strings.error_pleaseconfirm,
             this.strings.error_purposenotconfigured,
             this.strings.error_tenantdisabled,
             this.strings.error_unavailable_noselection,
@@ -67,7 +69,7 @@ class _StartHandler {
         this.strings.error_editor_notavailable = await getString('error_tiny_ai_notavailable', 'tiny_ai');
         const confirmLink = document.createElement('a');
         confirmLink.href = `${config.wwwroot}/local/ai_manager/confirm_ai_usage.php`;
-        confirmLink.innerText = confirmLink.href;
+        confirmLink.innerText = this.strings.error_pleaseconfirm;
         confirmLink.target = '_blank';
         this.strings.error_usernotconfirmed = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
     }
@@ -131,7 +133,8 @@ class _StartHandler {
     async getTemplateContext() {
         let toolButtons = [];
         if (this.aiConfig.role === 'role_basic' && this.isTinyAiDisabled()) {
-            await errorAlert(await getString('error_tiny_ai_notavailable', 'tiny_ai'));
+            await errorAlert(await getString('error_tiny_ai_notavailable', 'tiny_ai') + '<br/>'
+                + this.isTinyAiDisabled());
             destroyModal();
         }
 
