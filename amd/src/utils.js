@@ -35,6 +35,7 @@ import {makeRequest} from 'local_ai_manager/make_request';
 import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
 import * as BasedataHandler from "./datahandler/basedata";
 import $ from 'jquery';
+import Log from 'core/log';
 
 let userId = null;
 let modal = null;
@@ -82,12 +83,16 @@ export const getAiAnswer = async (prompt, purpose, options = {}) => {
     try {
         result = await makeRequest(purpose, prompt, options);
     } catch (exception) {
-        displayException(exception);
+        await displayException(exception);
         return;
     }
     if (result.code !== 200) {
         const alertTitle = await getString('errorwithcode', 'tiny_ai', result.code);
-        await errorAlert(JSON.parse(result.result).message, alertTitle);
+        const parsedResult = JSON.parse(result.result);
+        if (parsedResult.debuginfo) {
+            Log.error(parsedResult.debuginfo);
+        }
+        await errorAlert(parsedResult.message, alertTitle);
         return null;
     }
     return result.result;

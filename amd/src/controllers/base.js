@@ -56,7 +56,7 @@ export default class {
             result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
                 DataManager.getCurrentOptions());
         } catch (exception) {
-            displayException(exception);
+            await displayException(exception);
         }
 
         if (result === null) {
