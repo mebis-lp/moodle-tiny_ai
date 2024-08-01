@@ -18,7 +18,7 @@ import {getString, getStrings} from 'core/str';
 import {constants} from 'tiny_ai/constants';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import {getAiConfig} from 'local_ai_manager/config';
-import {getMode, errorAlert, destroyModal} from 'tiny_ai/utils';
+import {getMode, errorAlert, destroyModal, stripHtmlTags} from 'tiny_ai/utils';
 
 
 /**
@@ -145,7 +145,7 @@ class _StartHandler {
                 customicon: true,
                 iconname: 'shorten',
                 disabled: this.isToolDisabled('summarize').length > 0,
-                tooltip: this.isToolDisabled('summarize'),
+                tooltip: stripHtmlTags(this.isToolDisabled('summarize')),
                 action: 'loadsummarize'
             });
         }
@@ -157,7 +157,7 @@ class _StartHandler {
                 iconname: 'language',
                 iconstyle: 'solid',
                 disabled: this.isToolDisabled('translate').length > 0,
-                tooltip: this.isToolDisabled('translate'),
+                tooltip: stripHtmlTags(this.isToolDisabled('translate')),
                 action: 'loadtranslate'
             });
         }
@@ -169,7 +169,7 @@ class _StartHandler {
                 customicon: true,
                 iconname: 'extend',
                 disabled: this.isToolDisabled('describe').length > 0,
-                tooltip: this.isToolDisabled('describe'),
+                tooltip: stripHtmlTags(this.isToolDisabled('describe')),
                 action: 'loaddescribe'
             });
         }
@@ -181,7 +181,7 @@ class _StartHandler {
                 iconstyle: 'solid',
                 iconname: 'microphone',
                 disabled: this.isToolDisabled('tts').length > 0,
-                tooltip: this.isToolDisabled('tts'),
+                tooltip: stripHtmlTags(this.isToolDisabled('tts')),
                 action: 'loadtts'
             });
         }
@@ -192,7 +192,7 @@ class _StartHandler {
                 iconstyle: 'solid',
                 iconname: 'microphone',
                 disabled: this.isToolDisabled('audiogen').length > 0,
-                tooltip: this.isToolDisabled('audiogen'),
+                tooltip: stripHtmlTags(this.isToolDisabled('audiogen')),
                 action: 'loadaudiogen'
             });
         }
@@ -203,7 +203,7 @@ class _StartHandler {
                 iconstyle: 'solid',
                 iconname: 'image',
                 disabled: this.isToolDisabled('imggen').length > 0,
-                tooltip: this.isToolDisabled('imggen'),
+                tooltip: stripHtmlTags(this.isToolDisabled('imggen')),
                 action: 'loadimggen'
             });
         }

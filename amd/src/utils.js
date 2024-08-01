@@ -141,3 +141,10 @@ export const errorAlert = async (message, title = null) => {
         });
     });
 };
+
+export const stripHtmlTags = (textWithTags) => {
+    // Place selected content into a temporary span and extract the plain text from it to strip HTML tags.
+    const span = document.createElement('span');
+    span.innerHTML = textWithTags;
+    return span.textContent;
+}
