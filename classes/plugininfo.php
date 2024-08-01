@@ -30,7 +30,10 @@ use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_configuration;
+use local_ai_manager\ai_manager_utils;
+use local_ai_manager\local\config_manager;
 use local_ai_manager\local\tenant;
+use local_ai_manager\local\userinfo;
 
 class plugininfo extends plugin implements plugin_with_configuration, plugin_with_buttons, plugin_with_menuitems {
 
@@ -40,9 +43,16 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): bool {
+        global $USER;
         $tenant = \core\di::get(tenant::class);
-        // Users must have permission to embed content.
-        return has_capability('tiny/ai:view', $context) && $tenant->is_tenant_allowed();
+        $configmanager = \core\di::get(config_manager::class);
+        if (!has_capability('tiny/ai:view', $context) || !$tenant->is_tenant_allowed()) {
+            return false;
+        }
+        if (!$configmanager->is_tenant_enabled()) {
+            return ai_manager_utils::get_ai_config($USER)['role'] !== userinfo::get_role_as_string(userinfo::ROLE_BASIC);
+        }
+        return true;
     }
 
 
