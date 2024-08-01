@@ -183,6 +183,9 @@
 .tiny_ai-input-container.disabled .tiny_ai-input-field::placeholder {
   color: #A4A5AC;
 }
+.tiny_ai-input-container:focus-within {
+  border-color: #60616D;
+}
 .tiny_ai-input-container .tiny_ai-input-icon {
   margin-right: 10px;
   font-size: 18px;
@@ -302,6 +305,11 @@
   display: flex;
   padding: 8px 24px 0px 24px;
   flex-direction: column;
+}
+@media (max-width: 480px) {
+  .tiny_ai-modal--dialog [data-region=body] :first-child[id^=tiny_ai_] {
+    padding: 0;
+  }
 }
 .tiny_ai-modal--dialog [data-region=body] :first-child[id^=tiny_ai_].tiny_ai_wrapper-l {
   gap: 24px;
