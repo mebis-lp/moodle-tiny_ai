@@ -36,6 +36,10 @@
         }
     }
 
+    &:focus-within {
+        border-color: $neutral-grey-300;
+    }
+
     .tiny_ai-input-icon {
         margin-right: 10px;
         font-size: 18px;
