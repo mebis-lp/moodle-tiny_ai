@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import DataManager from 'tiny_ai/datamanager';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import {getString} from 'core/str';
 
@@ -63,7 +62,7 @@ class _SummarizeHandler {
         this.languageType = languageType;
     }
 
-    async getPrompt() {
+    async getPrompt(selectionText) {
         let prompt = '';
         if (this.currentTool === 'summarize') {
             prompt += BasedataHandler.getTinyAiString('summarize_baseprompt');
@@ -71,7 +70,7 @@ class _SummarizeHandler {
             prompt += BasedataHandler.getTinyAiString('describe_baseprompt');
         }
         if (parseInt(this.maxWordCount) === 0 && this.languageType === 'nospeciallanguage') {
-            return prompt + ': ' + DataManager.getSelectionText();
+            return prompt + ': ' + selectionText;
         } else {
             prompt += '. ';
             if (parseInt(this.maxWordCount) !== 0) {
@@ -85,7 +84,7 @@ class _SummarizeHandler {
                 prompt += '.';
             }
             prompt += '\n';
-            prompt += BasedataHandler.getTinyAiString('texttouse') + ': ' + DataManager.getSelectionText();
+            prompt += BasedataHandler.getTinyAiString('texttouse') + ': ' + selectionText;
             return prompt;
         }
     }

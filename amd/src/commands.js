@@ -56,18 +56,20 @@ export const getSetup = async() => {
         getString('selectionbarbuttontitle', 'tiny_ai')
     ]);
 
+
     return (editor) => {
         // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
-        Utils.init(editor);
+        const uniqid = Math.random().toString(16).slice(2);
+        Utils.init(uniqid, editor);
 
         // Register the AI Toolbar Button.
         editor.ui.registry.addButton(toolbarButtonName, {
             icon,
             tooltip: toolbarButtonTitle,
             onAction: () => {
-                Utils.displayDialogue(toolbarSource);
+                Utils.getEditorUtils(uniqid).displayDialogue(toolbarSource);
             }
         });
 
@@ -76,7 +78,7 @@ export const getSetup = async() => {
             icon,
             text: toolbarButtonTitle,
             onAction: () => {
-                Utils.displayDialogue(menubarSource);
+                Utils.getEditorUtils(uniqid).displayDialogue(menubarSource);
             }
         });
 
@@ -84,7 +86,7 @@ export const getSetup = async() => {
             icon,
             tooltip: selectionbarButtonTitle,
             onAction: () => {
-                Utils.displayDialogue(selectionbarSource);
+                Utils.getEditorUtils(uniqid).displayDialogue(selectionbarSource);
             }
         });
 

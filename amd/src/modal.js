@@ -34,10 +34,8 @@ export default class AiModal extends Modal {
     }
 
     configure(modalConfig) {
-        modalConfig.show = true;
         modalConfig.large = true;
         modalConfig.removeOnClose = true;
-
         super.configure(modalConfig);
     }
 }

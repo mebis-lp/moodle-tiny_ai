@@ -15,7 +15,6 @@
 
 import {getStrings} from 'core/str';
 import {prefetchStrings} from 'core/prefetch';
-import {getMode} from 'tiny_ai/utils';
 import {constants} from 'tiny_ai/constants';
 
 /**
@@ -203,7 +202,7 @@ export const getBackAndGenerateButtonContext = () => {
     };
 };
 
-export const getReplaceButtonsContext = () => {
+export const getReplaceButtonsContext = (mode) => {
 
     return  {
         footer_iconbuttons:
@@ -233,15 +232,15 @@ export const getReplaceButtonsContext = () => {
                     tooltip: strings.insertbelow_tooltip
                 },
                 {
-                    action: getMode() === constants.modalModes.selection ? 'replace' : 'insertatcaret',
+                    action: mode === constants.modalModes.selection ? 'replace' : 'insertatcaret',
                     hasText: true,
-                    button_text: getMode() === constants.modalModes.selection ? strings.replaceselection : strings.insertatcaret,
+                    button_text: mode === constants.modalModes.selection ? strings.replaceselection : strings.insertatcaret,
                     icon_left: true,
                     icon_right: false,
                     primary: true,
                     iconname: 'check',
                     iconstyle: 'solid',
-                    tooltip: getMode() === constants.modalModes.selection
+                    tooltip: mode === constants.modalModes.selection
                         ? strings.replaceselection_tooltip : strings.insertatcaret_tooltip
                 }
             ],

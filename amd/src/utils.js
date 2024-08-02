@@ -22,60 +22,29 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import AiModal from 'tiny_ai/modal';
 import ModalEvents from 'core/modal_events';
-import {getUserId} from 'tiny_ai/options';
-import {constants} from 'tiny_ai/constants';
-import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
-import * as Renderer from 'tiny_ai/renderer';
+import Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
 import {alert as Alert, exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
-import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
-import * as BasedataHandler from "./datahandler/basedata";
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import $ from 'jquery';
 import Log from 'core/log';
+import EditorUtils from 'tiny_ai/editor_utils';
 
-let userId = null;
-let modal = null;
-let mode = null;
-let editor = null;
+const objectStore = {};
 
-export const init = async (editorObject) => {
-    editor = editorObject;
-    userId = getUserId(editor);
-};
-
-/**
- * Shows and handles the dialog.
- *
- * @param {string} source the different sources from where the modal is being created, defined in common module
- */
-export const displayDialogue = async (source) => {
-    if (source === selectionbarSource || editor.selection.getContent().length > 0) {
-        mode = constants.modalModes.selection;
-    } else if (source === toolbarSource || source === menubarSource) {
-        mode = constants.modalModes.general;
+export const init = async (uniqid, editor) => {
+    if (!objectStore.hasOwnProperty(uniqid)) {
+        objectStore[uniqid] = {};
+        // The order in which these objects are being created is actually pretty important, because Renderer
+        // object depends on DataManager object.
+        objectStore[uniqid].editorUtils = new EditorUtils(uniqid, editor);
+        objectStore[uniqid].datamanager = new DataManager(uniqid);
+        objectStore[uniqid].renderer = new Renderer(uniqid);
+        await objectStore[uniqid].renderer.init();
     }
-
-    // We initially render the modal without content, because we need to rerender it anyway.
-    modal = await AiModal.create({
-        templateContext: {
-            classes: 'tiny_ai-modal--dialog',
-            headerclasses: 'tiny_ai-modal--header'
-        }
-    });
-
-    if (mode === constants.modalModes.selection) {
-        DataManager.setSelection(editor.selection.getContent());
-    }
-    await Renderer.init(modal, userId);
-    // Unfortunately, the modal will not execute any JS code in the template, so we need to rerender the modal as a whole again.
-    await Renderer.renderStart(mode);
-    modal.getRoot().on(ModalEvents.outsideClick, event => {
-        event.preventDefault();
-    });
 };
 
 export const getAiAnswer = async (prompt, purpose, options = {}) => {
@@ -98,38 +67,6 @@ export const getAiAnswer = async (prompt, purpose, options = {}) => {
     return result.result;
 };
 
-export const insertAfterContent = (textToInsert) => {
-    editor.setContent(editor.getContent() + '<p>' + textToInsert + '</p>');
-};
-
-/**
- * Replaces a selected text with the given replacement.
- *
- * In case nothing is selected, it will be inserted at the current caret position.
- *
- * @param {strings} textReplacement the text by which the current selection will be replaced or which will be inserted
- *  at the caret (if no selection), can be HTML code
- */
-export const replaceSelection = (textReplacement) => {
-    editor.selection.setContent(textReplacement);
-};
-
-export const destroyModal = () => {
-    modal.destroy();
-};
-
-export const getDraftItemId = () => {
-    return getDraftItemIdTinyCore(editor);
-};
-
-export const getContextId = () => {
-    return getContextItemIdTinyCore(editor);
-};
-
-export const getMode = () => {
-    return mode;
-};
-
 export const errorAlert = async (message, title = null) => {
     if (title === null) {
         title = BasedataHandler.getTinyAiString('generalerror');
@@ -147,4 +84,20 @@ export const stripHtmlTags = (textWithTags) => {
     const span = document.createElement('span');
     span.innerHTML = textWithTags;
     return span.textContent;
-}
+};
+
+export const getEditorUtils = (uniqid) => {
+    return objectStore[uniqid].editorUtils;
+};
+
+export const getRenderer = (uniqid) => {
+    return objectStore[uniqid].renderer;
+};
+
+export const getDatamanager = (uniqid) => {
+    return objectStore[uniqid].datamanager;
+};
+
+export const getCurrentModalUniqId = (element) => {
+    return element.closest('[data-tiny_ai_uniqid]').dataset['tiny_ai_uniqid'];
+};

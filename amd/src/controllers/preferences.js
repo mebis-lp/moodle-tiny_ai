@@ -23,10 +23,8 @@
  */
 
 import {constants} from 'tiny_ai/constants';
-import * as Renderer from 'tiny_ai/renderer';
 import SELECTORS from 'tiny_ai/selectors';
 import BaseController from 'tiny_ai/controllers/base';
-import DataManager from 'tiny_ai/datamanager';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
@@ -40,37 +38,37 @@ export default class extends BaseController {
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
 
-        switch (DataManager.getCurrentTool()) {
+        switch (this.datamanager.getCurrentTool()) {
             case 'summarize':
             case 'describe': {
-                SummarizeHandler.setTool(DataManager.getCurrentTool());
+                SummarizeHandler.setTool(this.datamanager.getCurrentTool());
                 const maxWordCountElement = this.baseElement.querySelector('[data-preference="maxWordCount"]');
                 const languageTypeElement = this.baseElement.querySelector('[data-preference="languageType"]');
                 SummarizeHandler.setMaxWordCount(maxWordCountElement.querySelector('[data-dropdown="select"]').dataset.value);
                 SummarizeHandler.setLanguageType(languageTypeElement.querySelector('[data-dropdown="select"]').dataset.value);
-                const currentPromptSummarize = await SummarizeHandler.getPrompt();
-                DataManager.setCurrentPrompt(currentPromptSummarize);
+                const currentPromptSummarize = await SummarizeHandler.getPrompt(this.datamanager.getSelectionText());
+                this.datamanager.setCurrentPrompt(currentPromptSummarize);
                 maxWordCountElement.addEventListener('dropdownSelectionUpdated', async (event) => {
                     SummarizeHandler.setMaxWordCount(event.detail.newValue);
-                    const currentPrompt = await SummarizeHandler.getPrompt();
-                    DataManager.setCurrentPrompt(currentPrompt);
+                    const currentPrompt = await SummarizeHandler.getPrompt(this.datamanager.getSelectionText());
+                    this.datamanager.setCurrentPrompt(currentPrompt);
                 });
                 languageTypeElement.addEventListener('dropdownSelectionUpdated', async (event) => {
                     SummarizeHandler.setLanguageType(event.detail.newValue);
-                    const currentPrompt = await SummarizeHandler.getPrompt();
-                    DataManager.setCurrentPrompt(currentPrompt);
+                    const currentPrompt = await SummarizeHandler.getPrompt(this.datamanager.getSelectionText());
+                    this.datamanager.setCurrentPrompt(currentPrompt);
                 });
                 break;
             }
             case 'translate': {
                 const targetLanguageElement = this.baseElement.querySelector('[data-preference="targetLanguage"]');
                 TranslateHandler.setTargetLanguage(targetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
-                const currentPromptTranslate = await TranslateHandler.getPrompt();
-                DataManager.setCurrentPrompt(currentPromptTranslate);
+                const currentPromptTranslate = await TranslateHandler.getPrompt(this.datamanager.getSelectionText());
+                this.datamanager.setCurrentPrompt(currentPromptTranslate);
                 targetLanguageElement.addEventListener('dropdownSelectionUpdated', async (event) => {
                     TranslateHandler.setTargetLanguage(event.detail.newValue);
-                    const currentPromptTranslate = await TranslateHandler.getPrompt();
-                    DataManager.setCurrentPrompt(currentPromptTranslate);
+                    const currentPromptTranslate = await TranslateHandler.getPrompt(this.datamanager.getSelectionText());
+                    this.datamanager.setCurrentPrompt(currentPromptTranslate);
                 });
                 break;
             }
@@ -83,25 +81,26 @@ export default class extends BaseController {
                     TtsHandler.setTargetLanguage(ttsTargetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
                     ttsTargetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
                         TtsHandler.setTargetLanguage(event.detail.newValue);
-                        DataManager.setCurrentOptions(TtsHandler.getOptions());
+                        this.datamanager.setCurrentOptions(TtsHandler.getOptions());
                     });
                 }
                 if (voiceElement) {
                     TtsHandler.setVoice(voiceElement.querySelector('[data-dropdown="select"]').dataset.value);
                     voiceElement.addEventListener('dropdownSelectionUpdated', event => {
                         TtsHandler.setVoice(event.detail.newValue);
-                        DataManager.setCurrentOptions(TtsHandler.getOptions());
+                        this.datamanager.setCurrentOptions(TtsHandler.getOptions());
                     });
                 }
                 if (genderElement) {
                     TtsHandler.setGender(genderElement.querySelector('[data-dropdown="select"]').dataset.value);
                     genderElement.addEventListener('dropdownSelectionUpdated', event => {
                         TtsHandler.setGender(event.detail.newValue);
-                        DataManager.setCurrentOptions(TtsHandler.getOptions());
+                        this.datamanager.setCurrentOptions(TtsHandler.getOptions());
                     });
                 }
-                DataManager.setCurrentPrompt(TtsHandler.getPrompt());
-                DataManager.setCurrentOptions(TtsHandler.getOptions());
+                this.datamanager.setCurrentPrompt(TtsHandler.getPrompt(this.datamanager.getCurrentTool(),
+                    this.datamanager.getSelectionText()));
+                this.datamanager.setCurrentOptions(TtsHandler.getOptions());
                 break;
             }
             case 'imggen': {
@@ -111,18 +110,18 @@ export default class extends BaseController {
                     ImggenHandler.setSize(sizesElement.querySelector('[data-dropdown="select"]').dataset.value);
                     sizesElement.addEventListener('dropdownSelectionUpdated', event => {
                         ImggenHandler.setSize(event.detail.newValue);
-                        DataManager.setCurrentOptions(ImggenHandler.getOptions());
+                        this.datamanager.setCurrentOptions(ImggenHandler.getOptions());
                     });
                 }
-                DataManager.setCurrentPrompt('');
-                DataManager.setCurrentOptions(ImggenHandler.getOptions());
+                this.datamanager.setCurrentPrompt('');
+                this.datamanager.setCurrentOptions(ImggenHandler.getOptions());
                 break;
             }
         }
 
         if (backButton) {
             backButton.addEventListener('click', async () => {
-                await Renderer.renderStart(constants.modalModes.selection);
+                await this.renderer.renderStart(constants.modalModes.selection);
             });
         }
 
@@ -132,7 +131,7 @@ export default class extends BaseController {
                 if (result === null) {
                     return;
                 }
-                await Renderer.renderSuggestion();
+                await this.renderer.renderSuggestion();
             });
         }
     }

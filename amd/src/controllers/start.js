@@ -23,8 +23,6 @@
  */
 
 import BaseController from 'tiny_ai/controllers/base';
-import * as Renderer from 'tiny_ai/renderer';
-import DataManager from 'tiny_ai/datamanager';
 import DatahandlerStart from 'tiny_ai/datahandler/start';
 import {errorAlert} from 'tiny_ai/utils';
 // We unfortunately need jquery for tooltip handling.
@@ -59,55 +57,55 @@ export default class extends BaseController {
 
         if (summarizeButton) {
             summarizeButton.addEventListener('click', async() => {
-                DataManager.setCurrentTool('summarize');
-                await Renderer.renderSummarize();
+                this.datamanager.setCurrentTool('summarize');
+                await this.renderer.renderSummarize();
             });
         }
         if (translateButton) {
             translateButton.addEventListener('click', async() => {
-                DataManager.setCurrentTool('translate');
-                await Renderer.renderTranslate();
+                this.datamanager.setCurrentTool('translate');
+                await this.renderer.renderTranslate();
             });
         }
         if (describeButton) {
             describeButton.addEventListener('click', async() => {
-                DataManager.setCurrentTool('describe');
-                await Renderer.renderDescribe();
+                this.datamanager.setCurrentTool('describe');
+                await this.renderer.renderDescribe();
             });
         }
         if (ttsButton) {
             ttsButton.addEventListener('click', async() => {
-                DataManager.setCurrentTool('tts');
-                await Renderer.renderTts();
+                this.datamanager.setCurrentTool('tts');
+                await this.renderer.renderTts();
             });
         }
         if (audiogenButton) {
             audiogenButton.addEventListener('click', async() => {
-                DataManager.setCurrentTool('audiogen');
-                await Renderer.renderAudiogen();
+                this.datamanager.setCurrentTool('audiogen');
+                await this.renderer.renderAudiogen();
             });
         }
         if (imggenButton) {
             imggenButton.addEventListener('click', async() => {
-                DataManager.setCurrentTool('imggen');
-                await Renderer.renderImggen();
+                this.datamanager.setCurrentTool('imggen');
+                await this.renderer.renderImggen();
             });
         }
         if (freePromptButton) {
             if (!freePromptButton.classList.contains('disabled')) {
                 freePromptButton.addEventListener('click', async () => {
-                    DataManager.setCurrentTool('freeprompt');
-                    DataManager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
+                    this.datamanager.setCurrentTool('freeprompt');
+                    this.datamanager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
                     const result = await this.generateAiAnswer();
                     if (result === null) {
                         return;
                     }
-                    await Renderer.renderSuggestion();
+                    await this.renderer.renderSuggestion();
                 });
             } else {
                 if (!(await DatahandlerStart.isTinyAiDisabled())) {
                     freePromptButton.addEventListener('click', async() => {
-                        await errorAlert(DatahandlerStart.isToolDisabled('freeprompt'));
+                        await errorAlert(DatahandlerStart.isToolDisabled('freeprompt', this.editorUtils.getMode()));
                     });
                 }
             }

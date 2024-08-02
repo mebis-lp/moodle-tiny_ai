@@ -23,7 +23,7 @@
  */
 
 import {getStrings} from 'core/str';
-import DataManager from 'tiny_ai/datamanager';
+import {getDatamanager, getCurrentModalUniqId} from 'tiny_ai/utils';
 
 export default class {
 
@@ -35,12 +35,13 @@ export default class {
         const showPromptButton = this.baseElement.querySelector('[data-action="showprompt"]');
         const textarea = this.baseElement.querySelector('textarea[data-type="prompt"]');
 
-        textarea.innerHTML = DataManager.getCurrentPrompt();
-        DataManager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
+        const datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
+        textarea.innerHTML = datamanager.getCurrentPrompt();
+        datamanager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
             textarea.value = event.detail.newPrompt;
         });
         textarea.addEventListener('keyup', () => {
-            DataManager.setCurrentPrompt(textarea.value);
+            datamanager.setCurrentPrompt(textarea.value);
         });
 
         if (showPromptButton) {

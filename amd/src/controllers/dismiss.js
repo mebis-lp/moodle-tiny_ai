@@ -23,7 +23,6 @@
  */
 
 import BaseController from 'tiny_ai/controllers/base';
-import * as Renderer from 'tiny_ai/renderer';
 
 export default class extends BaseController {
 
@@ -33,7 +32,7 @@ export default class extends BaseController {
 
         if (cancelButton) {
             cancelButton.addEventListener('click', async() => {
-                await Renderer.renderSuggestion();
+                await this.renderer.renderSuggestion();
             });
         }
         if (dismissButton) {

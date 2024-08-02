@@ -22,9 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
-import {insertAfterContent, replaceSelection, destroyModal} from 'tiny_ai/utils';
 import {renderWarningBox} from 'local_ai_manager/warningbox';
 
 export default class extends BaseController {
@@ -38,34 +36,34 @@ export default class extends BaseController {
 
         if (trashButton) {
             trashButton.addEventListener('click', async() => {
-                await Renderer.renderDismiss();
+                await this.renderer.renderDismiss();
             });
         }
 
         if (regenerateButton) {
             regenerateButton.addEventListener('click', async() => {
-                await Renderer.renderOptimizePrompt();
+                await this.renderer.renderOptimizePrompt();
             });
         }
 
         if (insertBelowButton) {
             insertBelowButton.addEventListener('click', () => {
-                insertAfterContent(Renderer.renderAiResultForEditor());
-                destroyModal();
+                this.editorUtils.insertAfterContent(this.renderer.renderAiResultForEditor());
+                this.editorUtils.getModal().destroy();
             });
         }
 
         if (replaceButton) {
             replaceButton.addEventListener('click', () => {
-                replaceSelection(Renderer.renderAiResultForEditor());
-                destroyModal();
+                this.editorUtils.replaceSelection(this.renderer.renderAiResultForEditor());
+                this.editorUtils.getModal().destroy();
             });
         }
 
         if (insertAtCaretButton) {
             insertAtCaretButton.addEventListener('click', () => {
-                replaceSelection(Renderer.renderAiResultForEditor());
-                destroyModal();
+                this.editorUtils.replaceSelection(this.renderer.renderAiResultForEditor());
+                this.editorUtils.getModal().destroy();
             });
         }
 

@@ -18,7 +18,7 @@ import {getString, getStrings} from 'core/str';
 import {constants} from 'tiny_ai/constants';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import {getAiConfig} from 'local_ai_manager/config';
-import {getMode, errorAlert, destroyModal, stripHtmlTags} from 'tiny_ai/utils';
+import {errorAlert, stripHtmlTags} from 'tiny_ai/utils';
 
 
 /**
@@ -95,7 +95,7 @@ class _StartHandler {
         return '';
     }
 
-    isToolDisabled(tool) {
+    isToolDisabled(tool, mode) {
         if (this.isTinyAiDisabled()) {
             return this.isTinyAiDisabled();
         }
@@ -107,9 +107,9 @@ class _StartHandler {
             return this.strings.error_limitreached;
         }
 
-        if (getMode() === constants.modalModes.selection) {
+        if (mode === constants.modalModes.selection) {
             return ['audiogen', 'imggen'].includes(tool) ? this.strings.error_unavailable_noselection : '';
-        } else if (getMode() === constants.modalModes.general) {
+        } else if (mode === constants.modalModes.general) {
             return ['summarize', 'translate', 'describe', 'tts'].includes(tool) ? this.strings.error_unavailable_selection : '';
         }
     }
@@ -129,12 +129,13 @@ class _StartHandler {
         return false;
     }
 
-    async getTemplateContext() {
+    async getTemplateContext(editorUtils) {
+        const mode = editorUtils.getMode();
         let toolButtons = [];
         if (this.aiConfig.role === 'role_basic' && this.isTinyAiDisabled()) {
             await errorAlert(await getString('error_tiny_ai_notavailable', 'tiny_ai') + '<br/>'
                 + this.isTinyAiDisabled());
-            destroyModal();
+            editorUtils.getModal().destroy();
         }
 
         if (!this.isToolHidden('summarize')) {
@@ -144,8 +145,8 @@ class _StartHandler {
                 description: BasedataHandler.getTinyAiString('toolname_summarize_extension'),
                 customicon: true,
                 iconname: 'shorten',
-                disabled: this.isToolDisabled('summarize').length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('summarize')),
+                disabled: this.isToolDisabled('summarize', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('summarize', mode)),
                 action: 'loadsummarize'
             });
         }
@@ -156,8 +157,8 @@ class _StartHandler {
                 description: BasedataHandler.getTinyAiString('toolname_translate_extension'),
                 iconname: 'language',
                 iconstyle: 'solid',
-                disabled: this.isToolDisabled('translate').length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('translate')),
+                disabled: this.isToolDisabled('translate', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('translate', mode)),
                 action: 'loadtranslate'
             });
         }
@@ -168,8 +169,8 @@ class _StartHandler {
                 description: BasedataHandler.getTinyAiString('toolname_describe_extension'),
                 customicon: true,
                 iconname: 'extend',
-                disabled: this.isToolDisabled('describe').length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('describe')),
+                disabled: this.isToolDisabled('describe', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('describe', mode)),
                 action: 'loaddescribe'
             });
         }
@@ -180,8 +181,8 @@ class _StartHandler {
                 description: BasedataHandler.getTinyAiString('toolname_tts_extension'),
                 iconstyle: 'solid',
                 iconname: 'microphone',
-                disabled: this.isToolDisabled('tts').length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('tts')),
+                disabled: this.isToolDisabled('tts', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('tts', mode)),
                 action: 'loadtts'
             });
         }
@@ -191,8 +192,8 @@ class _StartHandler {
                 tool: BasedataHandler.getTinyAiString('toolname_audiogen'),
                 iconstyle: 'solid',
                 iconname: 'microphone',
-                disabled: this.isToolDisabled('audiogen').length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('audiogen')),
+                disabled: this.isToolDisabled('audiogen', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('audiogen', mode)),
                 action: 'loadaudiogen'
             });
         }
@@ -202,8 +203,8 @@ class _StartHandler {
                 tool: BasedataHandler.getTinyAiString('toolname_imggen'),
                 iconstyle: 'solid',
                 iconname: 'image',
-                disabled: this.isToolDisabled('imggen').length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('imggen')),
+                disabled: this.isToolDisabled('imggen', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('imggen', mode)),
                 action: 'loadimggen'
             });
         }
@@ -232,7 +233,7 @@ class _StartHandler {
             templateContext.input[0].hasError = true;
             templateContext.input[0].errorMessage = this.isTinyAiDisabled();
         }
-        if (this.isToolDisabled('freeprompt')) {
+        if (this.isToolDisabled('freeprompt', mode)) {
             templateContext.input[0].disabled = true;
         }
         return templateContext;

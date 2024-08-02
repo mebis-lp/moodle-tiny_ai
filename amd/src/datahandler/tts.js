@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import DataManager from 'tiny_ai/datamanager';
 import * as AiConfig from 'local_ai_manager/config';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import Config from 'core/config';
@@ -81,10 +80,10 @@ class _TtsHandler {
         return options;
     }
 
-    getPrompt() {
+    getPrompt(currentTool, selectionText) {
         // This handler handles both 'tts' and 'audiogen' tool types which basically are pretty much the same,
         // but not exactly.
-        return DataManager.getCurrentTool() === 'tts' ? DataManager.getSelectionText() : '';
+        return currentTool === 'tts' ? selectionText : '';
     }
 
     async loadTtsOptions() {

@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import DataManager from 'tiny_ai/datamanager';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import Config from 'core/config';
 import {getString} from 'core/str';
@@ -49,9 +48,9 @@ class _TranslateHandler {
         this.targetLanguage = targetLanguage;
     }
 
-    async getPrompt() {
+    async getPrompt(selectionText) {
         let prompt = await getString('translate_baseprompt', 'tiny_ai', this.targetLanguageOptions[this.targetLanguage]);
-        prompt += ': ' + DataManager.getSelectionText();
+        prompt += ': ' + selectionText;
         return prompt;
     }
 

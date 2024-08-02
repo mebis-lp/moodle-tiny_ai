@@ -13,11 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as Renderer from 'tiny_ai/renderer';
-import DataManager from 'tiny_ai/datamanager';
 import {exception as displayException} from 'core/notification';
-import * as BasedataHandler from '../datahandler/basedata';
-import {getAiAnswer, errorAlert} from 'tiny_ai/utils';
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import {getRenderer, getDatamanager, getAiAnswer, errorAlert, getCurrentModalUniqId, getEditorUtils} from 'tiny_ai/utils';
 import {constants} from 'tiny_ai/constants';
 
 /**
@@ -33,10 +31,16 @@ import {constants} from 'tiny_ai/constants';
 export default class {
 
     baseElement = null;
+    renderer = null;
+    editorUtils = null;
     footer = null;
 
     constructor(baseSelector) {
         this.baseElement = document.querySelector(baseSelector);
+        this.renderer = getRenderer(getCurrentModalUniqId(this.baseElement));
+        this.editorUtils = getEditorUtils(getCurrentModalUniqId(this.baseElement));
+        this.datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
+
         if (this.baseElement === null) {
             // Sometimes (for example we display an error message before we even finish rendering the modal) we do not have
             // a base element. In this case there is nothing to do, so we avoid console errors by early exiting.
@@ -46,33 +50,33 @@ export default class {
     }
 
     async generateAiAnswer() {
-        if (DataManager.getCurrentPrompt() === null || DataManager.getCurrentPrompt().length === 0) {
+        if (this.datamanager.getCurrentPrompt() === null || this.datamanager.getCurrentPrompt().length === 0) {
             await errorAlert(BasedataHandler.getTinyAiString('error_nopromptgiven'));
             return null;
         }
-        await Renderer.renderLoading();
+        await this.renderer.renderLoading();
         let result = null;
         try {
-            result = await getAiAnswer(DataManager.getCurrentPrompt(), constants.toolPurposeMapping[DataManager.getCurrentTool()],
-                DataManager.getCurrentOptions());
+            result = await getAiAnswer(this.datamanager.getCurrentPrompt(),
+                constants.toolPurposeMapping[this.datamanager.getCurrentTool()], this.datamanager.getCurrentOptions());
         } catch (exception) {
             await displayException(exception);
         }
 
         if (result === null) {
-            this.callRendererFunction();
+            await this.callRendererFunction();
             return null;
         }
-        DataManager.setCurrentAiResult(result);
+        this.datamanager.setCurrentAiResult(result);
     }
 
-    callRendererFunction() {
-        if (DataManager.getCurrentTool() === 'freeprompt') {
-            Renderer.renderStart();
+    async callRendererFunction() {
+        if (this.datamanager.getCurrentTool() === 'freeprompt') {
+            await this.renderer.renderStart();
             return;
         }
         const toolNameWithUppercaseLetter =
-            DataManager.getCurrentTool().charAt(0).toUpperCase() + DataManager.getCurrentTool().slice(1);
-        Renderer['render' + toolNameWithUppercaseLetter]();
+            this.datamanager.getCurrentTool().charAt(0).toUpperCase() + this.datamanager.getCurrentTool().slice(1);
+        this.renderer['render' + toolNameWithUppercaseLetter]();
     }
 }

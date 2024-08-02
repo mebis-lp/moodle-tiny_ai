@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import * as Renderer from 'tiny_ai/renderer';
 import BaseController from 'tiny_ai/controllers/base';
 
 export default class extends BaseController {
@@ -33,7 +32,7 @@ export default class extends BaseController {
 
         if (backButton) {
             backButton.addEventListener('click', async() => {
-                await Renderer.renderSuggestion();
+                await this.renderer.renderSuggestion();
             });
         }
 
@@ -43,7 +42,7 @@ export default class extends BaseController {
                 if (result === null) {
                     return;
                 }
-                await Renderer.renderSuggestion();
+                await this.renderer.renderSuggestion();
             });
         }
     }

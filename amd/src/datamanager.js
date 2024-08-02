@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import {getDraftItemId, getContextId} from 'tiny_ai/utils';
+import {getEditorUtils} from 'tiny_ai/utils';
 
 /**
  * Tiny AI data manager.
@@ -24,11 +24,12 @@ import {getDraftItemId, getContextId} from 'tiny_ai/utils';
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const DataManager = new _DataManager();
+export default class DataManager {
 
-class _DataManager {
+    uniqid = null;
 
-    constructor() {
+    constructor(uniqid) {
+        this.uniqid = uniqid;
         this.eventEmitterElement = document.createElement('div');
     }
 
@@ -40,8 +41,8 @@ class _DataManager {
     getDefaultOptions() {
         const defaultOptions = {
             component: 'tiny_ai',
-            itemid: getDraftItemId(),
-            contextid: getContextId()
+            itemid: getEditorUtils(this.uniqid).getDraftItemId(),
+            contextid: getEditorUtils(this.uniqid).getContextId()
         };
         if (['tts', 'audiogen'].includes(this.getCurrentTool())) {
             defaultOptions.filename = 'audio_' + Math.random().toString(16).slice(2) + '.mp3';
@@ -118,7 +119,6 @@ class _DataManager {
     }
 }
 
-export default DataManager;
 
 
 
