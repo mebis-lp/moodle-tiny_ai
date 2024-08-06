@@ -53,6 +53,10 @@ const getMenuConfiguration = (instanceConfig) => {
 
 const getSelectionToolbarConfiguration = (instanceConfig) => {
     let toolbar = instanceConfig.quickbars_selection_toolbar;
+    // The following is a dirty workaround until MDL-82724 has been integrated.
+    if (toolbar === false) {
+        toolbar = undefined;
+    }
     toolbar = addQuickbarsToolbarItem(toolbar, '|', selectionbarButtonName);
     return toolbar;
 };
