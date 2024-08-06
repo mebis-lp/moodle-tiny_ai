@@ -1,0 +1,26 @@
+<div class="modal tiny_ai-modal" tabindex="-1" role="dialog">
+        <div class="tiny_ai-modal--header">
+            <h5 class="tiny_ai-modal-title">{{modal_headline}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="tiny_ai-modal--body">
+            <div class="tiny_ai-modal--subtext">
+                <p>Die eingegebenen Daten werden an ein externes KI-Tool gesendet.</p>
+            </div>
+            {{#input}}
+                {{> tiny_ai/components/ai-input}}
+            {{/input}}
+            <div class="tiny_ai-modal--button-wrapper row">
+                {{#modal_buttons}}
+                    <div class="col-12 col-md-6 mb-3">
+                    {{> tiny_ai/components/ai-card-button}}
+                    </div>
+                {{/modal_buttons}}
+            </div>
+        </div>
+        <div class="tiny_ai-modal--bottom">
+            <p class="usage-info">23/40 Text-, 1/40 Audio-, 10/20 Bild-Anfragen pro Tag</p>
+        </div>
+    </div>

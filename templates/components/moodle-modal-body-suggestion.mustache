@@ -1,0 +1,10 @@
+<div id="tiny_ai_suggestion_{{uniqid}}">
+    {{> tiny_ai/components/ai-result-text}}
+    {{> tiny_ai/components/ai-info-warning}}
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/suggestion'], function(Controller) {
+        const controller = new Controller('#tiny_ai_suggestion_{{uniqid}}');
+        Promise.resolve(controller.init());
+    });
+{{/js}}

@@ -1,0 +1,23 @@
+.tiny_ai-alert {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: $feedback-warning-100;
+    border-radius: 4px;
+    color: $neutral-grey-500;
+    font-family: "Atkinson Hyperlegible";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+
+    .tiny_ai-icon {
+        font-size: 24px;
+        margin-right: 10px;
+        color: $neutral-grey-500;
+    }
+
+    .tiny_ai-alert-text {
+        color: $neutral-grey-500;
+    }
+}

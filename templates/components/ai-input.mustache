@@ -1,0 +1,18 @@
+<div class="tiny_ai-input-container {{#hasError}}has-error{{/hasError}} {{#disabled}}disabled{{/disabled}}">
+    <div class="tiny_ai-input-icon">
+        {{> tiny_ai/components/ai-icon }}
+    </div>
+    <textarea id="tiny_ai-input-field-{{uniqid}}" {{#disabled}}disabled{{/disabled}} class="tiny_ai-input-field" {{!
+    }} data-type="freepromptinput" placeholder="{{#str}}freeprompt_placeholder, tiny_ai{{/str}}"></textarea>
+    {{#button}}
+        {{> tiny_ai/components/ai-button}}
+    {{/button}}
+</div>
+{{#hasError}}
+    <span class="tiny_ai-input-error">{{{errorMessage}}}</span>
+{{/hasError}}
+{{#js}}
+    require(['tiny_ai/controllers/textarea'], function(TextareaController) {
+        TextareaController.init('#tiny_ai-input-field-{{uniqid}}');
+    });
+{{/js}}

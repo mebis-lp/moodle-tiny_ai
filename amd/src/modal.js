@@ -16,7 +16,7 @@
 /**
  * Equation Modal for Tiny.
  *
- * @module      tiny_equation/modal
+ * @module      tiny_ai/modal
  * @copyright   2024, ISB Bayern
  * @author      Dr. Peter Mayer
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,23 +25,17 @@
 import Modal from 'core/modal';
 
 export default class AiModal extends Modal {
-    static TYPE = 'tiny_ai/modal';
-    static TEMPLATE = 'tiny_ai/modal';
+    static TYPE = 'ai-modal';
+    static TEMPLATE = 'tiny_ai/components/moodle-modal';
 
     registerEventListeners() {
         // Call the parent registration.
         super.registerEventListeners();
-
-        // Register to close on save/cancel.
-        this.registerCloseOnSave();
-        this.registerCloseOnCancel();
     }
 
     configure(modalConfig) {
-        modalConfig.show = true;
         modalConfig.large = true;
         modalConfig.removeOnClose = true;
-
         super.configure(modalConfig);
     }
 }

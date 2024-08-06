@@ -1,0 +1,18 @@
+<span class="tiny_ai-dropdown-label">{{dropdown_description}}</span>
+<div id="tiny_ai-dropdown-{{uniqid}}" class="{{^dropup}}dropdown{{/dropup}}{{#dropup}}dropup{{/dropup}} tiny_ai-dropdown" data-preference="{{preference}}">
+  <button class="btn btn-secondary dropdown-toggle tiny_ai-btn tiny_ai-dropdown-toggle" type="button" id="dropdownMenuButton"{{!
+  }} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-value="{{dropdown_default_value}}" data-dropdown="select">
+      <span data-dropdown="selecttext">{{dropdown_default}}</span>
+      <i class="tiny_ai-icon fa {{^dropup}}fa-chevron-down{{/dropup}}{{#dropup}}fa-chevron-up{{/dropup}}"></i>
+  </button>
+  <div class="dropdown-menu tiny_ai-dropdown-menu" aria-labelledby="dropdownMenuButton">
+  {{#dropdown_options}}
+      <a class="dropdown-item tiny_ai-dropdown-item" data-dropdown="option" data-value="{{optionValue}}">{{optionLabel}}</a>
+  {{/dropdown_options}}
+  </div>
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/dropdown'], function(DropdownController) {
+        DropdownController.init('#tiny_ai-dropdown-{{uniqid}}[data-preference="{{preference}}"]');
+    });
+{{/js}}

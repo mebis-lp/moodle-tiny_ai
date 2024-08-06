@@ -1,0 +1,23 @@
+<div id="tiny_ai_{{tool}}_{{uniqid}}" class="h-100">
+    <div class="row">
+        {{#modal_dropdowns}}
+            <div class="col-12 col-md-6 mb-3">
+                {{> tiny_ai/components/ai-dropdown}}
+            </div>
+        {{/modal_dropdowns}}
+    </div>
+        <div class="row flex-grow-1">
+            <div class="col-12 mb-3 tiny_ai-prompt-wrapper">
+                {{> tiny_ai/components/ai-button}}
+                {{> tiny_ai/components/ai-textarea}}
+            </div>
+        </div>
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/preferences', 'tiny_ai/controllers/promptedit'], function(Controller, PromptEditController) {
+        const controller = new Controller('#tiny_ai_{{tool}}_{{uniqid}}', '{{tool}}');
+        Promise.resolve(controller.init());
+        const promptEditController = new PromptEditController('#tiny_ai_{{tool}}_{{uniqid}}');
+        Promise.resolve(promptEditController.init());
+    });
+{{/js}}

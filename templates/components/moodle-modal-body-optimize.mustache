@@ -1,0 +1,11 @@
+<div id="tiny_ai_optimize_{{uniqid}}">
+    {{> tiny_ai/components/ai-textarea }}
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/optimize', 'tiny_ai/controllers/promptedit'], function(Optimize, PromptEditController) {
+        const controller = new Optimize('#tiny_ai_optimize_{{uniqid}}');
+        Promise.resolve(controller.init());
+        const promptEditController = new PromptEditController('#tiny_ai_optimize_{{uniqid}}');
+        Promise.resolve(promptEditController.init());
+    });
+{{/js}}

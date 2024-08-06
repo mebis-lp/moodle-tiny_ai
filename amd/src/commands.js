@@ -25,22 +25,16 @@
 import {getButtonImage} from 'editor_tiny/utils';
 import {
     component,
-    buttonName,
-    buttonTitle,
+    toolbarButtonName,
+    selectionbarButtonName,
     icon,
-} from './common';
-import {displayDialogue} from './utils';
-
-/**
- * Handle the action for your plugin.
- * @param {TinyMCE.editor} editor The tinyMCE editor instance.
- */
-// const handleAction = (editor) => {
-//     displayDialogue(editor);
-
-//     // TODO Handle the action.
-//     // window.console.log(editor);
-// };
+    selectionbarSource,
+    toolbarSource,
+    menubarSource
+} from 'tiny_ai/common';
+import * as Utils from 'tiny_ai/utils';
+import {prefetchStrings} from 'core/prefetch';
+import {getString} from 'core/str';
 
 /**
  * Get the setup function for the buttons.
@@ -51,28 +45,49 @@ import {displayDialogue} from './utils';
  * @returns {function} The registration function to call within the Plugin.add function.
  */
 export const getSetup = async() => {
+    prefetchStrings('tiny_ai', ['toolbarbuttontitle', 'selectionbarbuttontitle']);
     const [
         buttonImage,
+        toolbarButtonTitle,
+        selectionbarButtonTitle
     ] = await Promise.all([
         getButtonImage('icon', component),
+        getString('toolbarbuttontitle', 'tiny_ai'),
+        getString('selectionbarbuttontitle', 'tiny_ai')
     ]);
+
 
     return (editor) => {
         // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
+        const uniqid = Math.random().toString(16).slice(2);
+        Utils.init(uniqid, editor);
+
         // Register the AI Toolbar Button.
-        editor.ui.registry.addToggleButton(buttonName, {
+        editor.ui.registry.addButton(toolbarButtonName, {
             icon,
-            tooltip: buttonTitle,
-            onAction: () => displayDialogue(editor),
+            tooltip: toolbarButtonTitle,
+            onAction: () => {
+                Utils.getEditorUtils(uniqid).displayDialogue(toolbarSource);
+            }
         });
 
         // Register the menu item.
-        editor.ui.registry.addMenuItem(buttonName, {
+        editor.ui.registry.addMenuItem(toolbarButtonName, {
             icon,
-            text: buttonTitle,
-            onAction: () => displayDialogue(editor),
+            text: toolbarButtonTitle,
+            onAction: () => {
+                Utils.getEditorUtils(uniqid).displayDialogue(menubarSource);
+            }
+        });
+
+        editor.ui.registry.addButton(selectionbarButtonName, {
+            icon,
+            tooltip: selectionbarButtonTitle,
+            onAction: () => {
+                Utils.getEditorUtils(uniqid).displayDialogue(selectionbarSource);
+            }
         });
 
         // editor.on('init', () => onInit(editor));

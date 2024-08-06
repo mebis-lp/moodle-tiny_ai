@@ -30,6 +30,10 @@ use editor_tiny\plugin;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_configuration;
+use local_ai_manager\ai_manager_utils;
+use local_ai_manager\local\config_manager;
+use local_ai_manager\local\tenant;
+use local_ai_manager\local\userinfo;
 
 class plugininfo extends plugin implements plugin_with_configuration, plugin_with_buttons, plugin_with_menuitems {
 
@@ -39,8 +43,16 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): bool {
-        // Users must have permission to embed content.
-        return has_capability('tiny/ai:addembed', $context);
+        global $USER;
+        $tenant = \core\di::get(tenant::class);
+        $configmanager = \core\di::get(config_manager::class);
+        if (!has_capability('tiny/ai:view', $context) || !$tenant->is_tenant_allowed()) {
+            return false;
+        }
+        if (!$configmanager->is_tenant_enabled()) {
+            return ai_manager_utils::get_ai_config($USER)['role'] !== userinfo::get_role_as_string(userinfo::ROLE_BASIC);
+        }
+        return true;
     }
 
 
@@ -62,11 +74,9 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
         array $fpoptions,
         ?\editor_tiny\editor $editor = null
     ): array {
+        global $USER;
         return [
-            // Your values go here.
-            // These will be mapped to a namespaced EditorOption in Tiny.
-            'my_custom_option1' => 'TODO Calculate your values here',
-            'my_custom_option2' => 'TODO Calculate your values here',
+            'userId' => intval($USER->id),
         ];
     }
 }

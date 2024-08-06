@@ -14,64 +14,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tiny Link plugin helper function to build queryable data selectors.
+ * Definitions of used selectors in the plugin tiny_ai.
  *
  * @module      tiny_ai/selectors
  * @copyright   2024, ISB Bayern
- * @author      Dr. Peter Mayer
+ * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 export default {
-    actions: {
-        submit: '[data-action="save"]',
-    },
-    elements: {
-        'cmdPromptSimplify': 'tiny_ai-simplify-prompt',
-        'cmdPromptTranslate': 'tiny_ai-translate-prompt',
-        'cmdPromptTTS': 'tiny_ai-tts-prompt',
-        'cmdPromptImgGen': 'tiny_ai-imggen-prompt',
-
-        'spanResult': 'tiny_ai-span-results',
-        'previewWrapperId': 'tiny_ai-preview-wrapper',
-        'previewSectionId': 'tiny_ai-preview',
-        'taResult': 'tiny_ai-results',
-
-        'classPurposeSettings': 'tiny_ai-settings',
-
-        'settingsIdSimplify': 'tiny_ai-simplify-settings',
-        'settingsIdTranslate': 'tiny_ai-translate-settings',
-        'settingsIdTTS': 'tiny_ai-tts-settings',
-        'translationOutputlanguage': 'tiny_ai-translation-outputlanguage',
-        'ttsOutputlanguage': 'tiny_ai-tts-outputlanguage',
-        'ttsOutputVoice': 'tiny_ai-tts-outputvoice',
-        'settingsIdImgGen': 'tiny_ai-imggen-settings',
-
-        'imggenwidth': 'tiny_ai-image-width',
-        'imggenheight': 'tiny_ai-image-height',
-
-        'freerompt': 'tiny_ai-free-prompt',
-    },
-    confirmation: {
-        'simplification': 'confirm_no_personal_data_simplification',
-        'translation': 'confirm_no_personal_data_translate',
-        'tts': 'confirm_no_personal_data_tts',
-        'imggen': 'confirm_no_personal_data_imggen',
-        'free': 'confirm_no_personal_data_free',
-    },
-    buttons: {
-        btnStartSimplification: 'btnStartSimplification',
-        btnStartTranslation: 'btnStartTranslation',
-        btnStartTTS: 'btnStartTTS',
-
-        btnOpenSettingsImgGen: 'btnStartImgGenSettings',
-        btnStartImgGen: 'btnStartImgGen',
-
-        btnStartFree: 'tini_ai-strt-free',
-    },
-    purposes: {
-        simplify: '#tiny_ai-simplify',
-        translate: '#tiny_ai-translate',
-        tts: '#tiny_ai-text-to-speech',
-    }
+    modalDialog: '.tiny_ai-modal--dialog',
+    modalFooter: '.tiny_ai-modal--dialog [data-region="footer"]',
 };
