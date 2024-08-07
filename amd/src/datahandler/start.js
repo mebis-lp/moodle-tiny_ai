@@ -71,7 +71,7 @@ class _StartHandler {
         confirmLink.href = `${config.wwwroot}/local/ai_manager/confirm_ai_usage.php`;
         confirmLink.innerText = this.strings.error_pleaseconfirm;
         confirmLink.target = '_blank';
-        this.strings.error_usernotconfirmed = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
+        this.strings.combinedusernotconfirmederror = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
     }
 
     getPurposeConfig(tool) {
@@ -87,7 +87,7 @@ class _StartHandler {
             return this.strings.error_tenantdisabled;
         }
         if (!this.aiConfig.userconfirmed) {
-            return this.strings.error_usernotconfirmed;
+            return this.strings.combinedusernotconfirmederror;
         }
         if (this.aiConfig.userlocked) {
             return this.strings.error_userlocked;
