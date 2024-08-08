@@ -182,6 +182,10 @@ export default class {
     async renderModalContent(bodyComponentTemplate, footerComponentTemplate, templateContext) {
         templateContext.tinyinstanceuniqid = this.uniqid;
         const modal = getEditorUtils(this.uniqid).getModal();
+        // Remove all eventually remaining tooltips before rendering a new view.
+        document.querySelectorAll('button[data-action]').forEach(button => {
+            $(button).tooltip('hide');
+        });
         const result = await Promise.all([
             Templates.renderForPromise('tiny_ai/components/moodle-modal-header-title', templateContext),
             Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
