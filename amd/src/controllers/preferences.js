@@ -25,49 +25,52 @@
 import {constants} from 'tiny_ai/constants';
 import SELECTORS from 'tiny_ai/selectors';
 import BaseController from 'tiny_ai/controllers/base';
-import SummarizeHandler from 'tiny_ai/datahandler/summarize';
-import TranslateHandler from 'tiny_ai/datahandler/translate';
-import TtsHandler from 'tiny_ai/datahandler/tts';
-import ImggenHandler from 'tiny_ai/datahandler/imggen';
+import {getSummarizeHandler, getTranslateHandler, getTtsHandler, getImggenHandler} from 'tiny_ai/utils';
 
 export default class extends BaseController {
-
 
     async init() {
         const modalFooter = document.querySelector(SELECTORS.modalFooter);
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
 
+        const [summarizeHandler, translateHandler, ttsHandler, imggenHandler] = [
+            getSummarizeHandler(this.uniqid),
+            getTranslateHandler(this.uniqid),
+            getTtsHandler(this.uniqid),
+            getImggenHandler(this.uniqid)
+        ];
+
         switch (this.datamanager.getCurrentTool()) {
             case 'summarize':
             case 'describe': {
-                SummarizeHandler.setTool(this.datamanager.getCurrentTool());
+                summarizeHandler.setTool(this.datamanager.getCurrentTool());
                 const maxWordCountElement = this.baseElement.querySelector('[data-preference="maxWordCount"]');
                 const languageTypeElement = this.baseElement.querySelector('[data-preference="languageType"]');
-                SummarizeHandler.setMaxWordCount(maxWordCountElement.querySelector('[data-dropdown="select"]').dataset.value);
-                SummarizeHandler.setLanguageType(languageTypeElement.querySelector('[data-dropdown="select"]').dataset.value);
-                const currentPromptSummarize = await SummarizeHandler.getPrompt(this.datamanager.getSelectionText());
+                summarizeHandler.setMaxWordCount(maxWordCountElement.querySelector('[data-dropdown="select"]').dataset.value);
+                summarizeHandler.setLanguageType(languageTypeElement.querySelector('[data-dropdown="select"]').dataset.value);
+                const currentPromptSummarize = await summarizeHandler.getPrompt(this.datamanager.getSelectionText());
                 this.datamanager.setCurrentPrompt(currentPromptSummarize);
                 maxWordCountElement.addEventListener('dropdownSelectionUpdated', async (event) => {
-                    SummarizeHandler.setMaxWordCount(event.detail.newValue);
-                    const currentPrompt = await SummarizeHandler.getPrompt(this.datamanager.getSelectionText());
+                    summarizeHandler.setMaxWordCount(event.detail.newValue);
+                    const currentPrompt = await summarizeHandler.getPrompt(this.datamanager.getSelectionText());
                     this.datamanager.setCurrentPrompt(currentPrompt);
                 });
                 languageTypeElement.addEventListener('dropdownSelectionUpdated', async (event) => {
-                    SummarizeHandler.setLanguageType(event.detail.newValue);
-                    const currentPrompt = await SummarizeHandler.getPrompt(this.datamanager.getSelectionText());
+                    summarizeHandler.setLanguageType(event.detail.newValue);
+                    const currentPrompt = await summarizeHandler.getPrompt(this.datamanager.getSelectionText());
                     this.datamanager.setCurrentPrompt(currentPrompt);
                 });
                 break;
             }
             case 'translate': {
                 const targetLanguageElement = this.baseElement.querySelector('[data-preference="targetLanguage"]');
-                TranslateHandler.setTargetLanguage(targetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
-                const currentPromptTranslate = await TranslateHandler.getPrompt(this.datamanager.getSelectionText());
+                translateHandler.setTargetLanguage(targetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
+                const currentPromptTranslate = await translateHandler.getPrompt(this.datamanager.getSelectionText());
                 this.datamanager.setCurrentPrompt(currentPromptTranslate);
                 targetLanguageElement.addEventListener('dropdownSelectionUpdated', async (event) => {
-                    TranslateHandler.setTargetLanguage(event.detail.newValue);
-                    const currentPromptTranslate = await TranslateHandler.getPrompt(this.datamanager.getSelectionText());
+                    translateHandler.setTargetLanguage(event.detail.newValue);
+                    const currentPromptTranslate = await translateHandler.getPrompt(this.datamanager.getSelectionText());
                     this.datamanager.setCurrentPrompt(currentPromptTranslate);
                 });
                 break;
@@ -78,43 +81,43 @@ export default class extends BaseController {
                 const voiceElement = this.baseElement.querySelector('[data-preference="voice"]');
                 const genderElement = this.baseElement.querySelector('[data-preference="gender"]');
                 if (ttsTargetLanguageElement) {
-                    TtsHandler.setTargetLanguage(ttsTargetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
+                    ttsHandler.setTargetLanguage(ttsTargetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
                     ttsTargetLanguageElement.addEventListener('dropdownSelectionUpdated', event => {
-                        TtsHandler.setTargetLanguage(event.detail.newValue);
-                        this.datamanager.setCurrentOptions(TtsHandler.getOptions());
+                        ttsHandler.setTargetLanguage(event.detail.newValue);
+                        this.datamanager.setCurrentOptions(ttsHandler.getOptions());
                     });
                 }
                 if (voiceElement) {
-                    TtsHandler.setVoice(voiceElement.querySelector('[data-dropdown="select"]').dataset.value);
+                    ttsHandler.setVoice(voiceElement.querySelector('[data-dropdown="select"]').dataset.value);
                     voiceElement.addEventListener('dropdownSelectionUpdated', event => {
-                        TtsHandler.setVoice(event.detail.newValue);
-                        this.datamanager.setCurrentOptions(TtsHandler.getOptions());
+                        ttsHandler.setVoice(event.detail.newValue);
+                        this.datamanager.setCurrentOptions(ttsHandler.getOptions());
                     });
                 }
                 if (genderElement) {
-                    TtsHandler.setGender(genderElement.querySelector('[data-dropdown="select"]').dataset.value);
+                    ttsHandler.setGender(genderElement.querySelector('[data-dropdown="select"]').dataset.value);
                     genderElement.addEventListener('dropdownSelectionUpdated', event => {
-                        TtsHandler.setGender(event.detail.newValue);
-                        this.datamanager.setCurrentOptions(TtsHandler.getOptions());
+                        ttsHandler.setGender(event.detail.newValue);
+                        this.datamanager.setCurrentOptions(ttsHandler.getOptions());
                     });
                 }
-                this.datamanager.setCurrentPrompt(TtsHandler.getPrompt(this.datamanager.getCurrentTool(),
+                this.datamanager.setCurrentPrompt(ttsHandler.getPrompt(this.datamanager.getCurrentTool(),
                     this.datamanager.getSelectionText()));
-                this.datamanager.setCurrentOptions(TtsHandler.getOptions());
+                this.datamanager.setCurrentOptions(ttsHandler.getOptions());
                 break;
             }
             case 'imggen': {
                 const sizesElement = this.baseElement.querySelector('[data-preference="sizes"]');
 
                 if (sizesElement) {
-                    ImggenHandler.setSize(sizesElement.querySelector('[data-dropdown="select"]').dataset.value);
+                    imggenHandler.setSize(sizesElement.querySelector('[data-dropdown="select"]').dataset.value);
                     sizesElement.addEventListener('dropdownSelectionUpdated', event => {
-                        ImggenHandler.setSize(event.detail.newValue);
-                        this.datamanager.setCurrentOptions(ImggenHandler.getOptions());
+                        imggenHandler.setSize(event.detail.newValue);
+                        this.datamanager.setCurrentOptions(imggenHandler.getOptions());
                     });
                 }
                 this.datamanager.setCurrentPrompt('');
-                this.datamanager.setCurrentOptions(ImggenHandler.getOptions());
+                this.datamanager.setCurrentOptions(imggenHandler.getOptions());
                 break;
             }
         }

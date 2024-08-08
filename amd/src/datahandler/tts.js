@@ -15,6 +15,7 @@
 
 import * as AiConfig from 'local_ai_manager/config';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import BaseHandler from 'tiny_ai/datahandler/base';
 import Config from 'core/config';
 
 /**
@@ -26,9 +27,7 @@ import Config from 'core/config';
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const TtsHandler = new _TtsHandler();
-
-class _TtsHandler {
+export default class extends BaseHandler {
 
     ttsOptions = null;
 
@@ -107,7 +106,7 @@ class _TtsHandler {
 
         const modalDropdowns = [];
 
-        const targetLanguageOptions = await TtsHandler.getTargetLanguageOptions();
+        const targetLanguageOptions = await this.getTargetLanguageOptions();
         if (targetLanguageOptions !== null && Object.keys(targetLanguageOptions).length > 0) {
             const targetLanguageDropdownContext = {};
             targetLanguageDropdownContext.preference = 'targetLanguage';
@@ -132,7 +131,7 @@ class _TtsHandler {
             modalDropdowns.push(targetLanguageDropdownContext);
         }
 
-        const voiceOptions = await TtsHandler.getVoiceOptions();
+        const voiceOptions = await this.getVoiceOptions();
         if (voiceOptions !== null && Object.keys(voiceOptions).length > 0) {
             const voiceDropdownContext = {};
             voiceDropdownContext.preference = 'voice';
@@ -150,7 +149,7 @@ class _TtsHandler {
             modalDropdowns.push(voiceDropdownContext);
         }
 
-        const genderOptions = await TtsHandler.getGenderOptions();
+        const genderOptions = await this.getGenderOptions();
         if (genderOptions !== null && Object.keys(genderOptions).length > 0) {
             const genderDropdownContext = {};
             genderDropdownContext.preference = 'gender';
@@ -189,5 +188,3 @@ class _TtsHandler {
         return context;
     }
 }
-
-export default TtsHandler;

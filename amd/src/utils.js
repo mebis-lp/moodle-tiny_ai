@@ -25,6 +25,12 @@
 import ModalEvents from 'core/modal_events';
 import Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
+import ImggenHandler from 'tiny_ai/datahandler/imggen';
+import OptimizeHandler from 'tiny_ai/datahandler/optimize';
+import StartHandler from 'tiny_ai/datahandler/start';
+import SummarizeHandler from 'tiny_ai/datahandler/summarize';
+import TranslateHandler from 'tiny_ai/datahandler/translate';
+import TtsHandler from 'tiny_ai/datahandler/tts';
 import {alert as Alert, exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
@@ -42,8 +48,15 @@ export const init = async (uniqid, editor) => {
         // object depends on DataManager object.
         objectStore[uniqid].editorUtils = new EditorUtils(uniqid, editor);
         objectStore[uniqid].datamanager = new DataManager(uniqid);
+        await BasedataHandler.init();
+        objectStore[uniqid].imggenhandler = new ImggenHandler(uniqid);
+        objectStore[uniqid].optimizehandler = new OptimizeHandler(uniqid);
+        objectStore[uniqid].starthandler = new StartHandler(uniqid);
+        await objectStore[uniqid].starthandler.init();
+        objectStore[uniqid].summarizehandler = new SummarizeHandler(uniqid);
+        objectStore[uniqid].translatehandler = new TranslateHandler(uniqid);
+        objectStore[uniqid].ttshandler = new TtsHandler(uniqid);
         objectStore[uniqid].renderer = new Renderer(uniqid);
-        await objectStore[uniqid].renderer.init();
     }
 };
 
@@ -98,6 +111,30 @@ export const getDatamanager = (uniqid) => {
     return objectStore[uniqid].datamanager;
 };
 
+export const getImggenHandler = (uniqid) => {
+    return objectStore[uniqid].imggenhandler;
+};
+
+export const getOptimizeHandler = (uniqid) => {
+    return objectStore[uniqid].optimizehandler;
+};
+
+export const getStartHandler = (uniqid) => {
+    return objectStore[uniqid].starthandler;
+};
+
+export const getSummarizeHandler = (uniqid) => {
+    return objectStore[uniqid].summarizehandler;
+};
+
+export const getTranslateHandler = (uniqid) => {
+    return objectStore[uniqid].translatehandler;
+};
+
+export const getTtsHandler = (uniqid) => {
+    return objectStore[uniqid].ttshandler;
+};
+
 export const getCurrentModalUniqId = (element) => {
-    return element.closest('[data-tiny_ai_uniqid]').dataset['tiny_ai_uniqid'];
+    return element.closest('[data-tiny_instance_uniqid]').dataset.tiny_instance_uniqid;
 };
