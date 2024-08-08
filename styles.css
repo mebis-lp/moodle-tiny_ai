@@ -278,11 +278,6 @@
 .tiny_ai-modal--dialog .tiny_ai-modal--header .tiny_ai-headline-wrapper {
   display: flex;
 }
-.tiny_ai-modal--dialog .tiny_ai-modal--header .tiny_ai-headline-wrapper h5 {
-  font-family: "Atkinson Hyperlegible";
-  font-style: normal;
-  font-weight: 400;
-}
 .tiny_ai-modal--dialog .tiny_ai-modal--header .icon-tiny_ai_sparkle {
   align-content: center;
   margin-right: 8px;
