@@ -14,6 +14,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import BaseHandler from 'tiny_ai/datahandler/base';
+import {getTranslateHandler} from 'tiny_ai/utils';
 import Config from 'core/config';
 import {getString} from 'core/str';
 
@@ -26,9 +28,7 @@ import {getString} from 'core/str';
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const TranslateHandler = new _TranslateHandler();
-
-class _TranslateHandler {
+export default class extends BaseHandler {
 
     languageNameInCurrentUserLanguage = new Intl.DisplayNames([Config.language], {type: 'language'});
 
@@ -55,6 +55,7 @@ class _TranslateHandler {
     }
 
     getTemplateContext() {
+        const translateHandler = getTranslateHandler(this.uniqid);
         const context = {
             modal_headline: BasedataHandler.getTinyAiString('translate_headline'),
             showIcon: true,
@@ -62,11 +63,11 @@ class _TranslateHandler {
         };
         const targetLanguageDropdownContext = {};
         targetLanguageDropdownContext.preference = 'targetLanguage';
-        targetLanguageDropdownContext.dropdown_default = Object.values(TranslateHandler.targetLanguageOptions)[0];
-        targetLanguageDropdownContext.dropdown_default_value = Object.keys(TranslateHandler.targetLanguageOptions)[0];
+        targetLanguageDropdownContext.dropdown_default = Object.values(translateHandler.targetLanguageOptions)[0];
+        targetLanguageDropdownContext.dropdown_default_value = Object.keys(translateHandler.targetLanguageOptions)[0];
         targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
         const targetLanguageDropdownOptions = [];
-        for (const [key, value] of Object.entries(TranslateHandler.targetLanguageOptions)) {
+        for (const [key, value] of Object.entries(translateHandler.targetLanguageOptions)) {
             targetLanguageDropdownOptions.push({
                 optionValue: key,
                 optionLabel: value,
@@ -84,5 +85,3 @@ class _TranslateHandler {
         return context;
     }
 }
-
-export default TranslateHandler;

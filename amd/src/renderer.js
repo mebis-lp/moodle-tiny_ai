@@ -26,14 +26,17 @@ import {renderInfoBox} from 'local_ai_manager/infobox';
 import {renderUserQuota} from 'local_ai_manager/userquota';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import Templates from 'core/templates';
-import SummarizeHandler from 'tiny_ai/datahandler/summarize';
-import TranslateHandler from 'tiny_ai/datahandler/translate';
-import TtsHandler from 'tiny_ai/datahandler/tts';
-import ImggenHandler from 'tiny_ai/datahandler/imggen';
-import StartHandler from 'tiny_ai/datahandler/start';
-import OptimizeHandler from './datahandler/optimize';
 import $ from 'jquery';
-import {getEditorUtils, getDatamanager} from 'tiny_ai/utils';
+import {
+    getEditorUtils,
+    getDatamanager,
+    getImggenHandler,
+    getOptimizeHandler,
+    getStartHandler,
+    getSummarizeHandler,
+    getTranslateHandler,
+    getTtsHandler
+} from 'tiny_ai/utils';
 
 export default class {
 
@@ -47,47 +50,42 @@ export default class {
         this.editorUtils = getEditorUtils(uniqid);
     }
 
-    async init() {
-        await BasedataHandler.init(this.uniqid);
-        await StartHandler.init(this.uniqid);
-    }
-
     async renderStart() {
         this.datamanager.reset();
-        const templateContext = await StartHandler.getTemplateContext(getEditorUtils(this.uniqid));
+        const templateContext = await getStartHandler(this.uniqid).getTemplateContext(getEditorUtils(this.uniqid));
         await this.renderModalContent('moodle-modal-body-start', 'moodle-modal-footer-info', templateContext);
     }
 
 
     async renderSummarize() {
-        const templateContext = SummarizeHandler.getTemplateContext('summarize');
+        const templateContext = getSummarizeHandler(this.uniqid).getTemplateContext('summarize');
         await this.renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
     }
 
 
     async renderTranslate() {
-        const templateContext = TranslateHandler.getTemplateContext();
+        const templateContext = getTranslateHandler(this.uniqid).getTemplateContext();
         await this.renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
     }
 
     async renderDescribe() {
-        const templateContext = SummarizeHandler.getTemplateContext('describe');
+        const templateContext = getSummarizeHandler(this.uniqid).getTemplateContext('describe');
         await this.renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
     }
 
-    async renderTts(){
-        const templateContext = await TtsHandler.getTemplateContext('tts');
+    async renderTts() {
+        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext('tts');
         await this.renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
     }
 
-    async renderAudiogen(){
-        const templateContext = await TtsHandler.getTemplateContext('audiogen');
+    async renderAudiogen() {
+        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext('audiogen');
         await this.renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
     }
 
 
     async renderImggen() {
-        const templateContext = await ImggenHandler.getTemplateContext();
+        const templateContext = await getImggenHandler(this.uniqid).getTemplateContext();
         await this.renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
     }
 
@@ -110,7 +108,7 @@ export default class {
     }
 
     async renderOptimizePrompt() {
-        const templateContext = OptimizeHandler.getTemplateContext();
+        const templateContext = getOptimizeHandler(this.uniqid).getTemplateContext();
         await this.renderModalContent('moodle-modal-body-optimize', 'moodle-modal-footer-generate', templateContext);
     }
 
@@ -178,11 +176,16 @@ export default class {
      *
      * @param {string} bodyComponentTemplate the name of the body template to use (without the prefix 'tiny_ai/components/')
      * @param {string} footerComponentTemplate the name of the footer template to use (without the prefix 'tiny_ai/components/')
-     * @param {string} templateContext the template context being used for all partial templates
+     * @param {object} templateContext the template context being used for all partial templates
      * @returns {Promise<void>} the async promise
      */
     async renderModalContent(bodyComponentTemplate, footerComponentTemplate, templateContext) {
+        templateContext.tinyinstanceuniqid = this.uniqid;
         const modal = getEditorUtils(this.uniqid).getModal();
+        // Remove all eventually remaining tooltips before rendering a new view.
+        document.querySelectorAll('button[data-action]').forEach(button => {
+            $(button).tooltip('hide');
+        });
         const result = await Promise.all([
             Templates.renderForPromise('tiny_ai/components/moodle-modal-header-title', templateContext),
             Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
@@ -203,6 +206,7 @@ export default class {
         result.forEach((item) => {
             Templates.runTemplateJS(item.js);
         });
+        modal.getRoot().attr('data-tiny_ai_uniqid', this.uniqid);
         await this.insertInfoBox();
         await this.insertUserQuotaBox();
         document.querySelectorAll('button[data-action]').forEach(button => {
@@ -212,7 +216,7 @@ export default class {
         });
     }
 
-    async insertInfoBox(){
+    async insertInfoBox() {
         const infoBoxSelector = '[data-rendertarget="infobox"]';
         if (document.querySelector(infoBoxSelector)) {
             await renderInfoBox('tiny_ai', getEditorUtils(this.uniqid).getUserId(), infoBoxSelector,

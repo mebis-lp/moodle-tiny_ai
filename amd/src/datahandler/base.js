@@ -13,29 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
-import BaseHandler from 'tiny_ai/datahandler/base';
-
 /**
- * Tiny AI data handler for optimize prompt page.
+ * Simple data handler base class.
  *
- * @module      tiny_ai/datahandler/optimize
+ * All tiny_ai data handlers should inherit from this class.
+ *
+ * @module      tiny_ai/datahandler/base
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+export default class {
 
-export default class extends BaseHandler {
+    uniqid = null;
 
-    getTemplateContext = () => {
-        const context = {
-            modal_headline: BasedataHandler.getTinyAiString('reworkprompt'),
-            showIcon: true,
-            textareatype: 'prompt'
-        };
-        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
-        return context;
-    };
+    constructor(uniqid) {
+        this.uniqid = uniqid;
+    }
 }
-
-

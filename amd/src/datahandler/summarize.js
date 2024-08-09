@@ -14,6 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import BaseHandler from 'tiny_ai/datahandler/base';
 import {getString} from 'core/str';
 
 /**
@@ -25,9 +26,7 @@ import {getString} from 'core/str';
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const SummarizeHandler = new _SummarizeHandler();
-
-class _SummarizeHandler {
+export default class extends BaseHandler {
 
     currentTool = null;
 
@@ -161,8 +160,3 @@ class _SummarizeHandler {
         return context;
     }
 }
-
-export default SummarizeHandler;
-
-
-

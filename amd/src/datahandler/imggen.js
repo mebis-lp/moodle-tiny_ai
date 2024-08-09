@@ -15,6 +15,7 @@
 
 import * as AiConfig from 'local_ai_manager/config';
 import * as BasedataHandler from "./basedata";
+import BaseHandler from 'tiny_ai/datahandler/base';
 
 /**
  * Tiny AI data manager.
@@ -25,9 +26,7 @@ import * as BasedataHandler from "./basedata";
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const ImggenHandler = new _ImggenHandler();
-
-class _ImggenHandler {
+export default class extends BaseHandler {
 
     imggenOptions = null;
 
@@ -71,7 +70,7 @@ class _ImggenHandler {
 
         const modalDropdowns = [];
 
-        const sizesOptions = await ImggenHandler.getSizesOptions();
+        const sizesOptions = await this.getSizesOptions();
         if (sizesOptions !== null && Object.keys(sizesOptions).length > 0) {
             const sizesDropdownContext = {};
             sizesDropdownContext.preference = 'sizes';
@@ -101,8 +100,3 @@ class _ImggenHandler {
         return context;
     }
 }
-
-export default ImggenHandler;
-
-
-

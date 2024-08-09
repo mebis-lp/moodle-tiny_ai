@@ -23,7 +23,7 @@
  */
 
 import BaseController from 'tiny_ai/controllers/base';
-import DatahandlerStart from 'tiny_ai/datahandler/start';
+import {getStartHandler} from 'tiny_ai/utils';
 import {errorAlert} from 'tiny_ai/utils';
 // We unfortunately need jquery for tooltip handling.
 import $ from 'jquery';
@@ -43,7 +43,9 @@ export default class extends BaseController {
         const imggenButton = this.baseElement.querySelector('[data-action="loadimggen"]');
         const freePromptButton = this.baseElement.querySelector('[data-action="loadfreeprompt"]');
 
-        if (!(await DatahandlerStart.isTinyAiDisabled())) {
+        const startHandler = getStartHandler(this.uniqid);
+
+        if (!(await startHandler.isTinyAiDisabled())) {
             if(window.matchMedia("(pointer: coarse)").matches) {
                 // If we have a touch device, we need to manually trigger the tooltips by touching the cards.
                 document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
@@ -103,9 +105,9 @@ export default class extends BaseController {
                     await this.renderer.renderSuggestion();
                 });
             } else {
-                if (!(await DatahandlerStart.isTinyAiDisabled())) {
+                if (!(await startHandler.isTinyAiDisabled())) {
                     freePromptButton.addEventListener('click', async() => {
-                        await errorAlert(DatahandlerStart.isToolDisabled('freeprompt', this.editorUtils.getMode()));
+                        await errorAlert(startHandler.isToolDisabled('freeprompt', this.editorUtils.getMode()));
                     });
                 }
             }

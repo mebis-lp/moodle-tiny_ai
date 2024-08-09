@@ -30,6 +30,7 @@ import {constants} from 'tiny_ai/constants';
  */
 export default class {
 
+    uniqid = null;
     baseElement = null;
     renderer = null;
     editorUtils = null;
@@ -37,9 +38,10 @@ export default class {
 
     constructor(baseSelector) {
         this.baseElement = document.querySelector(baseSelector);
-        this.renderer = getRenderer(getCurrentModalUniqId(this.baseElement));
-        this.editorUtils = getEditorUtils(getCurrentModalUniqId(this.baseElement));
-        this.datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
+        this.uniqid = getCurrentModalUniqId(this.baseElement);
+        this.renderer = getRenderer(this.uniqid);
+        this.editorUtils = getEditorUtils(this.uniqid);
+        this.datamanager = getDatamanager(this.uniqid);
 
         if (this.baseElement === null) {
             // Sometimes (for example we display an error message before we even finish rendering the modal) we do not have
@@ -68,6 +70,7 @@ export default class {
             return null;
         }
         this.datamanager.setCurrentAiResult(result);
+        return true;
     }
 
     async callRendererFunction() {

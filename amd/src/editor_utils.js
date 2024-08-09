@@ -64,11 +64,6 @@ export default class {
                 headerclasses: 'tiny_ai-modal--header'
             }
         });
-        const uniqid = this.uniqid;
-        this.modal.getRoot().on(ModalEvents.shown, () => {
-            // We set the uniqid into the modal for other classes/modules to determine the uniqid of the editor.
-            this.modal.getRoot().attr('data-tiny_ai_uniqid', uniqid);
-        });
         this.modal.show();
 
         if (this.mode === constants.modalModes.selection) {
