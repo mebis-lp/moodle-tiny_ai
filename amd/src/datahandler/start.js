@@ -17,6 +17,7 @@ import * as config from 'core/config';
 import {getString, getStrings} from 'core/str';
 import {constants} from 'tiny_ai/constants';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import BaseHandler from 'tiny_ai/datahandler/base';
 import {getAiConfig} from 'local_ai_manager/config';
 import {errorAlert, stripHtmlTags} from 'tiny_ai/utils';
 
@@ -30,9 +31,7 @@ import {errorAlert, stripHtmlTags} from 'tiny_ai/utils';
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const StartHandler = new _StartHandler();
-
-class _StartHandler {
+export default class extends BaseHandler {
 
     stringKeys = [
         'error_limitreached',
@@ -71,7 +70,7 @@ class _StartHandler {
         confirmLink.href = `${config.wwwroot}/local/ai_manager/confirm_ai_usage.php`;
         confirmLink.innerText = this.strings.error_pleaseconfirm;
         confirmLink.target = '_blank';
-        this.strings.error_usernotconfirmed = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
+        this.strings.combinedusernotconfirmederror = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
     }
 
     getPurposeConfig(tool) {
@@ -87,7 +86,7 @@ class _StartHandler {
             return this.strings.error_tenantdisabled;
         }
         if (!this.aiConfig.userconfirmed) {
-            return this.strings.error_usernotconfirmed;
+            return this.strings.combinedusernotconfirmederror;
         }
         if (this.aiConfig.userlocked) {
             return this.strings.error_userlocked;
@@ -112,6 +111,7 @@ class _StartHandler {
         } else if (mode === constants.modalModes.general) {
             return ['summarize', 'translate', 'describe', 'tts'].includes(tool) ? this.strings.error_unavailable_selection : '';
         }
+        return '';
     }
 
     isToolHidden(tool) {
@@ -239,5 +239,3 @@ class _StartHandler {
         return templateContext;
     }
 }
-
-export default StartHandler;
