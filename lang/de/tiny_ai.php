@@ -67,6 +67,7 @@ $string['more_options'] = 'Mehr Optionen';
 $string['nomaxwordcount'] = 'Keine Beschränkung';
 $string['nopurposesconfigured'] = 'Es wurden keine KI-Tools konfiguriert. Wenden Sie sich an Ihren ByCS-Admin.';
 $string['pluginname'] = 'KI-Tools';
+$string['privacy:metadata'] = 'Dieses Plugin speichert keine personenbezogenen Daten.';
 $string['prompt'] = 'Prompt';
 $string['regeneratebutton_tooltip'] = 'Prompt verbessern und erneut generieren';
 $string['replaceselection'] = 'Auswahl ersetzen';
