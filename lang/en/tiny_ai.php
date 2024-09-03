@@ -67,6 +67,7 @@ $string['more_options'] = 'More Options';
 $string['nomaxwordcount'] = 'No limit';
 $string['nopurposesconfigured'] = 'No AI tools have been configured. Talk to your ByCS admin.';
 $string['pluginname'] = 'AI tools';
+$string['privacy:metadata'] = 'This plugin does not store any personal data.';
 $string['prompt'] = 'Prompt';
 $string['regeneratebutton_tooltip'] = 'Edit prompt and regenerate the result';
 $string['replaceselection'] = 'Replace selection';
