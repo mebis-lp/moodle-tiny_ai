@@ -107,9 +107,11 @@ export default class extends BaseHandler {
         }
 
         if (mode === constants.modalModes.selection) {
-            return ['audiogen', 'imggen'].includes(tool) ? this.strings.error_unavailable_noselection : '';
+            return ['audiogen', 'imggen']
+                .includes(tool) ? this.strings.error_unavailable_noselection : '';
         } else if (mode === constants.modalModes.general) {
-            return ['summarize', 'translate', 'describe', 'tts'].includes(tool) ? this.strings.error_unavailable_selection : '';
+            return ['summarize', 'translate', 'describe', 'tts']
+                .includes(tool) ? this.strings.error_unavailable_selection : '';
         }
         return '';
     }
@@ -206,6 +208,28 @@ export default class extends BaseHandler {
                 disabled: this.isToolDisabled('imggen', mode).length > 0,
                 tooltip: stripHtmlTags(this.isToolDisabled('imggen', mode)),
                 action: 'loadimggen'
+            });
+        }
+        if (!this.isToolHidden('describeimg')) {
+            toolButtons.push({
+                toolname: 'describeimg',
+                tool: BasedataHandler.getTinyAiString('toolname_describeimg'),
+                iconstyle: 'solid',
+                iconname: 'file-image',
+                disabled: this.isToolDisabled('describeimg', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('describeimg', mode)),
+                action: 'loaddescribeimg'
+            });
+        }
+        if (!this.isToolHidden('imagetotext')) {
+            toolButtons.push({
+                toolname: 'imagetotext',
+                tool: BasedataHandler.getTinyAiString('toolname_imagetotext'),
+                iconstyle: 'solid',
+                iconname: 'signature',
+                disabled: this.isToolDisabled('imagetotext', mode).length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('imagetotext', mode)),
+                action: 'loadimagetotext'
             });
         }
         // We sort the not disabled tools to the top while keeping the groups "disabled tools" and "not disabled tools"

@@ -31,6 +31,7 @@ import StartHandler from 'tiny_ai/datahandler/start';
 import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
+import IttHandler from 'tiny_ai/datahandler/itt';
 import {alert as Alert, exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
@@ -56,6 +57,7 @@ export const init = async (uniqid, editor) => {
         objectStore[uniqid].summarizehandler = new SummarizeHandler(uniqid);
         objectStore[uniqid].translatehandler = new TranslateHandler(uniqid);
         objectStore[uniqid].ttshandler = new TtsHandler(uniqid);
+        objectStore[uniqid].itthandler = new IttHandler(uniqid);
         objectStore[uniqid].renderer = new Renderer(uniqid);
     }
 };
@@ -133,6 +135,10 @@ export const getTranslateHandler = (uniqid) => {
 
 export const getTtsHandler = (uniqid) => {
     return objectStore[uniqid].ttshandler;
+};
+
+export const getIttHandler = (uniqid) => {
+    return objectStore[uniqid].itthandler;
 };
 
 export const getCurrentModalUniqId = (element) => {

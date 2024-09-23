@@ -36,7 +36,10 @@ export default class DataManager {
     currentTool = null;
     currentAiResult = null;
     prompt = null;
+    file = null;
     options = null;
+    selection = null;
+    selectionImg = null;
 
     getDefaultOptions() {
         const defaultOptions = {
@@ -75,6 +78,15 @@ export default class DataManager {
 
     }
 
+    setCurrentFile(file) {
+        this.file = file;
+    }
+
+    getCurrentFile() {
+        return this.file;
+
+    }
+
     getSelection() {
         return this.selection;
     }
@@ -87,6 +99,14 @@ export default class DataManager {
 
     setSelection(selection) {
         this.selection = selection;
+    }
+
+    getSelectionImg() {
+        return this.selectionImg;
+    }
+
+    setSelectionImg(image) {
+        this.selectionImg = image;
     }
 
     getEventEmitterElement() {
@@ -116,9 +136,6 @@ export default class DataManager {
         this.setCurrentOptions(null);
         this.setCurrentTool(null);
         this.setCurrentAiResult(null);
+        this.setCurrentFile(null);
     }
 }
-
-
-
-

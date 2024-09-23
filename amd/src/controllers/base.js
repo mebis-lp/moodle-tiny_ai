@@ -56,6 +56,11 @@ export default class {
             await errorAlert(BasedataHandler.getTinyAiString('error_nopromptgiven'));
             return null;
         }
+        if (['describeimg', 'imagetotext'].includes(this.datamanager.getCurrentTool())
+                && this.datamanager.getCurrentFile() === null) {
+            await errorAlert(BasedataHandler.getTinyAiString('error_nofile'));
+            return null;
+        }
         await this.renderer.renderLoading();
         let result = null;
         try {

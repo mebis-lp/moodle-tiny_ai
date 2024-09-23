@@ -36,5 +36,7 @@ export const constants = {
         imggen: 'imggen',
         tts: 'tts',
         freeprompt: 'singleprompt',
+        describeimg: 'itt',
+        imagetotext: 'itt'
     }
 };
