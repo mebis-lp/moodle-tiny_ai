@@ -46,6 +46,8 @@ export default class {
         // right-clicking the drop zone.
         dropzone.contentEditable = true;
         this.setDropzoneContent(dropzone.innerHTML);
+        // Instantly focus the drop zone, so you can directly paste the image.
+        dropzone.focus();
 
         const _this = this;
         // The drop zone has "contentEditable" enabled, so we have to take care of user input

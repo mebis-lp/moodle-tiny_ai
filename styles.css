@@ -599,6 +599,10 @@
   max-width: 80%;
   max-height: 80%;
 }
+.tiny_ai_dropzone_preview_container img {
+  max-width: 100%;
+  max-height: 100%;
+}
 
 .tiny_ai-alert {
   display: flex;
