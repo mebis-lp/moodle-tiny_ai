@@ -31,25 +31,28 @@ import {getString} from 'core/str';
 export default class extends BaseHandler {
 
     languageNameInCurrentUserLanguage = new Intl.DisplayNames([Config.language], {type: 'language'});
-
-    targetLanguageOptions = {
-        en: this.languageNameInCurrentUserLanguage.of('en'),
-        de: this.languageNameInCurrentUserLanguage.of('de'),
-        it: this.languageNameInCurrentUserLanguage.of('it'),
-        es: this.languageNameInCurrentUserLanguage.of('es'),
-        ru: this.languageNameInCurrentUserLanguage.of('ru'),
-        uk: this.languageNameInCurrentUserLanguage.of('uk'),
-        zh: this.languageNameInCurrentUserLanguage.of('zh'),
-    };
+    // English will always be added to the front of the list. All other languages can be defined here.
+    // The user's current language will be shown right after English, if it is contained in this list.
+    targetLanguageCodes = [
+        'de', 'fr', 'it', 'es', 'cs', 'zh', 'ru', 'uk', 'el', 'la', 'tr', 'ro', 'pl', 'bg', 'ar', 'sq',
+        'bs', 'sr', 'hr', 'ku', 'fa', 'ps', 'sk', 'hu'
+    ];
+    targetLanguageOptions = [];
     targetLanguage = null;
 
+    constructor(uniqid) {
+        super(uniqid);
+        this.initTargetLanguages();
+    }
 
     setTargetLanguage(targetLanguage) {
         this.targetLanguage = targetLanguage;
     }
 
     async getPrompt(selectionText) {
-        let prompt = await getString('translate_baseprompt', 'tiny_ai', this.targetLanguageOptions[this.targetLanguage]);
+        const selectedLanguageEntry =
+            this.targetLanguageOptions.filter(languageEntry => languageEntry.key === this.targetLanguage)[0];
+        let prompt = await getString('translate_baseprompt', 'tiny_ai', selectedLanguageEntry.value);
         prompt += ': ' + selectionText;
         return prompt;
     }
@@ -63,16 +66,16 @@ export default class extends BaseHandler {
         };
         const targetLanguageDropdownContext = {};
         targetLanguageDropdownContext.preference = 'targetLanguage';
-        targetLanguageDropdownContext.dropdown_default = Object.values(translateHandler.targetLanguageOptions)[0];
-        targetLanguageDropdownContext.dropdown_default_value = Object.keys(translateHandler.targetLanguageOptions)[0];
+        targetLanguageDropdownContext.dropdown_default = translateHandler.targetLanguageOptions[0].value;
+        targetLanguageDropdownContext.dropdown_default_value = translateHandler.targetLanguageOptions[0].key;
         targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
         const targetLanguageDropdownOptions = [];
-        for (const [key, value] of Object.entries(translateHandler.targetLanguageOptions)) {
+        translateHandler.targetLanguageOptions.forEach(languageEntry => {
             targetLanguageDropdownOptions.push({
-                optionValue: key,
-                optionLabel: value,
+                optionValue: languageEntry.key,
+                optionLabel: languageEntry.value,
             });
-        }
+        });
         targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
 
         Object.assign(context, {
@@ -83,5 +86,34 @@ export default class extends BaseHandler {
         Object.assign(context, BasedataHandler.getShowPromptButtonContext());
         Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
         return context;
+    }
+
+    initTargetLanguages() {
+        const firstLanguages = [
+            {
+                key: 'en',
+                value: this.languageNameInCurrentUserLanguage.of('en')
+            }
+        ];
+        if (Config.language !== 'en' && this.targetLanguageCodes.includes(Config.language)) {
+            firstLanguages.push(
+                {
+                    key: Config.language,
+                    value: this.languageNameInCurrentUserLanguage.of(Config.language)
+                }
+            );
+            // Remove current user's language from the list.
+            const index = this.targetLanguageCodes.indexOf(Config.language);
+            this.targetLanguageCodes.splice(index, 1);
+        }
+        this.targetLanguageCodes.forEach(languageCode => {
+            this.targetLanguageOptions[languageCode] = this.languageNameInCurrentUserLanguage.of(languageCode);
+        });
+
+        const sortedLanguages = Object
+            .entries(this.targetLanguageOptions)
+            .sort((a, b) => a[1].localeCompare(b[1]))
+            .map(([key, value]) => ({'key': key, 'value': value}));
+        this.targetLanguageOptions = [...firstLanguages, ...sortedLanguages];
     }
 }
