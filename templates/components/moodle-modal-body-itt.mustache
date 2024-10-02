@@ -1,0 +1,25 @@
+<div id="tiny_ai_{{tool}}_{{uniqid}}" data-tiny_instance_uniqid={{tinyinstanceuniqid}} class="h-100">
+    <div class="row">
+        <div class="tiny_ai_dropzone justify-content-center w-100" data-type="dropzone" disabled>
+            {{insertimagedescription}}
+        </div>
+        <input type="hidden" data-preference="fileupload" />
+    </div>
+    <div class="row flex-grow-1">
+        <div class="col-12 mb-3 tiny_ai-prompt-wrapper">
+            {{> tiny_ai/components/ai-button}}
+            {{> tiny_ai/components/ai-textarea}}
+        </div>
+    </div>
+
+</div>
+{{#js}}
+    require(['tiny_ai/controllers/preferences', 'tiny_ai/controllers/promptedit', 'tiny_ai/controllers/file'], function(Controller, PromptEditController, FileController) {
+    const controller = new Controller('#tiny_ai_{{tool}}_{{uniqid}}', '{{tool}}');
+    Promise.resolve(controller.init());
+    const promptEditController = new PromptEditController('#tiny_ai_{{tool}}_{{uniqid}}');
+    Promise.resolve(promptEditController.init());
+    const fileController = new FileController('#tiny_ai_{{tool}}_{{uniqid}}');
+    Promise.resolve(fileController.init());
+    });
+{{/js}}

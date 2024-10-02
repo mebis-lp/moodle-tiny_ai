@@ -16,7 +16,7 @@
 /**
  * Controller for the main selection.
  *
- * @module      tiny_ai/controllers/translate
+ * @module      tiny_ai/controllers/preferences
  * @copyright   2024, ISB Bayern
  * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@
 import {constants} from 'tiny_ai/constants';
 import SELECTORS from 'tiny_ai/selectors';
 import BaseController from 'tiny_ai/controllers/base';
-import {getSummarizeHandler, getTranslateHandler, getTtsHandler, getImggenHandler} from 'tiny_ai/utils';
+import {getSummarizeHandler, getTranslateHandler, getTtsHandler, getImggenHandler, getIttHandler} from 'tiny_ai/utils';
 
 export default class extends BaseController {
 
@@ -34,11 +34,12 @@ export default class extends BaseController {
         const backButton = modalFooter.querySelector('[data-action="back"]');
         const generateButton = modalFooter.querySelector('[data-action="generate"]');
 
-        const [summarizeHandler, translateHandler, ttsHandler, imggenHandler] = [
+        const [summarizeHandler, translateHandler, ttsHandler, imggenHandler, ittHandler] = [
             getSummarizeHandler(this.uniqid),
             getTranslateHandler(this.uniqid),
             getTtsHandler(this.uniqid),
-            getImggenHandler(this.uniqid)
+            getImggenHandler(this.uniqid),
+            getIttHandler(this.uniqid)
         ];
 
         switch (this.datamanager.getCurrentTool()) {
@@ -118,6 +119,19 @@ export default class extends BaseController {
                 }
                 this.datamanager.setCurrentPrompt('');
                 this.datamanager.setCurrentOptions(imggenHandler.getOptions());
+                break;
+            }
+            case 'describeimg':
+            case 'imagetotext': {
+                const fileUploadArea = this.baseElement.querySelector('[data-preference="fileupload"]');
+                if (fileUploadArea) {
+                    this.datamanager.getEventEmitterElement().addEventListener('fileUploaded', async (event) => {
+                        this.datamanager.setCurrentFile(event.detail.newFile);
+                        this.datamanager.setCurrentOptions(ittHandler.getOptions());
+                    });
+                }
+                this.datamanager.setCurrentPrompt(ittHandler.getPrompt(this.datamanager.getCurrentTool()));
+                this.datamanager.setCurrentFile(null);
                 break;
             }
         }

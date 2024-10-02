@@ -35,7 +35,8 @@ import {
     getStartHandler,
     getSummarizeHandler,
     getTranslateHandler,
-    getTtsHandler
+    getTtsHandler,
+    getIttHandler
 } from 'tiny_ai/utils';
 
 export default class {
@@ -87,6 +88,16 @@ export default class {
     async renderImggen() {
         const templateContext = await getImggenHandler(this.uniqid).getTemplateContext();
         await this.renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
+    }
+
+    async renderDescribeimg() {
+        const templateContext = await getIttHandler(this.uniqid).getTemplateContext('describeimg');
+        await this.renderModalContent('moodle-modal-body-itt', 'moodle-modal-footer-generate', templateContext);
+    }
+
+    async renderImagetotext() {
+        const templateContext = await getIttHandler(this.uniqid).getTemplateContext('imagetotext');
+        await this.renderModalContent('moodle-modal-body-itt', 'moodle-modal-footer-generate', templateContext);
     }
 
     async renderLoading() {
@@ -220,14 +231,14 @@ export default class {
         const infoBoxSelector = '[data-rendertarget="infobox"]';
         if (document.querySelector(infoBoxSelector)) {
             await renderInfoBox('tiny_ai', getEditorUtils(this.uniqid).getUserId(), infoBoxSelector,
-                ['singleprompt', 'translate', 'tts', 'imggen']);
+                ['singleprompt', 'translate', 'tts', 'imggen', 'itt']);
         }
     }
 
     async insertUserQuotaBox() {
         const usageBoxSelector = '[data-rendertarget="usageinfo"]';
         if (document.querySelector(usageBoxSelector)) {
-            await renderUserQuota(usageBoxSelector, ['singleprompt', 'translate', 'tts', 'imggen']);
+            await renderUserQuota(usageBoxSelector, ['singleprompt', 'translate', 'tts', 'imggen', 'itt']);
         }
     }
 }

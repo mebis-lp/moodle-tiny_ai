@@ -42,6 +42,8 @@ export default class extends BaseController {
         const audiogenButton = this.baseElement.querySelector('[data-action="loadaudiogen"]');
         const imggenButton = this.baseElement.querySelector('[data-action="loadimggen"]');
         const freePromptButton = this.baseElement.querySelector('[data-action="loadfreeprompt"]');
+        const describeimgButton = this.baseElement.querySelector('[data-action="loaddescribeimg"]');
+        const imagetotextButton = this.baseElement.querySelector('[data-action="loadimagetotext"]');
 
         const startHandler = getStartHandler(this.uniqid);
 
@@ -91,6 +93,18 @@ export default class extends BaseController {
             imggenButton.addEventListener('click', async() => {
                 this.datamanager.setCurrentTool('imggen');
                 await this.renderer.renderImggen();
+            });
+        }
+        if (describeimgButton) {
+            describeimgButton.addEventListener('click', async() => {
+                this.datamanager.setCurrentTool('describeimg');
+                await this.renderer.renderDescribeimg();
+            });
+        }
+        if (imagetotextButton) {
+            imagetotextButton.addEventListener('click', async() => {
+                this.datamanager.setCurrentTool('imagetotext');
+                await this.renderer.renderImagetotext();
             });
         }
         if (freePromptButton) {
