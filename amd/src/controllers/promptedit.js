@@ -40,7 +40,7 @@ export default class {
         datamanager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
             textarea.value = event.detail.newPrompt;
         });
-        textarea.addEventListener('keyup', () => {
+        textarea.addEventListener('input', () => {
             datamanager.setCurrentPrompt(textarea.value);
         });
 
