@@ -30,7 +30,6 @@ import {getString} from 'core/str';
 
 export default class extends BaseHandler {
 
-    languageNameInCurrentUserLanguage = new Intl.DisplayNames([Config.language], {type: 'language'});
     // English will always be added to the front of the list. All other languages can be defined here.
     // The user's current language will be shown right after English, if it is contained in this list.
     targetLanguageCodes = [
@@ -89,25 +88,29 @@ export default class extends BaseHandler {
     }
 
     initTargetLanguages() {
+        // Ensure to only have a two-character lang string for the user's current language.
+        // In case of extended language packs like for example "de_du" the attribute Config.language contains "de_du", for example.
+        const currentUserLanguage = Config.language.substring(0, 2);
+        const languageNameInCurrentUserLanguage = new Intl.DisplayNames([currentUserLanguage], {type: 'language'});
         const firstLanguages = [
             {
                 key: 'en',
-                value: this.languageNameInCurrentUserLanguage.of('en')
+                value: languageNameInCurrentUserLanguage.of('en')
             }
         ];
-        if (Config.language !== 'en' && this.targetLanguageCodes.includes(Config.language)) {
+        if (currentUserLanguage !== 'en' && this.targetLanguageCodes.includes(currentUserLanguage)) {
             firstLanguages.push(
                 {
-                    key: Config.language,
-                    value: this.languageNameInCurrentUserLanguage.of(Config.language)
+                    key: currentUserLanguage,
+                    value: languageNameInCurrentUserLanguage.of(currentUserLanguage)
                 }
             );
             // Remove current user's language from the list.
-            const index = this.targetLanguageCodes.indexOf(Config.language);
+            const index = this.targetLanguageCodes.indexOf(currentUserLanguage);
             this.targetLanguageCodes.splice(index, 1);
         }
         this.targetLanguageCodes.forEach(languageCode => {
-            this.targetLanguageOptions[languageCode] = this.languageNameInCurrentUserLanguage.of(languageCode);
+            this.targetLanguageOptions[languageCode] = languageNameInCurrentUserLanguage.of(languageCode);
         });
 
         const sortedLanguages = Object
