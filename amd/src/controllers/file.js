@@ -72,17 +72,27 @@ export default class {
                 await this.handleFile([...event.dataTransfer.files].shift());
             }
         });
-        document.querySelector(SELECTORS.modalDialog).addEventListener('paste', async(event) => {
-            event.preventDefault();
-            const clipboardData = (event.clipboardData || window.clipboardData);
-            if (clipboardData.files.length === 0) {
-                await errorAlert(BasedataHandler.getTinyAiString('error_nofileinclipboard_text'),
-                    BasedataHandler.getTinyAiString('error_nofileinclipboard_title'));
-                return;
+
+        const datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
+
+        const handlePaste = async(event) => {
+            // We have to be careful. We are registering this listener globally onto the modal dialog to catch all the
+            // paste events. We have to ensure we do not interfere with pasting into text fields of other tools though.
+            if (['describeimg', 'imagetotext'].includes(datamanager.getCurrentTool())) {
+                event.preventDefault();
+                const clipboardData = (event.clipboardData || window.clipboardData);
+                if (clipboardData.files.length === 0) {
+                    await errorAlert(BasedataHandler.getTinyAiString('error_nofileinclipboard_text'),
+                        BasedataHandler.getTinyAiString('error_nofileinclipboard_title'));
+                    return;
+                }
+                const file = clipboardData.files[0];
+                this.handleFile(file);
             }
-            const file = clipboardData.files[0];
-            this.handleFile(file);
-        });
+        };
+        // Avoid re-adding event paste listener.
+        document.querySelector(SELECTORS.modalDialog).removeEventListener('paste', handlePaste);
+        document.querySelector(SELECTORS.modalDialog).addEventListener('paste', handlePaste);
         dropzone.addEventListener('dragover', (event) => {
             event.preventDefault();
             dropzone.classList.remove('tiny_ai_dropzone_filled');
@@ -93,7 +103,6 @@ export default class {
             dropzone.classList.remove('tiny_ai_dragover');
         });
 
-        const datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
         if (datamanager.getSelectionImg() !== null) {
             await this.handleFile(datamanager.getSelectionImg());
         }
