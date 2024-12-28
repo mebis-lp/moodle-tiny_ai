@@ -37,7 +37,7 @@ export default class extends BaseController {
         }
 
         if (generateButton) {
-            generateButton.addEventListener('click', async () => {
+            generateButton.addEventListener('click', async() => {
                 const result = await this.generateAiAnswer();
                 if (result === null) {
                     return;

@@ -29,7 +29,7 @@ export default class extends BaseHandler {
 
     getTemplateContext = () => {
         const context = {
-            modal_headline: BasedataHandler.getTinyAiString('reworkprompt'),
+            modalHeadline: BasedataHandler.getTinyAiString('reworkprompt'),
             showIcon: true,
             textareatype: 'prompt'
         };

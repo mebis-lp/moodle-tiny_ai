@@ -59,9 +59,9 @@ const stringKeys = [
     'imggen_headline',
     'imggen_placeholder',
     'insertatcaret',
-    'insertatcaretbutton_tooltip',
+    'insertatcaret_tooltip',
     'insertbelow',
-    'insertbelowbutton_tooltip',
+    'insertbelow_tooltip',
     'keeplanguagetype',
     'languagetype',
     'languagetype_prompt',
@@ -100,9 +100,7 @@ const stringKeys = [
     'voice'
 ];
 
-let strings = {};
-
-
+let strings = new Map();
 
 export const init = async() => {
     prefetchStrings('tiny_ai', stringKeys);
@@ -112,113 +110,44 @@ export const init = async() => {
     // We now get the strings. They are already prefetched, so this is not a performance feature.
     // We just use this to avoid having to code asynchronously all the time just for retrieving the
     // strings by using getString which returns a promise.
-    [
-        strings.aigenerating,
-        strings.aisuggestion,
-        strings.audiogen_headline,
-        strings.audiogen_placeholder,
-        strings.back,
-        strings.backbutton_tooltip,
-        strings.cancel,
-        strings.deletebutton_tooltip,
-        strings.describeimg_baseprompt,
-        strings.describeimg_headline,
-        strings.describe_baseprompt,
-        strings.describe_headline,
-        strings.dismiss,
-        strings.dismisssuggestion,
-        strings.error_nofile,
-        strings.error_nofileinclipboard_text,
-        strings.error_nofileinclipboard_title,
-        strings.error_nopromptgiven,
-        strings.freeprompt_placeholder,
-        strings.freepromptbutton_tooltip,
-        strings.gender,
-        strings.generalerror,
-        strings.generate,
-        strings.generatebutton_tooltip,
-        strings.hideprompt,
-        strings.imagefromeditor,
-        strings.imagetotext_baseprompt,
-        strings.imagetotext_headline,
-        strings.imagetotext_insertimage,
-        strings.imggen_headline,
-        strings.imggen_placeholder,
-        strings.insertatcaret,
-        strings.insertatcaretbutton_tooltip,
-        strings.insertbelow,
-        strings.insertbelowbutton_tooltip,
-        strings.keeplanguagetype,
-        strings.languagetype,
-        strings.languagetype_prompt,
-        strings.mainselection_heading,
-        strings.maxwordcount,
-        strings.maxwordcount_prompt,
-        strings.nomaxwordcount,
-        strings.regeneratebutton_tooltip,
-        strings.replaceselection,
-        strings.replaceselectionbutton_tooltip,
-        strings.reworkprompt,
-        strings.simplelanguage,
-        strings.size,
-        strings.showprompt,
-        strings.showpromptbutton_tooltip,
-        strings.summarize_baseprompt,
-        strings.summarize_headline,
-        strings.targetlanguage,
-        strings.technicallanguage,
-        strings.texttouse,
-        strings.toolname_audiogen,
-        strings.toolname_describe,
-        strings.toolname_describeimg,
-        strings.toolname_describe_extension,
-        strings.toolname_imggen,
-        strings.toolname_imagetotext,
-        strings.toolname_summarize,
-        strings.toolname_summarize_extension,
-        strings.toolname_translate,
-        strings.toolname_translate_extension,
-        strings.toolname_tts,
-        strings.toolname_tts_extension,
-        strings.translate_baseprompt,
-        strings.translate_headline,
-        strings.tts_headline,
-        strings.voice
-    ] = await getStrings(stringRequest);
+    const fetchedStrings = await getStrings(stringRequest);
+    for (let i = 0; i < stringKeys.length; i++) {
+        strings.set(stringKeys[i], fetchedStrings[i]);
+    }
 };
 
 export const getTinyAiString = (string) => {
-    return strings[string];
+    return strings.get(string);
 };
 
 export const getBackAndGenerateButtonContext = () => {
     return {
-        footer_buttons: [
+        footerButtons: [
             {
                 hasText: true,
-                button_text: strings.back,
-                icon_left: true,
-                icon_right: false,
+                buttonText: getTinyAiString('back'),
+                iconLeft: true,
+                iconRight: false,
                 primary: false,
                 secondary: false,
                 tertiary: true,
                 iconname: 'arrow-left',
                 iconstyle: 'solid',
                 action: 'back',
-                tooltip: strings.backbutton_tooltip
+                tooltip: getTinyAiString('backbutton_tooltip')
             },
             {
                 hasText: true,
-                button_text: strings.generate,
-                icon_left: true,
-                icon_right: false,
+                buttonText: getTinyAiString('generate'),
+                iconLeft: true,
+                iconRight: false,
                 primary: true,
                 secondary: false,
                 tertiary: false,
                 iconname: 'sparkle',
                 customicon: true,
                 action: 'generate',
-                tooltip: strings.generatebutton_tooltip
+                tooltip: getTinyAiString('generatebutton_tooltip')
             }
         ]
     };
@@ -226,44 +155,45 @@ export const getBackAndGenerateButtonContext = () => {
 
 export const getReplaceButtonsContext = (mode) => {
 
-    return  {
-        footer_iconbuttons:
+    return {
+        footerIconButtons:
             [
                 {
                     action: 'delete',
                     iconname: 'trash',
-                    tooltip: strings.deletebutton_tooltip
+                    tooltip: getTinyAiString('deletebutton_tooltip')
                 },
                 {
                     action: 'regenerate',
                     iconname: 'arrows-rotate',
-                    tooltip: strings.regeneratebutton_tooltip
+                    tooltip: getTinyAiString('regeneratebutton_tooltip')
                 }
             ],
-        footer_buttons:
+        footerButtons:
             [
                 {
                     action: 'insertbelow',
                     hasText: true,
-                    button_text: strings.insertbelow,
-                    icon_left: true,
-                    icon_right: false,
+                    buttonText: getTinyAiString('insertbelow'),
+                    iconLeft: true,
+                    iconRight: false,
                     secondary: true,
                     iconname: 'text-insert-last',
                     customicon: true,
-                    tooltip: strings.insertbelow_tooltip
+                    tooltip: getTinyAiString('insertbelow_tooltip')
                 },
                 {
                     action: mode === constants.modalModes.selection ? 'replace' : 'insertatcaret',
                     hasText: true,
-                    button_text: mode === constants.modalModes.selection ? strings.replaceselection : strings.insertatcaret,
-                    icon_left: true,
-                    icon_right: false,
+                    buttonText: mode === constants.modalModes.selection
+                        ? getTinyAiString('replaceselection') : getTinyAiString('insertatcaret'),
+                    iconLeft: true,
+                    iconRight: false,
                     primary: true,
                     iconname: 'check',
                     iconstyle: 'solid',
                     tooltip: mode === constants.modalModes.selection
-                        ? strings.replaceselection_tooltip : strings.insertatcaret_tooltip
+                        ? getTinyAiString('replaceselection_tooltip') : getTinyAiString('insertatcaret_tooltip')
                 }
             ],
     };
@@ -280,9 +210,9 @@ export const getInputContext = () => {
                         customicon: false,
                         iconname: 'arrow-right',
                         iconstyle: 'solid',
-                        icon_left: false,
-                        icon_right: true,
-                        tooltip: strings.freepromptbutton_tooltip
+                        iconLeft: false,
+                        iconRight: true,
+                        tooltip: getTinyAiString('freepromptbutton_tooltip')
                     }
                 ]
             }
@@ -293,15 +223,15 @@ export const getInputContext = () => {
 export const getShowPromptButtonContext = () => {
     return {
         hasText: true,
-        button_text: strings.showprompt,
-        icon_left: true,
-        icon_right: false,
+        buttonText: getTinyAiString('showprompt'),
+        iconLeft: true,
+        iconRight: false,
         tertiary: true,
         iconname: 'eye',
         iconstyle: 'solid',
         action: 'showprompt',
         textareatype: 'prompt',
         collapsed: true,
-        tooltip: strings.showpromptbutton_tooltip
+        tooltip: getTinyAiString('showpromptbutton_tooltip')
     };
 };

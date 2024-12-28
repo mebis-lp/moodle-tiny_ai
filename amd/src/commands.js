@@ -89,10 +89,5 @@ export const getSetup = async() => {
                 Utils.getEditorUtils(uniqid).displayDialogue(selectionbarSource);
             }
         });
-
-        // editor.on('init', () => onInit(editor));
-        // editor.on('BeforeGetContent', format => onBeforeGetContent(format));
-        // editor.on('submit', () => onSubmit());
-
     };
 };

@@ -2,15 +2,15 @@
 }}{{#primary}}primary {{/primary}}{{#secondary}}secondary {{/secondary}}{{#tertiary}}tertiary {{/tertiary}}"{{!
 }} data-action="{{action}}" {{#expanded}}data-expanded{{/expanded}} data-toggle="tooltip" data-placement="top" title="{{tooltip}}">
 
-    {{#icon_left}}
+    {{#iconLeft}}
         {{> tiny_ai/components/ai-icon}}
-    {{/icon_left}}
+    {{/iconLeft}}
 
     {{#hasText}}
-        <span class="tiny_ai-button-text" data-text>{{button_text}}</span>
+        <span class="tiny_ai-button-text" data-text>{{buttonText}}</span>
     {{/hasText}}
 
-    {{#icon_right}}
+    {{#iconRight}}
         {{> tiny_ai/components/ai-icon}}
-    {{/icon_right}}
+    {{/iconRight}}
 </button>
