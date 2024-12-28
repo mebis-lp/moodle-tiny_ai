@@ -19,6 +19,7 @@ namespace tiny_ai\privacy;
 /**
  * Privacy provider for tiny_ai implementing null_provider.
  *
+ * @package    tiny_ai
  * @copyright  2024 ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
