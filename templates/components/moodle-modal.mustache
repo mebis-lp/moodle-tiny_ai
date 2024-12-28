@@ -32,13 +32,5 @@ Example context (json):
 {}
 }}
 {{< core/modal }}
-    {{$header}}
-        {{> tiny_ai/components/moodle-modal-header}}
-    {{/header}}
-    {{$body}}
-        {{> tiny_ai/components/moodle-modal-body-start}}
-    {{/body}}
-    {{$footer}}
-        {{> tiny_ai/components/moodle-modal-footer-info}}
-    {{/footer}}
+    {{! This is just an empty template, because the real content will be rendered after the initial modal has been created. }}
 {{/ core/modal}}
