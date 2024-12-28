@@ -52,12 +52,12 @@ export default class extends BaseController {
                 summarizeHandler.setLanguageType(languageTypeElement.querySelector('[data-dropdown="select"]').dataset.value);
                 const currentPromptSummarize = await summarizeHandler.getPrompt(this.datamanager.getSelectionText());
                 this.datamanager.setCurrentPrompt(currentPromptSummarize);
-                maxWordCountElement.addEventListener('dropdownSelectionUpdated', async (event) => {
+                maxWordCountElement.addEventListener('dropdownSelectionUpdated', async(event) => {
                     summarizeHandler.setMaxWordCount(event.detail.newValue);
                     const currentPrompt = await summarizeHandler.getPrompt(this.datamanager.getSelectionText());
                     this.datamanager.setCurrentPrompt(currentPrompt);
                 });
-                languageTypeElement.addEventListener('dropdownSelectionUpdated', async (event) => {
+                languageTypeElement.addEventListener('dropdownSelectionUpdated', async(event) => {
                     summarizeHandler.setLanguageType(event.detail.newValue);
                     const currentPrompt = await summarizeHandler.getPrompt(this.datamanager.getSelectionText());
                     this.datamanager.setCurrentPrompt(currentPrompt);
@@ -69,7 +69,7 @@ export default class extends BaseController {
                 translateHandler.setTargetLanguage(targetLanguageElement.querySelector('[data-dropdown="select"]').dataset.value);
                 const currentPromptTranslate = await translateHandler.getPrompt(this.datamanager.getSelectionText());
                 this.datamanager.setCurrentPrompt(currentPromptTranslate);
-                targetLanguageElement.addEventListener('dropdownSelectionUpdated', async (event) => {
+                targetLanguageElement.addEventListener('dropdownSelectionUpdated', async(event) => {
                     translateHandler.setTargetLanguage(event.detail.newValue);
                     const currentPromptTranslate = await translateHandler.getPrompt(this.datamanager.getSelectionText());
                     this.datamanager.setCurrentPrompt(currentPromptTranslate);
@@ -125,7 +125,7 @@ export default class extends BaseController {
             case 'imagetotext': {
                 const fileUploadArea = this.baseElement.querySelector('[data-preference="fileupload"]');
                 if (fileUploadArea) {
-                    this.datamanager.getEventEmitterElement().addEventListener('fileUploaded', async (event) => {
+                    this.datamanager.getEventEmitterElement().addEventListener('fileUploaded', async(event) => {
                         this.datamanager.setCurrentFile(event.detail.newFile);
                         this.datamanager.setCurrentOptions(ittHandler.getOptions());
                     });
@@ -137,13 +137,13 @@ export default class extends BaseController {
         }
 
         if (backButton) {
-            backButton.addEventListener('click', async () => {
+            backButton.addEventListener('click', async() => {
                 await this.renderer.renderStart(constants.modalModes.selection);
             });
         }
 
         if (generateButton) {
-            generateButton.addEventListener('click', async () => {
+            generateButton.addEventListener('click', async() => {
                 const result = await this.generateAiAnswer();
                 if (result === null) {
                     return;

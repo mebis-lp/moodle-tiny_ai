@@ -102,17 +102,17 @@ export default class {
 
     async renderLoading() {
         const templateContext = {};
-        templateContext.modal_headline = BasedataHandler.getTinyAiString('aigenerating');
+        templateContext.modalHeadline = BasedataHandler.getTinyAiString('aigenerating');
         await this.renderModalContent('moodle-modal-body-loading', 'moodle-modal-footer-empty', templateContext);
     }
 
 
     async renderSuggestion() {
         const templateContext = {};
-        templateContext.modal_headline = BasedataHandler.getTinyAiString('aisuggestion');
+        templateContext.modalHeadline = BasedataHandler.getTinyAiString('aisuggestion');
         // TODO Eventually do not use the same rendering in the suggestion like in the course, or just leave it because we
         //  consider it beautiful
-        templateContext.result_text = this.renderAiResultForEditor();
+        templateContext.resultText = this.renderAiResultForEditor();
 
         Object.assign(templateContext, BasedataHandler.getReplaceButtonsContext(this.editorUtils.getMode()));
         await this.renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
@@ -126,15 +126,15 @@ export default class {
 
     async renderDismiss() {
         const templateContext = {
-            modal_headline: '',
-            centered_headline: BasedataHandler.getTinyAiString('dismisssuggestion'),
+            modalHeadline: '',
+            centeredHeadline: BasedataHandler.getTinyAiString('dismisssuggestion'),
             showIcon: false,
             buttons: [
                 {
                     hasText: true,
-                    button_text: BasedataHandler.getTinyAiString('cancel'),
-                    icon_left: false,
-                    icon_right: false,
+                    buttonText: BasedataHandler.getTinyAiString('cancel'),
+                    iconLeft: false,
+                    iconRight: false,
                     primary: false,
                     secondary: true,
                     tertiary: false,
@@ -142,9 +142,9 @@ export default class {
                 },
                 {
                     hasText: true,
-                    button_text: BasedataHandler.getTinyAiString('dismiss'),
-                    icon_left: false,
-                    icon_right: false,
+                    buttonText: BasedataHandler.getTinyAiString('dismiss'),
+                    iconLeft: false,
+                    iconRight: false,
                     primary: true,
                     secondary: false,
                     tertiary: false,
@@ -202,7 +202,7 @@ export default class {
             Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
             Templates.renderForPromise('tiny_ai/components/' + footerComponentTemplate, templateContext)
         ]);
-        if (templateContext.hasOwnProperty('modal_headline')) {
+        if (templateContext.hasOwnProperty('modalHeadline')) {
             // If there is no headline specified, we keep the old one.
             modal.setTitle(result[0].html);
         }

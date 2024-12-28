@@ -47,7 +47,7 @@ export default class extends BaseHandler {
         }
         const options = {};
         if (this.size) {
-            options['sizes'] = [this.size];
+            options.sizes = [this.size];
         }
         return options;
     }
@@ -61,7 +61,7 @@ export default class extends BaseHandler {
 
     async getTemplateContext() {
         const context = {
-            modal_headline: BasedataHandler.getTinyAiString('imggen_headline'),
+            modalHeadline: BasedataHandler.getTinyAiString('imggen_headline'),
             showIcon: true,
             tool: 'imggen',
             textareatype: 'prompt',
@@ -74,9 +74,9 @@ export default class extends BaseHandler {
         if (sizesOptions !== null && Object.keys(sizesOptions).length > 0) {
             const sizesDropdownContext = {};
             sizesDropdownContext.preference = 'sizes';
-            sizesDropdownContext.dropdown_default = sizesOptions[0]['displayname'];
-            sizesDropdownContext.dropdown_default_value = sizesOptions[0]['key'];
-            sizesDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('size');
+            sizesDropdownContext.dropdownDefault = sizesOptions[0].displayname;
+            sizesDropdownContext.dropdownDefaultValue = sizesOptions[0].key;
+            sizesDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('size');
             const sizesDropdownOptions = [];
             sizesOptions.forEach(option => {
                 sizesDropdownOptions.push({
@@ -84,7 +84,7 @@ export default class extends BaseHandler {
                     optionLabel: option.displayname,
                 });
             });
-            sizesDropdownContext.dropdown_options = sizesDropdownOptions;
+            sizesDropdownContext.dropdownOptions = sizesDropdownOptions;
             modalDropdowns.push(sizesDropdownContext);
         }
         // In the imggen view the dropdowns are at the bottom, so we need to make the dropdowns dropup instead of dropdown.
@@ -94,7 +94,7 @@ export default class extends BaseHandler {
         });
 
         Object.assign(context, {
-            modal_dropdowns: modalDropdowns
+            modalDropdowns: modalDropdowns
         });
         Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
         return context;

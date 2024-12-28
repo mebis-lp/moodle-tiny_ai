@@ -32,7 +32,7 @@ import SummarizeHandler from 'tiny_ai/datahandler/summarize';
 import TranslateHandler from 'tiny_ai/datahandler/translate';
 import TtsHandler from 'tiny_ai/datahandler/tts';
 import IttHandler from 'tiny_ai/datahandler/itt';
-import {alert as Alert, exception as displayException} from 'core/notification';
+import {alert as moodleAlert, exception as displayException} from 'core/notification';
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
@@ -42,7 +42,7 @@ import EditorUtils from 'tiny_ai/editor_utils';
 
 const objectStore = {};
 
-export const init = async (uniqid, editor) => {
+export const init = async(uniqid, editor) => {
     if (!objectStore.hasOwnProperty(uniqid)) {
         objectStore[uniqid] = {};
         // The order in which these objects are being created is actually pretty important, because Renderer
@@ -62,13 +62,13 @@ export const init = async (uniqid, editor) => {
     }
 };
 
-export const getAiAnswer = async (prompt, purpose, options = {}) => {
+export const getAiAnswer = async(prompt, purpose, options = {}) => {
     let result = null;
     try {
         result = await makeRequest(purpose, prompt, options);
     } catch (exception) {
         await displayException(exception);
-        return;
+        return null;
     }
     if (result.code !== 200) {
         const alertTitle = await getString('errorwithcode', 'tiny_ai', result.code);
@@ -82,11 +82,11 @@ export const getAiAnswer = async (prompt, purpose, options = {}) => {
     return result.result;
 };
 
-export const errorAlert = async (message, title = null) => {
+export const errorAlert = async(message, title = null) => {
     if (title === null) {
         title = BasedataHandler.getTinyAiString('generalerror');
     }
-    const alertModal = await Alert(title, message);
+    const alertModal = await moodleAlert(title, message);
     alertModal.getRoot().on(ModalEvents.hidden, () => {
         document.querySelectorAll('button[data-action]').forEach(button => {
             $(button).tooltip('hide');

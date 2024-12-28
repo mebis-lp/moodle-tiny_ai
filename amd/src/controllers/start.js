@@ -48,7 +48,7 @@ export default class extends BaseController {
         const startHandler = getStartHandler(this.uniqid);
 
         if (!(await startHandler.isTinyAiDisabled())) {
-            if(window.matchMedia("(pointer: coarse)").matches) {
+            if (window.matchMedia("(pointer: coarse)").matches) {
                 // If we have a touch device, we need to manually trigger the tooltips by touching the cards.
                 document.querySelectorAll('.tiny_ai-card-button.disabled').forEach(button => {
                     button.parentElement.addEventListener(
@@ -109,7 +109,7 @@ export default class extends BaseController {
         }
         if (freePromptButton) {
             if (!freePromptButton.classList.contains('disabled')) {
-                freePromptButton.addEventListener('click', async () => {
+                freePromptButton.addEventListener('click', async() => {
                     this.datamanager.setCurrentTool('freeprompt');
                     this.datamanager.setCurrentPrompt(this.baseElement.querySelector('[data-type="freepromptinput"]').value);
                     const result = await this.generateAiAnswer();

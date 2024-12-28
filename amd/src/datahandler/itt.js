@@ -66,7 +66,7 @@ export default class extends BaseHandler {
      */
     async getTemplateContext(tool) {
         const context = {
-            modal_headline: BasedataHandler.getTinyAiString(tool + '_headline'),
+            modalHeadline: BasedataHandler.getTinyAiString(tool + '_headline'),
             showIcon: true,
             tool: tool,
             textareatype: 'prompt',

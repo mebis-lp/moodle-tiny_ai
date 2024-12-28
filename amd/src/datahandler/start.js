@@ -45,7 +45,7 @@ export default class extends BaseHandler {
     ];
 
     aiConfig = null;
-    strings = {};
+    strings = new Map();
 
     async init() {
         this.aiConfig = await getAiConfig();
@@ -55,22 +55,17 @@ export default class extends BaseHandler {
             return {key, component: 'local_ai_manager'};
         });
 
-        [
-            this.strings.error_limitreached,
-            this.strings.error_pleaseconfirm,
-            this.strings.error_purposenotconfigured,
-            this.strings.error_tenantdisabled,
-            this.strings.error_unavailable_noselection,
-            this.strings.error_unavailable_selection,
-            this.strings.error_userlocked,
-            this.strings.error_usernotconfirmed
-        ] = await getStrings(stringRequest);
-        this.strings.error_editor_notavailable = await getString('error_tiny_ai_notavailable', 'tiny_ai');
+        const fetchedStrings = await getStrings(stringRequest);
+        for (let i = 0; i < this.stringKeys.length; i++) {
+            this.strings.set(this.stringKeys[i], fetchedStrings[i]);
+        }
+        const tinyNotAvailableString = await getString('error_tiny_ai_notavailable', 'tiny_ai');
+        this.strings.set('error_editor_notavailable', tinyNotAvailableString);
         const confirmLink = document.createElement('a');
         confirmLink.href = `${config.wwwroot}/local/ai_manager/confirm_ai_usage.php`;
-        confirmLink.innerText = this.strings.error_pleaseconfirm;
+        confirmLink.innerText = this.strings.get('error_pleaseconfirm');
         confirmLink.target = '_blank';
-        this.strings.combinedusernotconfirmederror = this.strings.error_usernotconfirmed + ' ' + confirmLink.outerHTML;
+        this.strings.set('combinedusernotconfirmederror', this.strings.get('error_usernotconfirmed') + ' ' + confirmLink.outerHTML);
     }
 
     getPurposeConfig(tool) {
@@ -78,18 +73,18 @@ export default class extends BaseHandler {
             throw new Error('Coding error: init function was not called before accessing this.getPurposeConfig!');
         }
         const toolPurpose = constants.toolPurposeMapping[tool];
-        return this.aiConfig.purposes.filter(purpose => purpose['purpose'] === toolPurpose)[0];
+        return this.aiConfig.purposes.filter(purpose => purpose.purpose === toolPurpose)[0];
     }
 
     isTinyAiDisabled() {
         if (!this.aiConfig.tenantenabled) {
-            return this.strings.error_tenantdisabled;
+            return this.strings.get('error_tenantdisabled');
         }
         if (!this.aiConfig.userconfirmed) {
-            return this.strings.combinedusernotconfirmederror;
+            return this.strings.get('combinedusernotconfirmederror');
         }
         if (this.aiConfig.userlocked) {
-            return this.strings.error_userlocked;
+            return this.strings.get('error_userlocked');
         }
         return '';
     }
@@ -100,18 +95,18 @@ export default class extends BaseHandler {
         }
         const purposeInfo = this.getPurposeConfig(tool);
         if (!purposeInfo.isconfigured) {
-            return this.strings.error_purposenotconfigured;
+            return this.strings.get('error_purposenotconfigured');
         }
         if (purposeInfo.limitreached) {
-            return this.strings.error_limitreached;
+            return this.strings.get('error_limitreached');
         }
 
         if (mode === constants.modalModes.selection) {
             return ['audiogen', 'imggen']
-                .includes(tool) ? this.strings.error_unavailable_noselection : '';
+                .includes(tool) ? this.strings.get('error_unavailable_noselection') : '';
         } else if (mode === constants.modalModes.general) {
             return ['summarize', 'translate', 'describe', 'tts']
-                .includes(tool) ? this.strings.error_unavailable_selection : '';
+                .includes(tool) ? this.strings.get('error_unavailable_selection') : '';
         }
         return '';
     }
@@ -246,17 +241,19 @@ export default class extends BaseHandler {
 
         const templateContext = {
             showIcon: true,
-            modal_headline: BasedataHandler.getTinyAiString('mainselection_heading'),
+            modalHeadline: BasedataHandler.getTinyAiString('mainselection_heading'),
             action: 'loadfreeprompt',
-            modal_buttons: toolButtons,
+            modalButtons: toolButtons,
             freeprompthidden: true
         };
+
         Object.assign(templateContext, BasedataHandler.getInputContext());
         if (this.isTinyAiDisabled()) {
             templateContext.input[0].disabled = true;
             templateContext.input[0].hasError = true;
             templateContext.input[0].errorMessage = this.isTinyAiDisabled();
         }
+
         if (this.isToolDisabled('freeprompt', mode)) {
             templateContext.input[0].disabled = true;
         }

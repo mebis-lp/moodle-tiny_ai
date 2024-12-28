@@ -604,28 +604,6 @@
   max-height: 100%;
 }
 
-.tiny_ai-alert {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-  background-color: #FFF8E0;
-  border-radius: 4px;
-  color: #00091E;
-  font-family: "Atkinson Hyperlegible";
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 26px;
-}
-.tiny_ai-alert .tiny_ai-icon {
-  font-size: 24px;
-  margin-right: 10px;
-  color: #00091E;
-}
-.tiny_ai-alert .tiny_ai-alert-text {
-  color: #00091E;
-}
-
 .tiny_ai-icon-button {
   display: flex;
   justify-content: center;

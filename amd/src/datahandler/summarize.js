@@ -40,13 +40,13 @@ export default class extends BaseHandler {
 
     getMaxWordCountOptions() {
         return {
-            0: BasedataHandler.getTinyAiString('nomaxwordcount'),
-            10: '10',
-            20: '20',
-            50: '50',
-            100: '100',
-            200: '200',
-            300: '300'
+            '0': BasedataHandler.getTinyAiString('nomaxwordcount'),
+            '10': '10',
+            '20': '20',
+            '50': '50',
+            '100': '100',
+            '200': '200',
+            '300': '300'
         };
     }
 
@@ -100,7 +100,7 @@ export default class extends BaseHandler {
     getTemplateContext(tool) {
         const
             context = {
-                modal_headline: BasedataHandler.getTinyAiString(tool + '_headline'),
+                modalHeadline: BasedataHandler.getTinyAiString(tool + '_headline'),
                 showIcon: true,
                 tool: tool,
             };
@@ -119,9 +119,9 @@ export default class extends BaseHandler {
 
         const maxWordCountDropdownContext = {};
         maxWordCountDropdownContext.preference = 'maxWordCount';
-        maxWordCountDropdownContext.dropdown_default = Object.values(this.getMaxWordCountOptions())[0];
-        maxWordCountDropdownContext.dropdown_default_value = Object.keys(this.getMaxWordCountOptions())[0];
-        maxWordCountDropdownContext.dropdown_description = 'MAXIMALE WORTANZAHL';
+        maxWordCountDropdownContext.dropdownDefault = Object.values(this.getMaxWordCountOptions())[0];
+        maxWordCountDropdownContext.dropdownDefaultValue = Object.keys(this.getMaxWordCountOptions())[0];
+        maxWordCountDropdownContext.dropdownDescription = 'MAXIMALE WORTANZAHL';
         const maxWordCountDropdownOptions = [];
 
         for (const [key, value] of Object.entries(this.getMaxWordCountOptions())) {
@@ -132,13 +132,13 @@ export default class extends BaseHandler {
         }
 
         delete maxWordCountDropdownOptions[Object.keys(this.getLanguageTypeOptions())[0]];
-        maxWordCountDropdownContext.dropdown_options = maxWordCountDropdownOptions;
+        maxWordCountDropdownContext.dropdownOptions = maxWordCountDropdownOptions;
 
         const languageTypeDropdownContext = {};
         languageTypeDropdownContext.preference = 'languageType';
-        languageTypeDropdownContext.dropdown_default = Object.values(this.getLanguageTypeOptions())[0];
-        languageTypeDropdownContext.dropdown_default_value = Object.keys(this.getLanguageTypeOptions())[0];
-        languageTypeDropdownContext.dropdown_description = 'ART DER SPRACHE';
+        languageTypeDropdownContext.dropdownDefault = Object.values(this.getLanguageTypeOptions())[0];
+        languageTypeDropdownContext.dropdownDefaultValue = Object.keys(this.getLanguageTypeOptions())[0];
+        languageTypeDropdownContext.dropdownDescription = 'ART DER SPRACHE';
         const languageTypeDropdownOptions = [];
         for (const [key, value] of Object.entries(this.getLanguageTypeOptions())) {
             languageTypeDropdownOptions.push({
@@ -147,11 +147,11 @@ export default class extends BaseHandler {
             });
         }
         delete languageTypeDropdownOptions[Object.keys(this.getLanguageTypeOptions)[0]];
-        languageTypeDropdownContext.dropdown_options = languageTypeDropdownOptions;
+        languageTypeDropdownContext.dropdownOptions = languageTypeDropdownOptions;
 
 
         Object.assign(context, {
-            modal_dropdowns: [
+            modalDropdowns: [
                 maxWordCountDropdownContext,
                 languageTypeDropdownContext,
             ]

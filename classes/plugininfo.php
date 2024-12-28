@@ -35,8 +35,17 @@ use local_ai_manager\local\config_manager;
 use local_ai_manager\local\tenant;
 use local_ai_manager\local\userinfo;
 
+/**
+ * Tiny plugin info class.
+ *
+ * @package     tiny_ai
+ * @copyright   2024 ISB Bayern
+ * @author      Philipp Memmel
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class plugininfo extends plugin implements plugin_with_configuration, plugin_with_buttons, plugin_with_menuitems {
 
+    #[\Override]
     public static function is_enabled(
         context $context,
         array $options,
@@ -56,18 +65,21 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
     }
 
 
+    #[\Override]
     public static function get_available_buttons(): array {
         return [
             'tiny_ai/plugin',
         ];
     }
 
+    #[\Override]
     public static function get_available_menuitems(): array {
         return [
             'tiny_ai/plugin',
         ];
     }
 
+    #[\Override]
     public static function get_plugin_configuration_for_context(
         context $context,
         array $options,

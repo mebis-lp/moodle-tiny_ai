@@ -59,15 +59,15 @@ export default class extends BaseHandler {
     getTemplateContext() {
         const translateHandler = getTranslateHandler(this.uniqid);
         const context = {
-            modal_headline: BasedataHandler.getTinyAiString('translate_headline'),
+            modalHeadline: BasedataHandler.getTinyAiString('translate_headline'),
             showIcon: true,
             tool: 'translate',
         };
         const targetLanguageDropdownContext = {};
         targetLanguageDropdownContext.preference = 'targetLanguage';
-        targetLanguageDropdownContext.dropdown_default = translateHandler.targetLanguageOptions[0].value;
-        targetLanguageDropdownContext.dropdown_default_value = translateHandler.targetLanguageOptions[0].key;
-        targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
+        targetLanguageDropdownContext.dropdownDefault = translateHandler.targetLanguageOptions[0].value;
+        targetLanguageDropdownContext.dropdownDefaultValue = translateHandler.targetLanguageOptions[0].key;
+        targetLanguageDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('targetlanguage');
         const targetLanguageDropdownOptions = [];
         translateHandler.targetLanguageOptions.forEach(languageEntry => {
             targetLanguageDropdownOptions.push({
@@ -75,10 +75,10 @@ export default class extends BaseHandler {
                 optionLabel: languageEntry.value,
             });
         });
-        targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+        targetLanguageDropdownContext.dropdownOptions = targetLanguageDropdownOptions;
 
         Object.assign(context, {
-            modal_dropdowns: [
+            modalDropdowns: [
                 targetLanguageDropdownContext,
             ]
         });

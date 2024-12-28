@@ -68,13 +68,13 @@ export default class extends BaseHandler {
         }
         const options = {};
         if (this.targetLanguage) {
-            options['languages'] = [this.targetLanguage];
+            options.languages = [this.targetLanguage];
         }
         if (this.voice) {
-            options['voices'] = [this.voice];
+            options.voices = [this.voice];
         }
         if (this.gender) {
-            options['gender'] = [this.gender];
+            options.gender = [this.gender];
         }
         return options;
     }
@@ -99,7 +99,7 @@ export default class extends BaseHandler {
      */
     async getTemplateContext(tool) {
         const context = {
-            modal_headline: BasedataHandler.getTinyAiString(tool + '_headline'),
+            modalHeadline: BasedataHandler.getTinyAiString(tool + '_headline'),
             showIcon: true,
             tool: tool,
         };
@@ -111,15 +111,15 @@ export default class extends BaseHandler {
             const targetLanguageDropdownContext = {};
             targetLanguageDropdownContext.preference = 'targetLanguage';
             let indexOfLanguageOption = 0;
-            const matchingEntry = targetLanguageOptions.map(entry => entry['key'].startsWith(Config.language));
+            const matchingEntry = targetLanguageOptions.map(entry => entry.key.startsWith(Config.language));
 
             if (matchingEntry.length > 0) {
                 // Language keys are of the form de-DE, so we check, if current user's language starts with same language code.
-                indexOfLanguageOption = targetLanguageOptions.findIndex(value => value['key'].startsWith(Config.language));
+                indexOfLanguageOption = targetLanguageOptions.findIndex(value => value.key.startsWith(Config.language));
             }
-            targetLanguageDropdownContext.dropdown_default = targetLanguageOptions[indexOfLanguageOption]['displayname'];
-            targetLanguageDropdownContext.dropdown_default_value = targetLanguageOptions[indexOfLanguageOption]['key'];
-            targetLanguageDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('targetlanguage');
+            targetLanguageDropdownContext.dropdownDefault = targetLanguageOptions[indexOfLanguageOption].displayname;
+            targetLanguageDropdownContext.dropdownDefaultValue = targetLanguageOptions[indexOfLanguageOption].key;
+            targetLanguageDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('targetlanguage');
             const targetLanguageDropdownOptions = [];
             targetLanguageOptions.forEach(option => {
                 targetLanguageDropdownOptions.push({
@@ -127,7 +127,7 @@ export default class extends BaseHandler {
                     optionLabel: option.displayname,
                 });
             });
-            targetLanguageDropdownContext.dropdown_options = targetLanguageDropdownOptions;
+            targetLanguageDropdownContext.dropdownOptions = targetLanguageDropdownOptions;
             modalDropdowns.push(targetLanguageDropdownContext);
         }
 
@@ -135,9 +135,9 @@ export default class extends BaseHandler {
         if (voiceOptions !== null && Object.keys(voiceOptions).length > 0) {
             const voiceDropdownContext = {};
             voiceDropdownContext.preference = 'voice';
-            voiceDropdownContext.dropdown_default = voiceOptions[0]['displayname'];
-            voiceDropdownContext.dropdown_default_value = voiceOptions[0]['key'];
-            voiceDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('voice');
+            voiceDropdownContext.dropdownDefault = voiceOptions[0].displayname;
+            voiceDropdownContext.dropdownDefaultValue = voiceOptions[0].key;
+            voiceDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('voice');
             const voiceDropdownOptions = [];
             voiceOptions.forEach(option => {
                 voiceDropdownOptions.push({
@@ -145,7 +145,7 @@ export default class extends BaseHandler {
                     optionLabel: option.displayname,
                 });
             });
-            voiceDropdownContext.dropdown_options = voiceDropdownOptions;
+            voiceDropdownContext.dropdownOptions = voiceDropdownOptions;
             modalDropdowns.push(voiceDropdownContext);
         }
 
@@ -153,9 +153,9 @@ export default class extends BaseHandler {
         if (genderOptions !== null && Object.keys(genderOptions).length > 0) {
             const genderDropdownContext = {};
             genderDropdownContext.preference = 'gender';
-            genderDropdownContext.dropdown_default = genderOptions[0]['displayname'];
-            genderDropdownContext.dropdown_default_value = genderOptions[0]['key'];
-            genderDropdownContext.dropdown_description = BasedataHandler.getTinyAiString('gender');
+            genderDropdownContext.dropdownDefault = genderOptions[0].displayname;
+            genderDropdownContext.dropdownDefaultValue = genderOptions[0].key;
+            genderDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('gender');
             const genderDropdownOptions = [];
             genderOptions.forEach(option => {
                 genderDropdownOptions.push({
@@ -163,7 +163,7 @@ export default class extends BaseHandler {
                     optionLabel: option.displayname,
                 });
             });
-            genderDropdownContext.dropdown_options = genderDropdownOptions;
+            genderDropdownContext.dropdownOptions = genderDropdownOptions;
             modalDropdowns.push(genderDropdownContext);
         }
         if (tool === 'audiogen') {
@@ -174,7 +174,7 @@ export default class extends BaseHandler {
         }
 
         Object.assign(context, {
-            modal_dropdowns: modalDropdowns
+            modalDropdowns: modalDropdowns
         });
 
         Object.assign(context, BasedataHandler.getShowPromptButtonContext());
