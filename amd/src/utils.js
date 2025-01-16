@@ -64,8 +64,10 @@ export const init = async(uniqid, editor) => {
 
 export const getAiAnswer = async(prompt, purpose, options = {}) => {
     let result = null;
+    const contextid = options.contextid;
+    delete options.contextid;
     try {
-        result = await makeRequest(purpose, prompt, options);
+        result = await makeRequest(purpose, prompt, 'tiny_ai', contextid, options);
     } catch (exception) {
         await displayException(exception);
         return null;
