@@ -42,7 +42,9 @@ Example context (json):
         <div class="row flex-grow-1">
             <div class="col-12 mb-3 tiny_ai-prompt-wrapper">
                 {{> tiny_ai/components/ai-button}}
-                {{> tiny_ai/components/ai-textarea}}
+                {{#textareas}}
+                    {{> tiny_ai/components/ai-textarea}}
+                {{/textareas}}
             </div>
         </div>
 </div>

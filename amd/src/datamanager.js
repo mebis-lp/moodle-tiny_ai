@@ -43,14 +43,15 @@ export default class DataManager {
 
     getDefaultOptions() {
         const defaultOptions = {
-            component: 'tiny_ai',
-            itemid: getEditorUtils(this.uniqid).getDraftItemId(),
+            component: getEditorUtils(this.uniqid).getComponent(),
             contextid: getEditorUtils(this.uniqid).getContextId()
         };
-        if (['tts', 'audiogen'].includes(this.getCurrentTool())) {
+        if (this.getCurrentTool() === 'tts') {
             defaultOptions.filename = 'audio_' + Math.random().toString(16).slice(2) + '.mp3';
+            defaultOptions.itemid = getEditorUtils(this.uniqid).getDraftItemId();
         } else if (this.getCurrentTool() === 'imggen') {
             defaultOptions.filename = 'img_' + Math.random().toString(16).slice(2) + '.png';
+            defaultOptions.itemid = getEditorUtils(this.uniqid).getDraftItemId();
         }
         return defaultOptions;
     }
@@ -61,6 +62,20 @@ export default class DataManager {
 
     getCurrentTool() {
         return this.currentTool;
+    }
+
+    setCurrentText(text) {
+        this.text = text;
+        const textUpdatedEvent = new CustomEvent('textUpdated', {
+            detail: {
+                newText: text
+            }
+        });
+        this.eventEmitterElement.dispatchEvent(textUpdatedEvent);
+    }
+
+    getCurrentText() {
+        return this.text;
     }
 
     setCurrentPrompt(prompt) {
@@ -75,7 +90,6 @@ export default class DataManager {
 
     getCurrentPrompt() {
         return this.prompt;
-
     }
 
     setCurrentFile(file) {

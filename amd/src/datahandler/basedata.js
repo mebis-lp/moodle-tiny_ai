@@ -15,7 +15,6 @@
 
 import {getStrings} from 'core/str';
 import {prefetchStrings} from 'core/prefetch';
-import {constants} from 'tiny_ai/constants';
 
 /**
  * Tiny AI base data provider.
@@ -29,11 +28,11 @@ import {constants} from 'tiny_ai/constants';
 const stringKeys = [
     'aigenerating',
     'aisuggestion',
-    'audiogen_headline',
-    'audiogen_placeholder',
     'back',
     'backbutton_tooltip',
     'cancel',
+    'copybutton',
+    'copybutton_tooltip',
     'deletebutton_tooltip',
     'describeimg_baseprompt',
     'describeimg_headline',
@@ -41,6 +40,10 @@ const stringKeys = [
     'describe_headline',
     'dismiss',
     'dismisssuggestion',
+    'downloadbutton',
+    'downloadbutton_tooltip',
+    'error_filetypeclipboardnotsupported_title',
+    'error_filetypeclipboardnotsupported_text',
     'error_nofile',
     'error_nofileinclipboard_text',
     'error_nofileinclipboard_title',
@@ -51,7 +54,6 @@ const stringKeys = [
     'generalerror',
     'generate',
     'generatebutton_tooltip',
-    'hideprompt',
     'imagefromeditor',
     'imagetotext_baseprompt',
     'imagetotext_headline',
@@ -75,25 +77,20 @@ const stringKeys = [
     'reworkprompt',
     'simplelanguage',
     'size',
-    'showprompt',
-    'showpromptbutton_tooltip',
+    'prompteditmode',
+    'prompteditmode_tooltip',
     'summarize_baseprompt',
     'summarize_headline',
     'targetlanguage',
     'technicallanguage',
     'texttouse',
-    'toolname_audiogen',
     'toolname_describe',
     'toolname_describeimg',
-    'toolname_describe_extension',
     'toolname_imggen',
     'toolname_imagetotext',
     'toolname_summarize',
-    'toolname_summarize_extension',
     'toolname_translate',
-    'toolname_translate_extension',
     'toolname_tts',
-    'toolname_tts_extension',
     'translate_baseprompt',
     'translate_headline',
     'tts_headline',
@@ -134,6 +131,7 @@ export const getBackAndGenerateButtonContext = () => {
                 iconname: 'arrow-left',
                 iconstyle: 'solid',
                 action: 'back',
+                aiButtonHidden: false,
                 tooltip: getTinyAiString('backbutton_tooltip')
             },
             {
@@ -147,13 +145,14 @@ export const getBackAndGenerateButtonContext = () => {
                 iconname: 'sparkle',
                 customicon: true,
                 action: 'generate',
+                aiButtonHidden: false,
                 tooltip: getTinyAiString('generatebutton_tooltip')
             }
         ]
     };
 };
 
-export const getReplaceButtonsContext = (mode) => {
+export const getReplaceButtonsContext = (selectionExists) => {
 
     return {
         footerIconButtons:
@@ -161,11 +160,13 @@ export const getReplaceButtonsContext = (mode) => {
                 {
                     action: 'delete',
                     iconname: 'trash',
+                    aiButtonHidden: false,
                     tooltip: getTinyAiString('deletebutton_tooltip')
                 },
                 {
                     action: 'regenerate',
                     iconname: 'arrows-rotate',
+                    aiButtonHidden: false,
                     tooltip: getTinyAiString('regeneratebutton_tooltip')
                 }
             ],
@@ -180,23 +181,57 @@ export const getReplaceButtonsContext = (mode) => {
                     secondary: true,
                     iconname: 'text-insert-last',
                     customicon: true,
+                    aiButtonHidden: false,
                     tooltip: getTinyAiString('insertbelow_tooltip')
                 },
                 {
-                    action: mode === constants.modalModes.selection ? 'replace' : 'insertatcaret',
+                    action: selectionExists ? 'replace' : 'insertatcaret',
                     hasText: true,
-                    buttonText: mode === constants.modalModes.selection
+                    buttonText: selectionExists
                         ? getTinyAiString('replaceselection') : getTinyAiString('insertatcaret'),
                     iconLeft: true,
                     iconRight: false,
                     primary: true,
                     iconname: 'check',
                     iconstyle: 'solid',
-                    tooltip: mode === constants.modalModes.selection
+                    aiButtonHidden: false,
+                    tooltip: selectionExists
                         ? getTinyAiString('replaceselection_tooltip') : getTinyAiString('insertatcaret_tooltip')
                 }
             ],
     };
+};
+
+export const getCopyAndDownloadButtonsContext = () => {
+    const buttonsContext = getReplaceButtonsContext(false);
+    delete buttonsContext.footerButtons;
+    buttonsContext.footerButtons = [
+        {
+            action: 'copy',
+            hasText: true,
+            buttonText: getTinyAiString('copybutton'),
+            iconLeft: true,
+            iconRight: false,
+            secondary: true,
+            iconname: 'copy',
+            iconstyle: 'solid',
+            aiButtonHidden: false,
+            tooltip: getTinyAiString('copybutton_tooltip')
+        },
+        {
+            action: 'download',
+            hasText: true,
+            buttonText: getTinyAiString('downloadbutton'),
+            iconLeft: true,
+            iconRight: false,
+            primary: true,
+            iconname: 'file-download',
+            iconstyle: 'solid',
+            aiButtonHidden: false,
+            tooltip: getTinyAiString('downloadbutton_tooltip'),
+        }
+    ];
+    return buttonsContext;
 };
 
 export const getInputContext = () => {
@@ -220,18 +255,28 @@ export const getInputContext = () => {
     };
 };
 
-export const getShowPromptButtonContext = () => {
+export const getShowPromptButtonContext = (showButton = true) => {
     return {
         hasText: true,
-        buttonText: getTinyAiString('showprompt'),
+        buttonText: getTinyAiString('prompteditmode'),
         iconLeft: true,
         iconRight: false,
         tertiary: true,
-        iconname: 'eye',
+        iconname: 'edit',
         iconstyle: 'solid',
         action: 'showprompt',
-        textareatype: 'prompt',
+        aiButtonHidden: !showButton,
+        textareas: [
+            {
+                textareatype: 'text',
+                collapsed: false,
+            },
+            {
+                textareatype: 'prompt',
+                collapsed: true,
+            }
+        ],
         collapsed: true,
-        tooltip: getTinyAiString('showpromptbutton_tooltip')
+        tooltip: getTinyAiString('prompteditmode_tooltip')
     };
 };

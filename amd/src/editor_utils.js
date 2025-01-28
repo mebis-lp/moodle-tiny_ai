@@ -24,37 +24,30 @@
 
 import AiModal from 'tiny_ai/modal';
 import ModalEvents from 'core/modal_events';
-import {getUserId} from 'tiny_ai/options';
-import {constants} from 'tiny_ai/constants';
-import {selectionbarSource, toolbarSource, menubarSource} from 'tiny_ai/common';
-import {getDraftItemId as getDraftItemIdTinyCore, getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
-import {getRenderer, getDatamanager} from 'tiny_ai/utils';
+import {getDraftItemId as getDraftItemIdTinyCore} from 'editor_tiny/options';
+import {getRenderer} from 'tiny_ai/utils';
 
 export default class {
 
     uniqid = null;
+    component = null;
     userId = null;
+    contextId = null;
     modal = null;
-    mode = null;
     editor = null;
 
-    constructor(uniqid, editor) {
+    constructor(uniqid, component, contextId, userId, editor = null) {
         this.uniqid = uniqid;
+        this.component = component;
         this.editor = editor;
-        this.userId = getUserId(editor);
+        this.contextId = contextId;
+        this.userId = userId;
     }
 
     /**
      * Shows and handles the dialog.
-     *
-     * @param {string} source the different sources from where the modal is being created, defined in common module
      */
-    async displayDialogue(source) {
-        if (source === selectionbarSource || this.editor.selection.getContent().length > 0) {
-            this.mode = constants.modalModes.selection;
-        } else if (source === toolbarSource || source === menubarSource) {
-            this.mode = constants.modalModes.general;
-        }
+    async displayDialogue() {
 
         // We initially render the modal without content, because we need to rerender it anyway.
         this.modal = await AiModal.create({
@@ -66,23 +59,6 @@ export default class {
         this.modal.show();
         const renderer = getRenderer(this.uniqid);
 
-        getDatamanager(this.uniqid).setSelectionImg(null);
-        if (this.mode === constants.modalModes.selection) {
-            const selectedEditorContentHtml = this.editor.selection.getContent({format: 'html'});
-            const parser = new DOMParser();
-            const editorDom = parser.parseFromString(selectedEditorContentHtml, 'text/html');
-            const images = editorDom.querySelectorAll('img');
-
-            if (images.length > 0 && images[0].src) {
-                // If there are more than one we just use the first one.
-                const image = images[0];
-                // This should work for both external and data urls.
-                const fetchResult = await fetch(image.src);
-                const data = await fetchResult.blob();
-                getDatamanager(this.uniqid).setSelectionImg(data);
-            }
-            getDatamanager(this.uniqid).setSelection(this.editor.selection.getContent());
-        }
         // Unfortunately, the modal will not execute any JS code in the template, so we need to rerender the modal as a whole again.
         await renderer.renderStart();
         this.modal.getRoot().on(ModalEvents.outsideClick, event => {
@@ -108,23 +84,24 @@ export default class {
     }
 
     getDraftItemId() {
-        return getDraftItemIdTinyCore(this.editor);
+        // By sending draft item id 0 we state that we do not have a draft item area yet.
+        return this.editor !== null ? getDraftItemIdTinyCore(this.editor) : 0;
+    }
+
+    getComponent() {
+        return this.component;
     }
 
     getContextId() {
-        return getContextItemIdTinyCore(this.editor);
-    }
-
-    getMode() {
-        return this.mode;
-    }
-
-    getModal() {
-        return this.modal;
+        return this.contextId;
     }
 
     getUserId() {
         return this.userId;
+    }
+
+    getModal() {
+        return this.modal;
     }
 
 }

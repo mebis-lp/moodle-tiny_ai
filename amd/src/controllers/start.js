@@ -39,7 +39,6 @@ export default class extends BaseController {
         const translateButton = this.baseElement.querySelector('[data-action="loadtranslate"]');
         const describeButton = this.baseElement.querySelector('[data-action="loaddescribe"]');
         const ttsButton = this.baseElement.querySelector('[data-action="loadtts"]');
-        const audiogenButton = this.baseElement.querySelector('[data-action="loadaudiogen"]');
         const imggenButton = this.baseElement.querySelector('[data-action="loadimggen"]');
         const freePromptButton = this.baseElement.querySelector('[data-action="loadfreeprompt"]');
         const describeimgButton = this.baseElement.querySelector('[data-action="loaddescribeimg"]');
@@ -81,12 +80,6 @@ export default class extends BaseController {
             ttsButton.addEventListener('click', async() => {
                 this.datamanager.setCurrentTool('tts');
                 await this.renderer.renderTts();
-            });
-        }
-        if (audiogenButton) {
-            audiogenButton.addEventListener('click', async() => {
-                this.datamanager.setCurrentTool('audiogen');
-                await this.renderer.renderAudiogen();
             });
         }
         if (imggenButton) {
