@@ -89,7 +89,7 @@ export default class extends BaseHandler {
         return '';
     }
 
-    isToolDisabled(tool, mode) {
+    isToolDisabled(tool) {
         if (this.isTinyAiDisabled()) {
             return this.isTinyAiDisabled();
         }
@@ -99,14 +99,6 @@ export default class extends BaseHandler {
         }
         if (purposeInfo.limitreached) {
             return this.strings.get('error_limitreached');
-        }
-
-        if (mode === constants.modalModes.selection) {
-            return ['audiogen', 'imggen']
-                .includes(tool) ? this.strings.get('error_unavailable_noselection') : '';
-        } else if (mode === constants.modalModes.general) {
-            return ['summarize', 'translate', 'describe', 'tts']
-                .includes(tool) ? this.strings.get('error_unavailable_selection') : '';
         }
         return '';
     }
@@ -127,7 +119,6 @@ export default class extends BaseHandler {
     }
 
     async getTemplateContext(editorUtils) {
-        const mode = editorUtils.getMode();
         let toolButtons = [];
         if (this.aiConfig.role === 'role_basic' && this.isTinyAiDisabled()) {
             await errorAlert(await getString('error_tiny_ai_notavailable', 'tiny_ai') + '<br/>'
@@ -139,11 +130,10 @@ export default class extends BaseHandler {
             toolButtons.push({
                 toolname: 'summarize',
                 tool: BasedataHandler.getTinyAiString('toolname_summarize'),
-                description: BasedataHandler.getTinyAiString('toolname_summarize_extension'),
                 customicon: true,
                 iconname: 'shorten',
-                disabled: this.isToolDisabled('summarize', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('summarize', mode)),
+                disabled: this.isToolDisabled('summarize').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('summarize')),
                 action: 'loadsummarize'
             });
         }
@@ -151,11 +141,10 @@ export default class extends BaseHandler {
             toolButtons.push({
                 toolname: 'translate',
                 tool: BasedataHandler.getTinyAiString('toolname_translate'),
-                description: BasedataHandler.getTinyAiString('toolname_translate_extension'),
                 iconname: 'language',
                 iconstyle: 'solid',
-                disabled: this.isToolDisabled('translate', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('translate', mode)),
+                disabled: this.isToolDisabled('translate').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('translate')),
                 action: 'loadtranslate'
             });
         }
@@ -163,11 +152,10 @@ export default class extends BaseHandler {
             toolButtons.push({
                 toolname: 'describe',
                 tool: BasedataHandler.getTinyAiString('toolname_describe'),
-                description: BasedataHandler.getTinyAiString('toolname_describe_extension'),
                 customicon: true,
                 iconname: 'extend',
-                disabled: this.isToolDisabled('describe', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('describe', mode)),
+                disabled: this.isToolDisabled('describe').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('describe')),
                 action: 'loaddescribe'
             });
         }
@@ -175,23 +163,11 @@ export default class extends BaseHandler {
             toolButtons.push({
                 toolname: 'tts',
                 tool: BasedataHandler.getTinyAiString('toolname_tts'),
-                description: BasedataHandler.getTinyAiString('toolname_tts_extension'),
                 iconstyle: 'solid',
                 iconname: 'microphone',
-                disabled: this.isToolDisabled('tts', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('tts', mode)),
+                disabled: this.isToolDisabled('tts').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('tts')),
                 action: 'loadtts'
-            });
-        }
-        if (!this.isToolHidden('audiogen')) {
-            toolButtons.push({
-                toolname: 'audiogen',
-                tool: BasedataHandler.getTinyAiString('toolname_audiogen'),
-                iconstyle: 'solid',
-                iconname: 'microphone',
-                disabled: this.isToolDisabled('audiogen', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('audiogen', mode)),
-                action: 'loadaudiogen'
             });
         }
         if (!this.isToolHidden('imggen')) {
@@ -200,8 +176,8 @@ export default class extends BaseHandler {
                 tool: BasedataHandler.getTinyAiString('toolname_imggen'),
                 iconstyle: 'solid',
                 iconname: 'image',
-                disabled: this.isToolDisabled('imggen', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('imggen', mode)),
+                disabled: this.isToolDisabled('imggen').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('imggen')),
                 action: 'loadimggen'
             });
         }
@@ -211,8 +187,8 @@ export default class extends BaseHandler {
                 tool: BasedataHandler.getTinyAiString('toolname_describeimg'),
                 iconstyle: 'solid',
                 iconname: 'file-image',
-                disabled: this.isToolDisabled('describeimg', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('describeimg', mode)),
+                disabled: this.isToolDisabled('describeimg').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('describeimg')),
                 action: 'loaddescribeimg'
             });
         }
@@ -222,8 +198,8 @@ export default class extends BaseHandler {
                 tool: BasedataHandler.getTinyAiString('toolname_imagetotext'),
                 iconstyle: 'solid',
                 iconname: 'signature',
-                disabled: this.isToolDisabled('imagetotext', mode).length > 0,
-                tooltip: stripHtmlTags(this.isToolDisabled('imagetotext', mode)),
+                disabled: this.isToolDisabled('imagetotext').length > 0,
+                tooltip: stripHtmlTags(this.isToolDisabled('imagetotext')),
                 action: 'loadimagetotext'
             });
         }
@@ -254,7 +230,7 @@ export default class extends BaseHandler {
             templateContext.input[0].errorMessage = this.isTinyAiDisabled();
         }
 
-        if (this.isToolDisabled('freeprompt', mode)) {
+        if (this.isToolDisabled('freeprompt')) {
             templateContext.input[0].disabled = true;
         }
         return templateContext;

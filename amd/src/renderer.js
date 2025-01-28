@@ -75,15 +75,9 @@ export default class {
     }
 
     async renderTts() {
-        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext('tts');
+        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext();
         await this.renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
     }
-
-    async renderAudiogen() {
-        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext('audiogen');
-        await this.renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
-    }
-
 
     async renderImggen() {
         const templateContext = await getImggenHandler(this.uniqid).getTemplateContext();

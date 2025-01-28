@@ -27,10 +27,7 @@ import {
     component,
     toolbarButtonName,
     selectionbarButtonName,
-    icon,
-    selectionbarSource,
-    toolbarSource,
-    menubarSource
+    icon
 } from 'tiny_ai/common';
 import * as Utils from 'tiny_ai/utils';
 import {prefetchStrings} from 'core/prefetch';
@@ -68,8 +65,9 @@ export const getSetup = async() => {
         editor.ui.registry.addButton(toolbarButtonName, {
             icon,
             tooltip: toolbarButtonTitle,
-            onAction: () => {
-                Utils.getEditorUtils(uniqid).displayDialogue(toolbarSource);
+            onAction: async() => {
+                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+                Utils.getEditorUtils(uniqid).displayDialogue();
             }
         });
 
@@ -77,17 +75,36 @@ export const getSetup = async() => {
         editor.ui.registry.addMenuItem(toolbarButtonName, {
             icon,
             text: toolbarButtonTitle,
-            onAction: () => {
-                Utils.getEditorUtils(uniqid).displayDialogue(menubarSource);
+            onAction: async() => {
+                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+                Utils.getEditorUtils(uniqid).displayDialogue();
             }
         });
 
         editor.ui.registry.addButton(selectionbarButtonName, {
             icon,
             tooltip: selectionbarButtonTitle,
-            onAction: () => {
-                Utils.getEditorUtils(uniqid).displayDialogue(selectionbarSource);
+            onAction: async() => {
+                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+                Utils.getEditorUtils(uniqid).displayDialogue();
             }
         });
     };
+};
+
+export const injectSelectedElements = async(editor, datamanager) => {
+    const selectedEditorContentHtml = editor.selection.getContent({format: 'html'});
+    const parser = new DOMParser();
+    const editorDom = parser.parseFromString(selectedEditorContentHtml, 'text/html');
+    const images = editorDom.querySelectorAll('img');
+
+    if (images.length > 0 && images[0].src) {
+        // If there are more than one we just use the first one.
+        const image = images[0];
+        // This should work for both external and data urls.
+        const fetchResult = await fetch(image.src);
+        const data = await fetchResult.blob();
+        datamanager.setSelectionImg(data);
+    }
+    datamanager.setSelection(editor.selection.getContent());
 };

@@ -47,7 +47,7 @@ export default class DataManager {
             itemid: getEditorUtils(this.uniqid).getDraftItemId(),
             contextid: getEditorUtils(this.uniqid).getContextId()
         };
-        if (['tts', 'audiogen'].includes(this.getCurrentTool())) {
+        if (this.getCurrentTool() === 'tts') {
             defaultOptions.filename = 'audio_' + Math.random().toString(16).slice(2) + '.mp3';
         } else if (this.getCurrentTool() === 'imggen') {
             defaultOptions.filename = 'img_' + Math.random().toString(16).slice(2) + '.png';
@@ -63,6 +63,20 @@ export default class DataManager {
         return this.currentTool;
     }
 
+    setCurrentText(text) {
+        this.text = text;
+        const textUpdatedEvent = new CustomEvent('textUpdated', {
+            detail: {
+                newText: text
+            }
+        });
+        this.eventEmitterElement.dispatchEvent(textUpdatedEvent);
+    }
+
+    getCurrentText() {
+        return this.text;
+    }
+
     setCurrentPrompt(prompt) {
         this.prompt = prompt;
         const promptUpdatedEvent = new CustomEvent('promptUpdated', {
@@ -75,7 +89,6 @@ export default class DataManager {
 
     getCurrentPrompt() {
         return this.prompt;
-
     }
 
     setCurrentFile(file) {

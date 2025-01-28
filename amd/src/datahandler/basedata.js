@@ -29,8 +29,6 @@ import {constants} from 'tiny_ai/constants';
 const stringKeys = [
     'aigenerating',
     'aisuggestion',
-    'audiogen_headline',
-    'audiogen_placeholder',
     'back',
     'backbutton_tooltip',
     'cancel',
@@ -82,18 +80,13 @@ const stringKeys = [
     'targetlanguage',
     'technicallanguage',
     'texttouse',
-    'toolname_audiogen',
     'toolname_describe',
     'toolname_describeimg',
-    'toolname_describe_extension',
     'toolname_imggen',
     'toolname_imagetotext',
     'toolname_summarize',
-    'toolname_summarize_extension',
     'toolname_translate',
-    'toolname_translate_extension',
     'toolname_tts',
-    'toolname_tts_extension',
     'translate_baseprompt',
     'translate_headline',
     'tts_headline',
@@ -227,10 +220,19 @@ export const getShowPromptButtonContext = () => {
         iconLeft: true,
         iconRight: false,
         tertiary: true,
-        iconname: 'eye',
+        iconname: 'edit',
         iconstyle: 'solid',
         action: 'showprompt',
-        textareatype: 'prompt',
+        textareas: [
+                {
+                    textareatype: 'text',
+                    collapsed: false,
+                },
+                {
+                    textareatype: 'prompt',
+                    collapsed: true,
+                }
+            ],
         collapsed: true,
         tooltip: getTinyAiString('showpromptbutton_tooltip')
     };
