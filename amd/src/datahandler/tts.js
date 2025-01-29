@@ -175,7 +175,7 @@ export default class extends BaseHandler {
             modalDropdowns: modalDropdowns
         });
 
-        Object.assign(context, BasedataHandler.getShowPromptButtonContext());
+        Object.assign(context, BasedataHandler.getShowPromptButtonContext(false));
 
         /*
         TODO CHECK IF STILL NEEDED

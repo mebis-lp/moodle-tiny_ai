@@ -107,8 +107,13 @@ export default class extends BaseController {
                         this.datamanager.setCurrentOptions(ttsHandler.getOptions());
                     });
                 }
-                this.datamanager.setCurrentPrompt(ttsHandler.getPrompt(
-                    this.datamanager.getSelectionText()));
+
+                this.datamanager.getEventEmitterElement().addEventListener('textUpdated', async() => {
+                    const currentPromptTts = await ttsHandler.getPrompt(this.datamanager.getCurrentText());
+                    this.datamanager.setCurrentPrompt(currentPromptTts);
+                });
+
+                this.datamanager.setCurrentText(ttsHandler.getPrompt(this.datamanager.getSelectionText()));
                 this.datamanager.setCurrentOptions(ttsHandler.getOptions());
                 break;
             }
@@ -122,7 +127,7 @@ export default class extends BaseController {
                         this.datamanager.setCurrentOptions(imggenHandler.getOptions());
                     });
                 }
-                this.datamanager.setCurrentPrompt('');
+                this.datamanager.setCurrentPrompt(this.datamanager.getSelectionText());
                 this.datamanager.setCurrentOptions(imggenHandler.getOptions());
                 break;
             }

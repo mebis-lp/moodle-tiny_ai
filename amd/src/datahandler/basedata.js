@@ -127,6 +127,7 @@ export const getBackAndGenerateButtonContext = () => {
                 iconname: 'arrow-left',
                 iconstyle: 'solid',
                 action: 'back',
+                aiButtonHidden: false,
                 tooltip: getTinyAiString('backbutton_tooltip')
             },
             {
@@ -140,13 +141,14 @@ export const getBackAndGenerateButtonContext = () => {
                 iconname: 'sparkle',
                 customicon: true,
                 action: 'generate',
+                aiButtonHidden: false,
                 tooltip: getTinyAiString('generatebutton_tooltip')
             }
         ]
     };
 };
 
-export const getReplaceButtonsContext = (mode) => {
+export const getReplaceButtonsContext = (selectionExists) => {
 
     return {
         footerIconButtons:
@@ -154,11 +156,13 @@ export const getReplaceButtonsContext = (mode) => {
                 {
                     action: 'delete',
                     iconname: 'trash',
+                    aiButtonHidden: false,
                     tooltip: getTinyAiString('deletebutton_tooltip')
                 },
                 {
                     action: 'regenerate',
                     iconname: 'arrows-rotate',
+                    aiButtonHidden: false,
                     tooltip: getTinyAiString('regeneratebutton_tooltip')
                 }
             ],
@@ -173,19 +177,21 @@ export const getReplaceButtonsContext = (mode) => {
                     secondary: true,
                     iconname: 'text-insert-last',
                     customicon: true,
+                    aiButtonHidden: false,
                     tooltip: getTinyAiString('insertbelow_tooltip')
                 },
                 {
-                    action: mode === constants.modalModes.selection ? 'replace' : 'insertatcaret',
+                    action: selectionExists ? 'replace' : 'insertatcaret',
                     hasText: true,
-                    buttonText: mode === constants.modalModes.selection
+                    buttonText: selectionExists
                         ? getTinyAiString('replaceselection') : getTinyAiString('insertatcaret'),
                     iconLeft: true,
                     iconRight: false,
                     primary: true,
                     iconname: 'check',
                     iconstyle: 'solid',
-                    tooltip: mode === constants.modalModes.selection
+                    aiButtonHidden: false,
+                    tooltip: selectionExists
                         ? getTinyAiString('replaceselection_tooltip') : getTinyAiString('insertatcaret_tooltip')
                 }
             ],
@@ -213,7 +219,7 @@ export const getInputContext = () => {
     };
 };
 
-export const getShowPromptButtonContext = () => {
+export const getShowPromptButtonContext = (showButton = true) => {
     return {
         hasText: true,
         buttonText: getTinyAiString('showprompt'),
@@ -223,16 +229,17 @@ export const getShowPromptButtonContext = () => {
         iconname: 'edit',
         iconstyle: 'solid',
         action: 'showprompt',
+        aiButtonHidden: !showButton,
         textareas: [
-                {
-                    textareatype: 'text',
-                    collapsed: false,
-                },
-                {
-                    textareatype: 'prompt',
-                    collapsed: true,
-                }
-            ],
+            {
+                textareatype: 'text',
+                collapsed: false,
+            },
+            {
+                textareatype: 'prompt',
+                collapsed: true,
+            }
+        ],
         collapsed: true,
         tooltip: getTinyAiString('showpromptbutton_tooltip')
     };

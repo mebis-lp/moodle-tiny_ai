@@ -108,7 +108,7 @@ export default class {
         //  consider it beautiful
         templateContext.resultText = this.renderAiResultForEditor();
 
-        Object.assign(templateContext, BasedataHandler.getReplaceButtonsContext(this.editorUtils.getMode()));
+        Object.assign(templateContext, BasedataHandler.getReplaceButtonsContext(this.datamanager.getSelectionText().length > 0));
         await this.renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
     }
 

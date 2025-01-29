@@ -37,14 +37,16 @@ export default class {
         const promptTextarea = this.baseElement.querySelector('textarea[data-type="prompt"]');
 
         const datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
-        textTextarea.innerHTML = datamanager.getCurrentText();
         promptTextarea.innerHTML = datamanager.getCurrentPrompt();
         datamanager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
             promptTextarea.value = event.detail.newPrompt;
         });
-        textTextarea.addEventListener('input', () => {
-            datamanager.setCurrentText(textTextarea.value);
-        });
+        if (textTextarea) {
+            textTextarea.innerHTML = datamanager.getCurrentText();
+            textTextarea.addEventListener('input', () => {
+                datamanager.setCurrentText(textTextarea.value);
+            });
+        }
         promptTextarea.addEventListener('input', () => {
             datamanager.setCurrentPrompt(promptTextarea.value);
         });
@@ -69,7 +71,9 @@ export default class {
                     buttonIcon.classList.add('fa-edit');
                 }
                 promptTextarea.classList.toggle('d-none');
-                textTextarea.classList.toggle('d-none');
+                if (textTextarea) {
+                    textTextarea.classList.toggle('d-none');
+                }
             });
         }
     }
