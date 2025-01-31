@@ -54,8 +54,8 @@ export default class {
         if (showPromptButton) {
             const [showPromptString, hidePromptString] = await getStrings(
                 [
-                    {key: 'showprompt', component: 'tiny_ai'},
-                    {key: 'hideprompt', component: 'tiny_ai'}
+                    {key: 'prompteditmode', component: 'tiny_ai'},
+                    {key: 'prompteditmodedisable', component: 'tiny_ai'}
                 ]
             );
             showPromptButton.addEventListener('click', () => {

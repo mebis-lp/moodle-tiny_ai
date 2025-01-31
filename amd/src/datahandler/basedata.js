@@ -15,7 +15,6 @@
 
 import {getStrings} from 'core/str';
 import {prefetchStrings} from 'core/prefetch';
-import {constants} from 'tiny_ai/constants';
 
 /**
  * Tiny AI base data provider.
@@ -49,7 +48,6 @@ const stringKeys = [
     'generalerror',
     'generate',
     'generatebutton_tooltip',
-    'hideprompt',
     'imagefromeditor',
     'imagetotext_baseprompt',
     'imagetotext_headline',
@@ -73,8 +71,8 @@ const stringKeys = [
     'reworkprompt',
     'simplelanguage',
     'size',
-    'showprompt',
-    'showpromptbutton_tooltip',
+    'prompteditmode',
+    'prompteditmode_tooltip',
     'summarize_baseprompt',
     'summarize_headline',
     'targetlanguage',
@@ -222,7 +220,7 @@ export const getInputContext = () => {
 export const getShowPromptButtonContext = (showButton = true) => {
     return {
         hasText: true,
-        buttonText: getTinyAiString('showprompt'),
+        buttonText: getTinyAiString('prompteditmode'),
         iconLeft: true,
         iconRight: false,
         tertiary: true,
@@ -241,6 +239,6 @@ export const getShowPromptButtonContext = (showButton = true) => {
             }
         ],
         collapsed: true,
-        tooltip: getTinyAiString('showpromptbutton_tooltip')
+        tooltip: getTinyAiString('prompteditmode_tooltip')
     };
 };
