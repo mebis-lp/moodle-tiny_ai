@@ -75,15 +75,9 @@ export default class {
     }
 
     async renderTts() {
-        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext('tts');
+        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext();
         await this.renderModalContent('moodle-modal-body-preferences', 'moodle-modal-footer-generate', templateContext);
     }
-
-    async renderAudiogen() {
-        const templateContext = await getTtsHandler(this.uniqid).getTemplateContext('audiogen');
-        await this.renderModalContent('moodle-modal-body-mediageneration', 'moodle-modal-footer-generate', templateContext);
-    }
-
 
     async renderImggen() {
         const templateContext = await getImggenHandler(this.uniqid).getTemplateContext();
@@ -114,7 +108,7 @@ export default class {
         //  consider it beautiful
         templateContext.resultText = this.renderAiResultForEditor();
 
-        Object.assign(templateContext, BasedataHandler.getReplaceButtonsContext(this.editorUtils.getMode()));
+        Object.assign(templateContext, BasedataHandler.getReplaceButtonsContext(this.datamanager.getSelectionText().length > 0));
         await this.renderModalContent('moodle-modal-body-suggestion', 'moodle-modal-footer-replace', templateContext);
     }
 

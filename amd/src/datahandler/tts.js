@@ -79,10 +79,8 @@ export default class extends BaseHandler {
         return options;
     }
 
-    getPrompt(currentTool, selectionText) {
-        // This handler handles both 'tts' and 'audiogen' tool types which basically are pretty much the same,
-        // but not exactly.
-        return currentTool === 'tts' ? selectionText : '';
+    getPrompt(currentText) {
+        return currentText;
     }
 
     async loadTtsOptions() {
@@ -94,14 +92,11 @@ export default class extends BaseHandler {
 
     /**
      * Get the rendering context.
-     *
-     * @param {string} tool the tool to generate the context for, can be 'tts' and 'audiogen'
      */
-    async getTemplateContext(tool) {
+    async getTemplateContext() {
         const context = {
-            modalHeadline: BasedataHandler.getTinyAiString(tool + '_headline'),
+            modalHeadline: BasedataHandler.getTinyAiString('tts_headline'),
             showIcon: true,
-            tool: tool,
         };
 
         const modalDropdowns = [];
@@ -166,24 +161,30 @@ export default class extends BaseHandler {
             genderDropdownContext.dropdownOptions = genderDropdownOptions;
             modalDropdowns.push(genderDropdownContext);
         }
+        /*
+        TODO CHECK IF STILL NEEDED
         if (tool === 'audiogen') {
             // In the audiogen view the dropdowns are at the bottom, so we need to make the dropdowns dropup instead of dropdown.
             modalDropdowns.forEach(dropdownContext => {
                 dropdownContext.dropup = true;
             });
         }
+        */
 
         Object.assign(context, {
             modalDropdowns: modalDropdowns
         });
 
-        Object.assign(context, BasedataHandler.getShowPromptButtonContext());
+        Object.assign(context, BasedataHandler.getShowPromptButtonContext(false));
 
+        /*
+        TODO CHECK IF STILL NEEDED
         if (tool === 'audiogen') {
             // Overwrite some prompt textarea specific attributes.
             context.collapsed = false;
             context.placeholder = BasedataHandler.getTinyAiString('audiogen_placeholder');
         }
+        */
         Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
         return context;
     }
