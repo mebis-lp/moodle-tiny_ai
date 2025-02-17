@@ -104,24 +104,14 @@ export default class extends BaseHandler {
                 showIcon: true,
                 tool: tool,
             };
-        Object
-            .assign(context, BasedataHandler
-
-                .getShowPromptButtonContext()
-            )
-        ;
-        Object
-            .assign(context, BasedataHandler
-
-                .getBackAndGenerateButtonContext()
-            )
-        ;
+        Object.assign(context, BasedataHandler.getShowPromptButtonContext());
+        Object.assign(context, BasedataHandler.getBackAndGenerateButtonContext());
 
         const maxWordCountDropdownContext = {};
         maxWordCountDropdownContext.preference = 'maxWordCount';
         maxWordCountDropdownContext.dropdownDefault = Object.values(this.getMaxWordCountOptions())[0];
         maxWordCountDropdownContext.dropdownDefaultValue = Object.keys(this.getMaxWordCountOptions())[0];
-        maxWordCountDropdownContext.dropdownDescription = 'MAXIMALE WORTANZAHL';
+        maxWordCountDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('maxwordcount');
         const maxWordCountDropdownOptions = [];
 
         for (const [key, value] of Object.entries(this.getMaxWordCountOptions())) {
@@ -138,7 +128,7 @@ export default class extends BaseHandler {
         languageTypeDropdownContext.preference = 'languageType';
         languageTypeDropdownContext.dropdownDefault = Object.values(this.getLanguageTypeOptions())[0];
         languageTypeDropdownContext.dropdownDefaultValue = Object.keys(this.getLanguageTypeOptions())[0];
-        languageTypeDropdownContext.dropdownDescription = 'ART DER SPRACHE';
+        languageTypeDropdownContext.dropdownDescription = BasedataHandler.getTinyAiString('languagetype');
         const languageTypeDropdownOptions = [];
         for (const [key, value] of Object.entries(this.getLanguageTypeOptions())) {
             languageTypeDropdownOptions.push({
