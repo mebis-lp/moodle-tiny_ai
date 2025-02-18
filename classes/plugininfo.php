@@ -47,10 +47,10 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
 
     #[\Override]
     public static function is_enabled(
-        context $context,
-        array $options,
-        array $fpoptions,
-        ?\editor_tiny\editor $editor = null
+            context $context,
+            array $options,
+            array $fpoptions,
+            ?\editor_tiny\editor $editor = null
     ): bool {
         global $USER;
         $tenant = \core\di::get(tenant::class);
@@ -58,37 +58,43 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
         if (!has_capability('tiny/ai:view', $context) || !$tenant->is_tenant_allowed()) {
             return false;
         }
+        $aiconfig = ai_manager_utils::get_ai_config($USER);
         if (!$configmanager->is_tenant_enabled()) {
-            return ai_manager_utils::get_ai_config($USER)['role'] !== userinfo::get_role_as_string(userinfo::ROLE_BASIC);
+            return $aiconfig['role'] !== userinfo::get_role_as_string(userinfo::ROLE_BASIC);
+        }
+        $coursecontext = \local_ai_manager\ai_manager_utils::find_closest_parent_course_context($context);
+        if (is_null($coursecontext) && intval($aiconfig['scope']) === userinfo::SCOPE_COURSES_ONLY) {
+            if ($aiconfig['role'] === userinfo::get_role_as_string(userinfo::ROLE_BASIC)) {
+                return false;
+            }
         }
         return true;
     }
 
-
     #[\Override]
     public static function get_available_buttons(): array {
         return [
-            'tiny_ai/plugin',
+                'tiny_ai/plugin',
         ];
     }
 
     #[\Override]
     public static function get_available_menuitems(): array {
         return [
-            'tiny_ai/plugin',
+                'tiny_ai/plugin',
         ];
     }
 
     #[\Override]
     public static function get_plugin_configuration_for_context(
-        context $context,
-        array $options,
-        array $fpoptions,
-        ?\editor_tiny\editor $editor = null
+            context $context,
+            array $options,
+            array $fpoptions,
+            ?\editor_tiny\editor $editor = null
     ): array {
         global $USER;
         return [
-            'userId' => intval($USER->id),
+                'userId' => intval($USER->id),
         ];
     }
 }
