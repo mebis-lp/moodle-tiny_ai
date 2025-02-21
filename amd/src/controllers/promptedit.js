@@ -33,22 +33,29 @@ export default class {
 
     async init() {
         const showPromptButton = this.baseElement.querySelector('[data-action="showprompt"]');
-        const textarea = this.baseElement.querySelector('textarea[data-type="prompt"]');
+        const textTextarea = this.baseElement.querySelector('textarea[data-type="text"]');
+        const promptTextarea = this.baseElement.querySelector('textarea[data-type="prompt"]');
 
         const datamanager = getDatamanager(getCurrentModalUniqId(this.baseElement));
-        textarea.innerHTML = datamanager.getCurrentPrompt();
+        promptTextarea.innerHTML = datamanager.getCurrentPrompt();
         datamanager.getEventEmitterElement().addEventListener('promptUpdated', (event) => {
-            textarea.value = event.detail.newPrompt;
+            promptTextarea.value = event.detail.newPrompt;
         });
-        textarea.addEventListener('input', () => {
-            datamanager.setCurrentPrompt(textarea.value);
+        if (textTextarea) {
+            textTextarea.innerHTML = datamanager.getCurrentText();
+            textTextarea.addEventListener('input', () => {
+                datamanager.setCurrentText(textTextarea.value);
+            });
+        }
+        promptTextarea.addEventListener('input', () => {
+            datamanager.setCurrentPrompt(promptTextarea.value);
         });
 
         if (showPromptButton) {
             const [showPromptString, hidePromptString] = await getStrings(
                 [
-                    {key: 'showprompt', component: 'tiny_ai'},
-                    {key: 'hideprompt', component: 'tiny_ai'}
+                    {key: 'prompteditmode', component: 'tiny_ai'},
+                    {key: 'prompteditmodedisable', component: 'tiny_ai'}
                 ]
             );
             showPromptButton.addEventListener('click', () => {
@@ -56,14 +63,17 @@ export default class {
                 showPromptButton.querySelector('[data-text]').innerText =
                     currentText === showPromptString ? hidePromptString : showPromptString;
                 const buttonIcon = showPromptButton.querySelector('i');
-                if (buttonIcon.classList.contains('fa-eye')) {
-                    buttonIcon.classList.remove('fa-eye');
-                    buttonIcon.classList.add('fa-eye-slash');
+                if (buttonIcon.classList.contains('fa-edit')) {
+                    buttonIcon.classList.remove('fa-edit');
+                    buttonIcon.classList.add('fa-arrow-left');
                 } else {
-                    buttonIcon.classList.remove('fa-eye-slash');
-                    buttonIcon.classList.add('fa-eye');
+                    buttonIcon.classList.remove('fa-arrow-left');
+                    buttonIcon.classList.add('fa-edit');
                 }
-                textarea.classList.toggle('d-none');
+                promptTextarea.classList.toggle('d-none');
+                if (textTextarea) {
+                    textTextarea.classList.toggle('d-none');
+                }
             });
         }
     }

@@ -23,6 +23,8 @@
  */
 
 import BaseController from 'tiny_ai/controllers/base';
+import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
+import {copyTextToClipboard, copyFileToClipboard, downloadFile, downloadTextAsFile, errorAlert} from 'tiny_ai/utils';
 import {renderWarningBox} from 'local_ai_manager/warningbox';
 
 export default class extends BaseController {
@@ -33,6 +35,8 @@ export default class extends BaseController {
         const insertBelowButton = this.footer.querySelector('[data-action="insertbelow"]');
         const replaceButton = this.footer.querySelector('[data-action="replace"]');
         const insertAtCaretButton = this.footer.querySelector('[data-action="insertatcaret"]');
+        const copyButton = this.footer.querySelector('[data-action="copy"]');
+        const downloadButton = this.footer.querySelector('[data-action="download"]');
 
         if (trashButton) {
             trashButton.addEventListener('click', async() => {
@@ -64,6 +68,31 @@ export default class extends BaseController {
             insertAtCaretButton.addEventListener('click', () => {
                 this.editorUtils.replaceSelection(this.renderer.renderAiResultForEditor());
                 this.editorUtils.getModal().destroy();
+            });
+        }
+
+        if (copyButton) {
+            copyButton.addEventListener('click', async() => {
+                if (this.datamanager.getCurrentTool() === 'tts' || this.datamanager.getCurrentTool() === 'imggen') {
+                    const fileSupported = await copyFileToClipboard(this.datamanager.getCurrentAiResult());
+                    if (!fileSupported) {
+                        await errorAlert(BasedataHandler.getTinyAiString('error_filetypeclipboardnotsupported_text'),
+                            BasedataHandler.getTinyAiString('error_filetypeclipboardnotsupported_title'));
+                        return;
+                    }
+                } else {
+                    copyTextToClipboard(this.datamanager.getCurrentAiResult());
+                }
+            });
+        }
+
+        if (downloadButton) {
+            downloadButton.addEventListener('click', async() => {
+                if (this.datamanager.getCurrentTool() === 'tts' || this.datamanager.getCurrentTool() === 'imggen') {
+                    downloadFile(this.datamanager.getCurrentAiResult());
+                } else {
+                    downloadTextAsFile(this.datamanager.getCurrentAiResult());
+                }
             });
         }
 

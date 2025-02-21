@@ -25,8 +25,8 @@
 
 export const constants = {
     modalModes: {
-        selection: 'selection',
-        general: 'general'
+        editor: 'editor',
+        standalone: 'standalone'
     },
     toolPurposeMapping: {
         audiogen: 'tts',

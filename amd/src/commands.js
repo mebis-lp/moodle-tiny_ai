@@ -27,14 +27,16 @@ import {
     component,
     toolbarButtonName,
     selectionbarButtonName,
-    icon,
-    selectionbarSource,
-    toolbarSource,
-    menubarSource
+    icon
 } from 'tiny_ai/common';
-import * as Utils from 'tiny_ai/utils';
 import {prefetchStrings} from 'core/prefetch';
 import {getString} from 'core/str';
+import {getContextId as getContextItemIdTinyCore} from 'editor_tiny/options';
+import {constants} from 'tiny_ai/constants';
+import {getUserId} from 'tiny_ai/options';
+import EditorUtils from 'tiny_ai/editor_utils';
+import * as Utils from 'tiny_ai/utils';
+
 
 /**
  * Get the setup function for the buttons.
@@ -56,20 +58,24 @@ export const getSetup = async() => {
         getString('selectionbarbuttontitle', 'tiny_ai')
     ]);
 
+    const uniqid = Math.random().toString(16).slice(2);
+    await Utils.init(uniqid, constants.modalModes.editor);
 
     return (editor) => {
         // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
-        const uniqid = Math.random().toString(16).slice(2);
-        Utils.init(uniqid, editor);
+        const contextId = getContextItemIdTinyCore(editor);
+        const editorUtils = new EditorUtils(uniqid, 'tiny_ai', contextId, getUserId(editor), editor);
+        Utils.setEditorUtils(uniqid, editorUtils);
 
         // Register the AI Toolbar Button.
         editor.ui.registry.addButton(toolbarButtonName, {
             icon,
             tooltip: toolbarButtonTitle,
-            onAction: () => {
-                Utils.getEditorUtils(uniqid).displayDialogue(toolbarSource);
+            onAction: async() => {
+                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+                Utils.getEditorUtils(uniqid).displayDialogue();
             }
         });
 
@@ -77,17 +83,36 @@ export const getSetup = async() => {
         editor.ui.registry.addMenuItem(toolbarButtonName, {
             icon,
             text: toolbarButtonTitle,
-            onAction: () => {
-                Utils.getEditorUtils(uniqid).displayDialogue(menubarSource);
+            onAction: async() => {
+                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+                Utils.getEditorUtils(uniqid).displayDialogue();
             }
         });
 
         editor.ui.registry.addButton(selectionbarButtonName, {
             icon,
             tooltip: selectionbarButtonTitle,
-            onAction: () => {
-                Utils.getEditorUtils(uniqid).displayDialogue(selectionbarSource);
+            onAction: async() => {
+                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+                Utils.getEditorUtils(uniqid).displayDialogue();
             }
         });
     };
+};
+
+export const injectSelectedElements = async(editor, datamanager) => {
+    const selectedEditorContentHtml = editor.selection.getContent({format: 'html'});
+    const parser = new DOMParser();
+    const editorDom = parser.parseFromString(selectedEditorContentHtml, 'text/html');
+    const images = editorDom.querySelectorAll('img');
+
+    if (images.length > 0 && images[0].src) {
+        // If there are more than one we just use the first one.
+        const image = images[0];
+        // This should work for both external and data urls.
+        const fetchResult = await fetch(image.src);
+        const data = await fetchResult.blob();
+        datamanager.setSelectionImg(data);
+    }
+    datamanager.setSelection(editor.selection.getContent());
 };

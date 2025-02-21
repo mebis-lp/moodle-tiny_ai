@@ -38,16 +38,14 @@ import {makeRequest} from 'local_ai_manager/make_request';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import $ from 'jquery';
 import Log from 'core/log';
-import EditorUtils from 'tiny_ai/editor_utils';
 
 const objectStore = {};
 
-export const init = async(uniqid, editor) => {
+export const init = async(uniqid, mode) => {
     if (!objectStore.hasOwnProperty(uniqid)) {
         objectStore[uniqid] = {};
         // The order in which these objects are being created is actually pretty important, because Renderer
         // object depends on DataManager object.
-        objectStore[uniqid].editorUtils = new EditorUtils(uniqid, editor);
         objectStore[uniqid].datamanager = new DataManager(uniqid);
         await BasedataHandler.init();
         objectStore[uniqid].imggenhandler = new ImggenHandler(uniqid);
@@ -58,14 +56,19 @@ export const init = async(uniqid, editor) => {
         objectStore[uniqid].translatehandler = new TranslateHandler(uniqid);
         objectStore[uniqid].ttshandler = new TtsHandler(uniqid);
         objectStore[uniqid].itthandler = new IttHandler(uniqid);
-        objectStore[uniqid].renderer = new Renderer(uniqid);
+        objectStore[uniqid].renderer = new Renderer(uniqid, mode);
     }
 };
 
 export const getAiAnswer = async(prompt, purpose, options = {}) => {
     let result = null;
+    const contextid = options.contextid;
+    delete options.contextid;
+    const component = options.component;
+    delete options.component;
+
     try {
-        result = await makeRequest(purpose, prompt, options);
+        result = await makeRequest(purpose, prompt, component, contextid, options);
     } catch (exception) {
         await displayException(exception);
         return null;
@@ -99,6 +102,10 @@ export const stripHtmlTags = (textWithTags) => {
     const span = document.createElement('span');
     span.innerHTML = textWithTags;
     return span.textContent;
+};
+
+export const setEditorUtils = (uniqid, editorUtils) => {
+    objectStore[uniqid].editorUtils = editorUtils;
 };
 
 export const getEditorUtils = (uniqid) => {
@@ -143,4 +150,45 @@ export const getIttHandler = (uniqid) => {
 
 export const getCurrentModalUniqId = (element) => {
     return element.closest('[data-tiny_instance_uniqid]').dataset.tiny_instance_uniqid;
+};
+
+export const copyTextToClipboard = (text) => {
+    const clipboardItemData = {
+        'text/plain': text
+    };
+    navigator.clipboard.write([new ClipboardItem(clipboardItemData)]);
+};
+
+export const copyFileToClipboard = async(url) => {
+    const data = await fetch(url);
+    const blob = await data.blob();
+    if (!ClipboardItem.supports(blob.type)) {
+        return false;
+    }
+
+    const clipboardItemData = {
+        [blob.type]: blob
+    };
+    navigator.clipboard.write([new ClipboardItem(clipboardItemData)]);
+    return true;
+};
+
+export const downloadFile = (url, filename = null) => {
+    const link = document.createElement('a');
+    link.href = url;
+    if (!filename) {
+        filename = url.split('/').pop();
+    }
+
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+export const downloadTextAsFile = (text) => {
+    const blob = new Blob([text], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    downloadFile(url, 'airesult.txt');
+    URL.revokeObjectURL(url);
 };
