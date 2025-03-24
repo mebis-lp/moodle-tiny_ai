@@ -104,6 +104,10 @@ export const stripHtmlTags = (textWithTags) => {
     return span.textContent;
 };
 
+export const editorUtilsExist = (uniqid) => {
+    return objectStore.hasOwnProperty(uniqid);
+};
+
 export const setEditorUtils = (uniqid, editorUtils) => {
     objectStore[uniqid].editorUtils = editorUtils;
 };

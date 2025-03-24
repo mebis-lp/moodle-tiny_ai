@@ -58,44 +58,44 @@ export const getSetup = async() => {
         getString('selectionbarbuttontitle', 'tiny_ai')
     ]);
 
-    const uniqid = Math.random().toString(16).slice(2);
-    await Utils.init(uniqid, constants.modalModes.editor);
-
     return (editor) => {
         // Register the Moodle SVG as an icon suitable for use as a TinyMCE toolbar button.
         editor.ui.registry.addIcon(icon, buttonImage.html);
 
         const contextId = getContextItemIdTinyCore(editor);
-        const editorUtils = new EditorUtils(uniqid, 'tiny_ai', contextId, getUserId(editor), editor);
-        Utils.setEditorUtils(uniqid, editorUtils);
+        // Generate a uniq id for every editor being loaded on this side.
+        const uniqid = Math.random().toString(16).slice(2);
+
+        const onActionCallback = async() => {
+            // Ideally, we do this initiating earlier and not just in this callback, but we need to execute
+            // async calls and these cannot be done outside during loading phase of tiny.
+            if (!Utils.editorUtilsExist(uniqid)) {
+                await Utils.init(uniqid, constants.modalModes.editor);
+                const editorUtils = new EditorUtils(uniqid, 'tiny_ai', contextId, getUserId(editor), editor);
+                Utils.setEditorUtils(uniqid, editorUtils);
+            }
+            await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
+            Utils.getEditorUtils(uniqid).displayDialogue();
+        };
 
         // Register the AI Toolbar Button.
         editor.ui.registry.addButton(toolbarButtonName, {
             icon,
             tooltip: toolbarButtonTitle,
-            onAction: async() => {
-                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
-                Utils.getEditorUtils(uniqid).displayDialogue();
-            }
+            onAction: onActionCallback
         });
 
         // Register the menu item.
         editor.ui.registry.addMenuItem(toolbarButtonName, {
             icon,
             text: toolbarButtonTitle,
-            onAction: async() => {
-                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
-                Utils.getEditorUtils(uniqid).displayDialogue();
-            }
+            onAction: onActionCallback
         });
 
         editor.ui.registry.addButton(selectionbarButtonName, {
             icon,
             tooltip: selectionbarButtonTitle,
-            onAction: async() => {
-                await injectSelectedElements(editor, Utils.getDatamanager(uniqid));
-                Utils.getEditorUtils(uniqid).displayDialogue();
-            }
+            onAction: onActionCallback
         });
     };
 };
