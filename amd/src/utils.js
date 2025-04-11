@@ -73,6 +73,12 @@ export const getAiAnswer = async(prompt, purpose, options = {}) => {
         await displayException(exception);
         return null;
     }
+    // In case the user cancels the request because precheck fails, makeRequest will properly return,
+    // but will have result null. This means we just do nothing, because the user interrupted the sending
+    // of the prompt.
+    if (result === null) {
+        return null;
+    }
     if (result.code !== 200) {
         const alertTitle = await getString('errorwithcode', 'tiny_ai', result.code);
         const parsedResult = JSON.parse(result.result);
