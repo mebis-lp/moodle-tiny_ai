@@ -54,7 +54,8 @@ export default class {
             templateContext: {
                 classes: 'tiny_ai-modal--dialog',
                 headerclasses: 'tiny_ai-modal--header'
-            }
+            },
+            scrollable: false
         });
         this.modal.show();
         const renderer = getRenderer(this.uniqid);

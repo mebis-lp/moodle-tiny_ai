@@ -266,6 +266,7 @@
 .tiny_ai-modal--dialog .modal-content {
   border: none;
   overflow: visible !important;
+  min-height: 640px;
 }
 .tiny_ai-modal--dialog .tiny_ai-modal--header {
   padding: 24px 24px 16px 24px;
