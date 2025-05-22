@@ -53,20 +53,19 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
             ?\editor_tiny\editor $editor = null
     ): bool {
         global $USER;
-        $tenant = \core\di::get(tenant::class);
-        $configmanager = \core\di::get(config_manager::class);
-        if (!has_capability('tiny/ai:view', $context) || !$tenant->is_tenant_allowed()) {
+        if (!has_capability('tiny/ai:view', $context)) {
             return false;
         }
-        $aiconfig = ai_manager_utils::get_ai_config($USER);
-        if (!$configmanager->is_tenant_enabled()) {
-            return $aiconfig['role'] !== userinfo::get_role_as_string(userinfo::ROLE_BASIC);
+        $aiconfig =
+                ai_manager_utils::get_ai_config($USER, $context->id, null, ['singleprompt', 'translate', 'itt', 'imggen', 'tts']);
+        if ($aiconfig['availability']['available'] === ai_manager_utils::AVAILABILITY_HIDDEN) {
+            return false;
         }
-        $coursecontext = \local_ai_manager\ai_manager_utils::find_closest_parent_course_context($context);
-        if (is_null($coursecontext) && intval($aiconfig['scope']) === userinfo::SCOPE_COURSES_ONLY) {
-            if ($aiconfig['role'] === userinfo::get_role_as_string(userinfo::ROLE_BASIC)) {
-                return false;
-            }
+        $atleastonepurposenothidden =
+                array_reduce($aiconfig['purposes'], fn($a, $b) => $a || $b['available'] !== ai_manager_utils::AVAILABILITY_HIDDEN,
+                        false);
+        if (!$atleastonepurposenothidden) {
+            return false;
         }
         return true;
     }

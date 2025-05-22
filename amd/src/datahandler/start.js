@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import * as config from 'core/config';
 import {getString, getStrings} from 'core/str';
 import {constants} from 'tiny_ai/constants';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
@@ -34,22 +33,17 @@ import {errorAlert, stripHtmlTags} from 'tiny_ai/utils';
 export default class extends BaseHandler {
 
     stringKeys = [
-        'error_limitreached',
-        'error_pleaseconfirm',
-        'error_purposenotconfigured',
         'error_tenantdisabled',
         'error_unavailable_noselection',
         'error_unavailable_selection',
-        'error_userlocked',
-        'error_usernotconfirmed'
     ];
 
     aiConfig = null;
     strings = new Map();
 
-    async init() {
-        this.aiConfig = await getAiConfig();
-        // It's easier to fetch alle these strings before even if we do not use them
+    async init(contextid) {
+        this.aiConfig = await getAiConfig(contextid);
+        // It's easier to fetch all these strings before even if we do not use them
         // instead of making all functions async just because of getString returning a promise.
         const stringRequest = this.stringKeys.map(key => {
             return {key, component: 'local_ai_manager'};
@@ -61,11 +55,6 @@ export default class extends BaseHandler {
         }
         const tinyNotAvailableString = await getString('error_tiny_ai_notavailable', 'tiny_ai');
         this.strings.set('error_editor_notavailable', tinyNotAvailableString);
-        const confirmLink = document.createElement('a');
-        confirmLink.href = `${config.wwwroot}/local/ai_manager/confirm_ai_usage.php`;
-        confirmLink.innerText = this.strings.get('error_pleaseconfirm');
-        confirmLink.target = '_blank';
-        this.strings.set('combinedusernotconfirmederror', this.strings.get('error_usernotconfirmed') + ' ' + confirmLink.outerHTML);
     }
 
     getPurposeConfig(tool) {
@@ -77,16 +66,7 @@ export default class extends BaseHandler {
     }
 
     isTinyAiDisabled() {
-        if (!this.aiConfig.tenantenabled) {
-            return this.strings.get('error_tenantdisabled');
-        }
-        if (!this.aiConfig.userconfirmed) {
-            return this.strings.get('combinedusernotconfirmederror');
-        }
-        if (this.aiConfig.userlocked) {
-            return this.strings.get('error_userlocked');
-        }
-        return '';
+        return this.aiConfig.availability === 'available' ? '' : this.aiConfig.availability.errormessage;
     }
 
     isToolDisabled(tool) {
@@ -94,13 +74,7 @@ export default class extends BaseHandler {
             return this.isTinyAiDisabled();
         }
         const purposeInfo = this.getPurposeConfig(tool);
-        if (!purposeInfo.isconfigured) {
-            return this.strings.get('error_purposenotconfigured');
-        }
-        if (purposeInfo.limitreached) {
-            return this.strings.get('error_limitreached');
-        }
-        return '';
+        return purposeInfo.available === 'available' ? '' : purposeInfo.errormessage;
     }
 
     isToolHidden(tool) {
