@@ -22,7 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import ModalEvents from 'core/modal_events';
 import Renderer from 'tiny_ai/renderer';
 import DataManager from 'tiny_ai/datamanager';
 import ImggenHandler from 'tiny_ai/datahandler/imggen';
@@ -36,7 +35,6 @@ import {alert as moodleAlert, exception as displayException} from 'core/notifica
 import {getString} from 'core/str';
 import {makeRequest} from 'local_ai_manager/make_request';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
-import $ from 'jquery';
 import Log from 'core/log';
 
 const objectStore = {};
@@ -89,12 +87,7 @@ export const errorAlert = async(message, title = null) => {
     if (title === null) {
         title = BasedataHandler.getTinyAiString('generalerror');
     }
-    const alertModal = await moodleAlert(title, message);
-    alertModal.getRoot().on(ModalEvents.hidden, () => {
-        document.querySelectorAll('button[data-action]').forEach(button => {
-            $(button).tooltip('hide');
-        });
-    });
+    await moodleAlert(title, message);
 };
 
 export const stripHtmlTags = (textWithTags) => {

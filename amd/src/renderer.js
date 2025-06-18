@@ -26,7 +26,6 @@ import {renderInfoBox} from 'local_ai_manager/infobox';
 import {renderUserQuota} from 'local_ai_manager/userquota';
 import * as BasedataHandler from 'tiny_ai/datahandler/basedata';
 import Templates from 'core/templates';
-import $ from 'jquery';
 import {
     getEditorUtils,
     getDatamanager,
@@ -194,9 +193,6 @@ export default class {
         templateContext.tinyinstanceuniqid = this.uniqid;
         const modal = getEditorUtils(this.uniqid).getModal();
         // Remove all eventually remaining tooltips before rendering a new view.
-        document.querySelectorAll('button[data-action]').forEach(button => {
-            $(button).tooltip('hide');
-        });
         const result = await Promise.all([
             Templates.renderForPromise('tiny_ai/components/moodle-modal-header-title', templateContext),
             Templates.renderForPromise('tiny_ai/components/' + bodyComponentTemplate, templateContext),
@@ -206,12 +202,6 @@ export default class {
             // If there is no headline specified, we keep the old one.
             modal.setTitle(result[0].html);
         }
-        // Hide all eventually still existing tooltips first, because they show on 'hover' and
-        // 'focus'. So we need to remove them before removing the corresponding buttons from the DOM.
-        // Boostrap 4 still using jQuery for tooltips, so we need jQuery here.
-        document.querySelectorAll('button[data-action]').forEach(button => {
-            $(button).tooltip('hide');
-        });
         modal.setBody(result[1].html);
         modal.setFooter(result[2].html);
         result.forEach((item) => {
@@ -220,11 +210,6 @@ export default class {
         modal.getRoot().attr('data-tiny_ai_uniqid', this.uniqid);
         await this.insertInfoBox();
         await this.insertUserQuotaBox();
-        document.querySelectorAll('button[data-action]').forEach(button => {
-            button.addEventListener('click', event => {
-                $(event.target).closest('button[data-action]').tooltip('hide');
-            });
-        });
     }
 
     async insertInfoBox() {
