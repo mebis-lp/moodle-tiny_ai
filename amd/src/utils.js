@@ -41,7 +41,7 @@ import Log from 'core/log';
 
 const objectStore = {};
 
-export const init = async(uniqid, mode) => {
+export const init = async(uniqid, contextid, mode) => {
     if (!objectStore.hasOwnProperty(uniqid)) {
         objectStore[uniqid] = {};
         // The order in which these objects are being created is actually pretty important, because Renderer
@@ -51,7 +51,7 @@ export const init = async(uniqid, mode) => {
         objectStore[uniqid].imggenhandler = new ImggenHandler(uniqid);
         objectStore[uniqid].optimizehandler = new OptimizeHandler(uniqid);
         objectStore[uniqid].starthandler = new StartHandler(uniqid);
-        await objectStore[uniqid].starthandler.init();
+        await objectStore[uniqid].starthandler.init(contextid);
         objectStore[uniqid].summarizehandler = new SummarizeHandler(uniqid);
         objectStore[uniqid].translatehandler = new TranslateHandler(uniqid);
         objectStore[uniqid].ttshandler = new TtsHandler(uniqid);

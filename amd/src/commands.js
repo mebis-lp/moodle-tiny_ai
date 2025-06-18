@@ -70,7 +70,7 @@ export const getSetup = async() => {
             // Ideally, we do this initiating earlier and not just in this callback, but we need to execute
             // async calls and these cannot be done outside during loading phase of tiny.
             if (!Utils.editorUtilsExist(uniqid)) {
-                await Utils.init(uniqid, constants.modalModes.editor);
+                await Utils.init(uniqid, contextId, constants.modalModes.editor);
                 const editorUtils = new EditorUtils(uniqid, 'tiny_ai', contextId, getUserId(editor), editor);
                 Utils.setEditorUtils(uniqid, editorUtils);
             }
